@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OfficialDocument extends Model
+class Briefcase extends Model
 {
     use HasFactory;
 
@@ -30,12 +30,12 @@ class OfficialDocument extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'official_document');
+        return $this->hasMany(Comment::class, 'briefcases');
     }
 
     public function files()
     {
-        return $this->hasMany(File::class, 'official_document');
+        return $this->hasMany(File::class, 'briefcases');
     }
 
 }

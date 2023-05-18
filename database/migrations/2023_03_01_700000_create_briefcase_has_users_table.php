@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('official_document_has_recipients', function (Blueprint $table) {
+        Schema::create('briefcases_has_users', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('official_document')->unsigned()->nullable();
-            $table->foreign('official_document')->references('id')->on('official_documents');
+            $table->integer('briefcases')->unsigned()->nullable();
+            $table->foreign('briefcases')->references('id')->on('briefcases');
 
             $table->integer('users')->unsigned()->nullable();
             $table->foreign('users')->references('id')->on('users');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('official_document_has_recipients');
+        Schema::dropIfExists('briefcases_has_users');
     }
 };

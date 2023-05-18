@@ -17,8 +17,8 @@ return new class extends Migration
             $table->increments('id');
             $table->string('comment');
 
-            $table->integer('official_document')->unsigned()->nullable();
-            $table->foreign('official_document')->references('id')->on('official_documents');
+            $table->integer('briefcases')->unsigned()->nullable();
+            $table->foreign('briefcases')->references('id')->on('briefcases');
 
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');

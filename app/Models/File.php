@@ -15,15 +15,15 @@ class File extends Model
         'name',
         'type',
         'content',
-        'official_document',
+        'briefcase',
         'uploaded_by',
     ];
 
     public $timestamps = false;
 
-    public function official_document()
+    public function briefcase()
     {
-        return $this->belongsTo(Official_Document::class, 'official_document');
+        return $this->belongsTo(Briefcases::class, 'briefcase');
     }
 
     public function uploaded_by()

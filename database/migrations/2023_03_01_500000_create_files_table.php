@@ -21,8 +21,8 @@ return new class extends Migration
             $table->integer('size');
 
 
-            $table->integer('official_document')->unsigned()->nullable();
-            $table->foreign('official_document')->references('id')->on('official_documents');
+            $table->integer('briefcases')->unsigned()->nullable();
+            $table->foreign('briefcases')->references('id')->on('briefcases');
 
             $table->integer('uploaded_by')->unsigned()->nullable();
             $table->foreign('uploaded_by')->references('id')->on('users');

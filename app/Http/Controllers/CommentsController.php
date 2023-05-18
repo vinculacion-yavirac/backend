@@ -9,9 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CommentsController extends Controller
 {
-    public function getCommentsByOfficialDocument($id)
+    public function getCommentsByBriefcase($id)
     {
-        $comments = Comment::where('official_document', $id)->get();
+        $comments = Comment::where('briefcase', $id)->get();
 
         return new JsonResponse([
             'status' => 'success',
@@ -24,7 +24,7 @@ class CommentsController extends Controller
     {
         $request->validate([
             'comment' => 'required|string',
-            'official_document' => 'required|integer',
+            'briefcase' => 'required|integer',
         ]);
 
         try {

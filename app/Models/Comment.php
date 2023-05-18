@@ -11,7 +11,7 @@ class Comment extends Model
 
     protected $fillable = [
         'comment',
-        'official_document',
+        'briefcases',
         'created_at',
         'updated_at',
         'created_by',

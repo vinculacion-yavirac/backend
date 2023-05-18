@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BriefcaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -8,7 +9,6 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\EmailsController;
 use App\Http\Controllers\StatisticsController;
-use App\Http\Controllers\OfficialDocumentsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
 
@@ -121,24 +121,24 @@ Route::middleware('authentication')->group(function () {
         Route::get('/{id}', [StatisticsController::class, 'getOficios']);
     });
 
-    //OfficialDocuments
-    Route::prefix('official-documents')->group(function () {
+    //briefcase
+    Route::prefix('briefcase')->group(function () {
         //ruta para obtener todos los oficios
-        Route::get('/', [OfficialDocumentsController::class, 'getOfficialDocuments']);
+        Route::get('/', [BriefcaseController::class, 'getBriefcase']);
         //ruta para obtener un oficio por id
-        Route::get('/{id}', [OfficialDocumentsController::class, 'getOfficialDocumentById']);
+        Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById']);
         //ruta para obtener una lista de oficios por termino
-        Route::get('/search/term/{term?}', [OfficialDocumentsController::class, 'searchOfficialDocumentsByTerm']);
+        Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm']);
         //ruta para crear un oficio
-        Route::post('/create', [OfficialDocumentsController::class, 'createOfficialDocument']);
+        Route::post('/create', [BriefcaseController::class, 'createBriefcase']);
         //ruta para actualizar un oficio
-        Route::put('/update/{id}', [OfficialDocumentsController::class, 'updateOfficialDocument']);
+        Route::put('/update/{id}', [BriefcaseController::class, 'updateBriefcase']);
         //ruta para archivar un oficio
-        Route::put('/archive/{id}', [OfficialDocumentsController::class, 'archiveOfficialDocument']);
+        Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase']);
         //ruta para restaurar un oficio
-        Route::put('/restore/{id}', [OfficialDocumentsController::class, 'restoreOfficialDocument']);
+        Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase']);
         //ruta para eliminar un oficio
-        Route::put('/delete/{id}', [OfficialDocumentsController::class, 'deleteOfficialDocument']);
+        Route::put('/delete/{id}', [BriefcaseController::class, 'restoreBriefcase']);
     });
 
     //Files
@@ -153,7 +153,7 @@ Route::middleware('authentication')->group(function () {
     //Comments
     Route::prefix('comments')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
-        Route::get('/official_document/{id}', [CommentsController::class, 'getCommentsByOfficialDocument']);
+        Route::get('/briefcaset/{id}', [CommentsController::class, 'getCommentsByBriefcase']);
         //ruta para agregar un comentario en un oficio
         Route::post('/create', [CommentsController::class, 'createComment']);
     });
