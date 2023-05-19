@@ -39,7 +39,7 @@ class BriefcaseController extends Controller
     {
         $briefcase = briefcase::where('subject', 'like', '%' . $term . '%')->where('archived', false)->get();
 
-        $briefcase->load(['comments', 'files']);
+        $briefcase->load(['comments', 'files', 'created_by', 'created_by.person']);
 
         return new JsonResponse([
             'status' => 'success',
