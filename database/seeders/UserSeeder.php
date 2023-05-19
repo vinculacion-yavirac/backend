@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         $person = Person::create([
             'identification_type' => 'Cédula',
             'identification' => '1111111111',
-            'names' => 'Asi',
+            'names' => 'Asistente Web',
             'last_names' => 'Yavirac',
         ]);
 
