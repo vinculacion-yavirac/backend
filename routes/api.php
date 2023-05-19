@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BriefcaseController;
+use App\Http\Controllers\SolicitudeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -148,6 +149,10 @@ Route::middleware('authentication')->group(function () {
         Route::delete('/delete/{id}', [FilesController::class, 'deleteFileById']);
         Route::post('/upload/{id}', [FilesController::class, 'uploadFiles']);
         Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
+    });
+
+    Route::prefix('docente-vinculacion')->group(function () {
+        Route::get('solicitud', [SolicitudeController::class, 'getSolicitude']);
     });
 
     //Comments
