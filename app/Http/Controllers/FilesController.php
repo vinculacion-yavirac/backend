@@ -48,7 +48,7 @@ class FilesController extends Controller
             $newFile->type = $file->getClientOriginalExtension();
             $newFile->content = base64_encode(file_get_contents($file));
             $newFile->size = $file->getSize();
-            $newFile->briefcase = $id;
+            $newFile->briefcases = $id;
             $newFile->save();
         }
 

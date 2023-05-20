@@ -25,26 +25,26 @@ class BriefcaseController extends Controller
 
     public function getBriefcaseById($id)
     {
-        $briefcase = Briefcase::where('id', $id)->get();
+        $briefcases = Briefcase::where('id', $id)->get();
 
-        $briefcase->load(['comments', 'files']);
+        $briefcases->load(['comments', 'files']);
 
         return new JsonResponse([
             'status' => 'success',
-            'data' => ['briefcase #' . $id => $briefcase]
+            'data' => ['briefcases#' . $id => $briefcases]
         ], 200);
     }
 
     public function searchBriefcaseByTerm($term = '')
     {
-        $briefcase = briefcase::where('subject', 'like', '%' . $term . '%')->where('archived', false)->get();
+        $briefcases = briefcase::where('subject', 'like', '%' . $term . '%')->where('archived', false)->get();
 
-        $briefcase->load(['comments', 'files', 'created_by', 'created_by.person']);
+        $briefcases->load(['comments', 'files', 'created_by', 'created_by.person']);
 
         return new JsonResponse([
             'status' => 'success',
             'data' => [
-                'briefcase' => $briefcase,
+                'briefcases' => $briefcases,
             ],
         ], 200);
     }
@@ -59,7 +59,7 @@ class BriefcaseController extends Controller
 
         try {
             // Crear registro del documento oficial
-            $briefcase = Briefcase::create(array_merge(
+            $briefcases = Briefcase::create(array_merge(
                 $request->except('files', 'comments'),
                 ['created_by' => auth()->user()->id]
             ));
@@ -68,7 +68,7 @@ class BriefcaseController extends Controller
             if ($request->comment){
                 Comment::create([
                     'comment' => $request->comment,
-                    'briefcase' => $briefcase->id,
+                    'briefcases' => $briefcases->id,
                     'created_by' => auth()->user()->id
                 ]);
             }
@@ -77,13 +77,13 @@ class BriefcaseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'briefcase' => $briefcase
+                    'briefcases' => $briefcases
                 ],
-                'message' => 'Oficio creado con éxito'
+                'message' => 'Portafolio creado con éxito'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error al crear el oficio: ' . $e->getMessage()
+                'message' => 'Error al crear el Portafolio: ' . $e->getMessage()
             ]);
         }
     }
@@ -96,18 +96,18 @@ class BriefcaseController extends Controller
             'estado' => 'required|boolean'
         ]);
 
-        $briefcase = Briefcase::find($id);
-        if (!$briefcase) {
+        $briefcases = Briefcase::find($id);
+        if (!$briefcases) {
             return response()->json([
                 'message' => 'No se encontró el oficio especificado'
             ], 404);
         }
 
-        $briefcase->asunto = $request->asunto;
-        $briefcase->estado = $request->estado;
+        $briefcases->asunto = $request->asunto;
+        $briefcases->estado = $request->estado;
 
         try {
-            $briefcase->save();
+            $briefcases->save();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Portafolio actualizado con éxito'
@@ -121,17 +121,17 @@ class BriefcaseController extends Controller
 
     public function archiveBriefcase($id)
     {
-        $briefcase = Briefcase::find($id);
+        $briefcases = Briefcase::find($id);
 
-        if (!$briefcase) {
+        if (!$briefcases) {
             return response()->json([
                 'message' => 'Portafolio no encontrado'
             ]);
         }
 
-        $briefcase->archived = true;
-        $briefcase->archived_at = now();
-        $briefcase->save();
+        $briefcases->archived = true;
+        $briefcases->archived_at = now();
+        $briefcases->save();
 
         return response()->json([
             'status' => 'success',
@@ -141,17 +141,17 @@ class BriefcaseController extends Controller
 
     public function restoreBriefcase($id)
     {
-        $briefcase = Briefcase::find($id);
+        $briefcases = Briefcase::find($id);
 
-        if (!$briefcase) {
+        if (!$briefcases) {
             return response()->json([
                 'message' => 'Portafolio no encontrado'
             ]);
         }
 
-        $briefcase->archived = false;
-        $briefcase->archived_at = null;
-        $briefcase->save();
+        $briefcases->archived = false;
+        $briefcases->archived_at = null;
+        $briefcases->save();
 
         return response()->json([
             'status' => 'success',
@@ -161,15 +161,15 @@ class BriefcaseController extends Controller
 
     public function deleteBriefcase($id)
     {
-        $briefcase = Briefcase::find($id);
+        $briefcases = Briefcase::find($id);
 
-        if (!$briefcase) {
+        if (!$briefcases) {
             return response()->json([
                 'message' => 'Portafolio no encontrado'
             ]);
         }
 
-        $briefcase->delete();
+        $briefcases->delete();
 
         return response()->json([
             'status' => 'success',
