@@ -154,6 +154,7 @@ Route::middleware('authentication')->group(function () {
     //Files
     Route::prefix('solicitud')->group(function () {
         Route::get('/', [SolicitudeController::class, 'getSolicitude']);
+        Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
     });
 
     //Comments
