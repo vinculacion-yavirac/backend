@@ -11,11 +11,11 @@ class SolicitudeController extends Controller
 {
     public function getSolicitude()
     {
-        $solicitude = Solicitude:: all();
-        
+        $solicitudes = Solicitude:: all();
+        $solicitudes->load(['created_by', 'created_by.person']);
         return new JsonResponse([
             'status' => 'success',
-            'data' => ['solicitude' => $solicitude],
+            'data' => ['solicitudes' => $solicitudes],
         ], 200);
     }
 }

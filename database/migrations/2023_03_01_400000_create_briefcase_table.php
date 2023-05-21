@@ -24,6 +24,7 @@ return new class extends Migration
 
             $table->boolean('archived')->default(false);
             $table->timestamp('archived_at')->nullable();
+            
             $table->integer('archived_by')->unsigned()->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
 
