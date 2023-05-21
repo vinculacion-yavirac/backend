@@ -151,8 +151,10 @@ Route::middleware('authentication')->group(function () {
         Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
     });
 
-    Route::prefix('docente-vinculacion')->group(function () {
-        Route::get('solicitud', [SolicitudeController::class, 'getSolicitude']);
+    //Files
+    Route::prefix('solicitud')->group(function () {
+        Route::get('/', [SolicitudeController::class, 'getSolicitude']);
+        Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
     });
 
     //Comments

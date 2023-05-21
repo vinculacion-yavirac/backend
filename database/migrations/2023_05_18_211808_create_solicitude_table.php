@@ -17,14 +17,17 @@ return new class extends Migration
             $table->id();
             $table->string('type_of_request');
             $table->string('status');
+
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
+
             $table->boolean('archived')->default(false);
             $table->timestamp('archived_at')->nullable();
+
             $table->integer('archived_by')->unsigned()->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
-            $table->integer('users')->unsigned()->nullable();
-            $table->foreign('users')->references('id')->on('users');
+
+            $table->timestamps();
         });
     }
 

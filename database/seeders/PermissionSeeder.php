@@ -30,14 +30,24 @@ class PermissionSeeder extends Seeder
             'RESTAURAR_ROLES',
             'ELIMINAR_ROLES',
             'LEER_PERMISOS',
-            'LEER_OFICIOS',
-            'CREAR_OFICIOS',
-            'ARCHIVAR_OFICIOS',
-            'RESTAURAR_OFICIOS',
-            'ELIMINAR_OFICIOS',
-            'COMPARTIR_OFICIOS',
-            'DESCARGAR_OFICIOS',
-            'FINALIZAR_OFICIOS',
+
+            'LEER_PORTAFOLIO',
+            'CREAR_PORTAFOLIO',
+            'ACTUALIZAR_PORTAFOLIO',
+            'ARCHIVAR_PORTAFOLIO',
+            'RESTAURAR_PORTAFOLIO',
+            'ELIMINAR_PORTAFOLIO',
+            'EXPORTAR_PORTAFOLIO',
+            'IMPORTAR_PORTAFOLIO',
+
+            'LEER_SOLICITUD',
+            'CREAR_SOLICITUD',
+            'ACTUALIZAR_SOLICITUD',
+            'ARCHIVAR_SOLICITUD',
+            'RESTAURAR_SOLICITUD',
+            'ELIMINAR_SOLICITUD',
+            'EXPORTAR_SOLICITUD',
+            'IMPORTAR_SOLICITUD',
         ];
 
         foreach ($permissions as $permission) {

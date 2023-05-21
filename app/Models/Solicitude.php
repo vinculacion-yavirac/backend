@@ -14,6 +14,18 @@ class Solicitude extends Model
         'created_by',
         'archived',
         'archived_at',
+        'created_at',
         'archived_by',
     ];
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function archived_by()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
