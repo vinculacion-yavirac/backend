@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('locations', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('country');
             $table->string('city');
             $table->string('canton');
