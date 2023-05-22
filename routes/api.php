@@ -155,6 +155,10 @@ Route::middleware('authentication')->group(function () {
     Route::prefix('solicitud')->group(function () {
         Route::get('/', [SolicitudeController::class, 'getSolicitude']);
         Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
+        Route::put('/archive/{id}', [SolicitudeController::class, 'ArchiveSolicitud']);
+        Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude']);
+        Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm']);
+        Route::put('/restore/{id}', [SolicitudeController::class, 'restaureSolicitud']);
     });
 
     //Comments
