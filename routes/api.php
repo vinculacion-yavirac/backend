@@ -12,6 +12,7 @@ use App\Http\Controllers\EmailsController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -169,3 +170,5 @@ Route::middleware('authentication')->group(function () {
         Route::post('/create', [CommentsController::class, 'createComment']);
     });
 });
+
+Route::get('/project', [ProjectController::class, 'getProject']);
