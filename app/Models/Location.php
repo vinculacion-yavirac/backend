@@ -16,7 +16,6 @@ class Location extends Model
         'parish',
         'postal_code',
         'description',
-        'created_by',
     ];
 
 }

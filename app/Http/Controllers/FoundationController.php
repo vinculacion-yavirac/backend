@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Foundation;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FoundationController extends Controller
 {
@@ -11,7 +13,7 @@ class FoundationController extends Controller
 
         return new JsonResponse([
             'status' => 'success',
-            'data' => ['foundatin' => $foundation],
+            'data' => ['foundation' => $foundation],
         ],200);
     }
 }

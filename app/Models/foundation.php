@@ -20,6 +20,7 @@ class Foundation extends Model
         'received_students',
         'direct_benefit',
         'indirect_benefits',
+        'created_by',
         
     ];
 
