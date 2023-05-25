@@ -24,10 +24,8 @@ return new class extends Migration
             $table->string('place_birth')->nullable();
             $table->string('mobile_phone')->nullable();
             $table->string('landline_phone')->nullable();
-            $table->string('address')->nullable();
-            $table->string('province')->nullable();
-            $table->string('canton')->nullable();
-            $table->string('parish')->nullable();
+            $table->integer('locations')->unsigned()->nullable();
+            $table->foreign('locations')->references('id')->on('locations');
 
             $table->timestamps();
         });
