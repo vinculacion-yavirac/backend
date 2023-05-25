@@ -10,10 +10,12 @@ class Location extends Model
     use HasFactory;
 
     protected $fillable = [
-        'pais',
-        'ciudad',
-        'canton',
-        'parroquia',
+        'country',
+        'city',
+        'province',
+        'parish',
+        'postal_code',
+        'description',
     ];
 
 }

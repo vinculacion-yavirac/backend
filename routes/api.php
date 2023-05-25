@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BriefcaseController;
+use App\Http\Controllers\FoundationController;
 use App\Http\Controllers\SolicitudeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -169,6 +170,15 @@ Route::middleware('authentication')->group(function () {
         //ruta para agregar un comentario en un oficio
         Route::post('/create', [CommentsController::class, 'createComment']);
     });
-});
 
-Route::get('/project', [ProjectController::class, 'getProject']);
+    //fundacion
+    Route::prefix('fundacion')->group(function () {
+        //ruta para obtener todos los comentarios de un oficio por id
+        Route::get('/', [FoundationController::class, 'getFoundation']);
+    });
+
+    Route::prefix('project')->group(function () {
+        //ruta para obtener todos los comentarios de un oficio por id
+        Route::get('/', [ProjectController::class, 'getProject']);
+    });
+});
