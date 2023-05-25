@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('foundations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->boolean('estatus');
+            $table->boolean('status');
             $table->string('authorized_person');
             $table->string('number_ruc');
             $table->string('economic_activity');
             $table->string('company_email');
             $table->string('company_number');
-            $table->string('received_students');
+            $table->integer('received_students');
             $table->string('direct_benefit');
             $table->string('indirect_benefits');
 

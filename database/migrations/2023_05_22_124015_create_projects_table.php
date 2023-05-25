@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('status');
+            $table->boolean('status');
             $table->integer('foundations')->unsigned()->nullable();
             $table->foreign('foundations')->references('id')->on('foundations');
 
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('projects');
     }
 };
