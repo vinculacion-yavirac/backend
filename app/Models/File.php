@@ -23,7 +23,7 @@ class File extends Model
 
     public function briefcase()
     {
-        return $this->belongsTo(Briefcases::class, 'briefcase');
+        return $this->belongsTo(Briefcases::class, 'briefcases');
     }
 
     public function uploaded_by()

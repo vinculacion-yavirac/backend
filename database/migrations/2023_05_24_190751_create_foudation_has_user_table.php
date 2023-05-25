@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('projects', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->boolean('status');
+        Schema::create('foudation_has_user', function (Blueprint $table) {
+            $table->id();
+
             $table->integer('foundations')->unsigned()->nullable();
             $table->foreign('foundations')->references('id')->on('foundations');
 
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->integer('users')->unsigned()->nullable();
+            $table->foreign('users')->references('id')->on('users');
+
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('foudation_has_user');
     }
 };

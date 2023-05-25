@@ -16,15 +16,15 @@ return new class extends Migration
         Schema::create('foundations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('incharge');
-            $table->string('phone_number');
-            $table->boolean('estatus');
-
-            $table->boolean('archived')->default(false);
-            $table->timestamp('archived_at')->nullable();
-            
-            $table->integer('archived_by')->unsigned()->nullable();
-            $table->foreign('archived_by')->references('id')->on('users');
+            $table->boolean('status');
+            $table->string('authorized_person');
+            $table->string('number_ruc');
+            $table->string('economic_activity');
+            $table->string('company_email');
+            $table->string('company_number');
+            $table->integer('received_students');
+            $table->string('direct_benefit');
+            $table->string('indirect_benefits');
 
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');

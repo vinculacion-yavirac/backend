@@ -13,15 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('peoples_has_locations', function (Blueprint $table) {
+        Schema::create('locations_has_foundations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('hause_number');
-            
+            $table->string('type_ubicacion');
             $table->integer('locations')->unsigned()->nullable();
             $table->foreign('locations')->references('id')->on('locations');
 
-            $table->integer('people')->unsigned()->nullable();
-            $table->foreign('people')->references('id')->on('people');
+            $table->integer('foundations')->unsigned()->nullable();
+            $table->foreign('foundations')->references('id')->on('foundations');
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('peoples_has_locations');
+        Schema::dropIfExists('locations_has_foundations');
     }
 };
