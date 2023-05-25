@@ -13,14 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('foudation_has_user', function (Blueprint $table) {
+        Schema::create('foudation_studen_briefcase', function (Blueprint $table) {
             $table->id();
 
             $table->integer('foundations')->unsigned()->nullable();
             $table->foreign('foundations')->references('id')->on('foundations');
 
-            $table->integer('users')->unsigned()->nullable();
-            $table->foreign('users')->references('id')->on('users');
+            $table->integer('solicitudes')->unsigned()->nullable();
+            $table->foreign('solicitudes')->references('id')->on('solicitudes');
+
+            $table->integer('projects')->unsigned()->nullable();
+            $table->foreign('projects')->references('id')->on('projects');
+
+            $table->integer('briefcases')->unsigned()->nullable();
+            $table->foreign('briefcases')->references('id')->on('briefcases');
 
             $table->timestamps();
         });
@@ -33,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('foudation_has_user');
+        Schema::dropIfExists('foudation_studen_briefcase');
     }
 };
