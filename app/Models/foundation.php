@@ -10,10 +10,17 @@ class Foundation extends Model
     use HasFactory;
      
     protected $fillable = [
-        'nombre',
-        'encargado',
-        'numero_telefono',
-        'estado'
+        'name',
+        'status',
+        'authorized_person',
+        'number_ruc',
+        'economic_activity',
+        'company_email',
+        'company_number',
+        'received_students',
+        'direct_benefit',
+        'indirect_benefits',
+        
     ];
 
 }
