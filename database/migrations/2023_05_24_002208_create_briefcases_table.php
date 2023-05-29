@@ -13,19 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create('briefcases', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('type');
-            $table->longText('content');
-            $table->integer('size');
-
+            $table->string('type_briefcase');
 
             $table->integer('documents')->unsigned()->nullable();
             $table->foreign('documents')->references('id')->on('documents');
 
-            $table->integer('uploaded_by')->unsigned()->nullable();
-            $table->foreign('uploaded_by')->references('id')->on('users');
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->timestamps();
         });
     }
 
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('briefcases');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('briefcases', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->increments('id');
             $table->string('subject');
             $table->string('description', 300);
@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->boolean('archived')->default(false);
             $table->timestamp('archived_at')->nullable();
-            
+
             $table->integer('archived_by')->unsigned()->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
 
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('briefcases');
+        Schema::dropIfExists('documents');
     }
 };

@@ -28,4 +28,8 @@ class Solicitude extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function Fundation(){
+        return $this->belongsToMany(Foundation::class,'foudation_studen_briefcases');
+    }
+
 }
