@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BriefcaseController;
+use App\Http\Controllers\FoudationStudenBriefcaseController;
 use App\Http\Controllers\FoundationController;
 use App\Http\Controllers\SolicitudeController;
 use Illuminate\Http\Request;
@@ -127,21 +128,21 @@ Route::middleware('authentication')->group(function () {
     //briefcase
     Route::prefix('briefcase')->group(function () {
         //ruta para obtener todos los oficios
-        Route::get('/', [BriefcaseController::class, 'getBriefcase']);
+        Route::get('/', [BriefcaseController::class, 'getBriefcase'])->middleware('permission:LEER_PORTAFOLIO');
         //ruta para obtener un oficio por id
-        Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById']);
+        Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById'])->middleware('permission:LEER_PORTAFOLIO');
         //ruta para obtener una lista de oficios por termino
-        Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm']);
+        Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm'])->middleware('permission:LEER_PORTAFOLIO');
         //ruta para crear un oficio
-        Route::post('/create', [BriefcaseController::class, 'createBriefcase']);
+        Route::post('/create', [BriefcaseController::class, 'createBriefcase'])->middleware('permission:CREAR_PORTAFOLIO');
         //ruta para actualizar un oficio
-        Route::put('/update/{id}', [BriefcaseController::class, 'updateBriefcase']);
+        Route::put('/update/{id}', [BriefcaseController::class, 'updateBriefcase'])->middleware('permission:ACTUALIZAR_PORTAFOLIO');
         //ruta para archivar un oficio
-        Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase']);
+        Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase'])->middleware('permission:ARCHIVAR_PORTAFOLIO');
         //ruta para restaurar un oficio
-        Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase']);
+        Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase'])->middleware('permission:RESTAURAR_PORTAFOLIO');
         //ruta para eliminar un oficio
-        Route::put('/delete/{id}', [BriefcaseController::class, 'restoreBriefcase']);
+        Route::put('/delete/{id}', [BriefcaseController::class, 'restoreBriefcase'])->middleware('permission:ELIMINAR_PORTAFOLIO');
     });
 
     //Files
@@ -155,12 +156,12 @@ Route::middleware('authentication')->group(function () {
 
     //Files
     Route::prefix('solicitud')->group(function () {
-        Route::get('/', [SolicitudeController::class, 'getSolicitude']);
-        Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
-        Route::put('/archive/{id}', [SolicitudeController::class, 'ArchiveSolicitud']);
-        Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude']);
-        Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm']);
-        Route::put('/restore/{id}', [SolicitudeController::class, 'restaureSolicitud']);
+        Route::get('/', [SolicitudeController::class, 'getSolicitude'])->middleware('permission:LEER_SOLICITUD');
+        Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
+        Route::put('/archive/{id}', [SolicitudeController::class, 'ArchiveSolicitud'])->middleware('permission:ARCHIVAR_SOLICITUD');
+        Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude'])->middleware('permission:LEER_SOLICITUD');
+        Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
+        Route::put('/restore/{id}', [SolicitudeController::class, 'restaureSolicitud'])->middleware('permission:RESTAURAR_SOLICITUD');
     });
 
     //Comments
@@ -174,11 +175,22 @@ Route::middleware('authentication')->group(function () {
     //fundacion
     Route::prefix('fundacion')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
-        Route::get('/', [FoundationController::class, 'getFoundation']);
+        Route::get('/', [FoundationController::class, 'getFoundation'])->middleware('permission:LEER_FUNDACION');
+       
+        Route::get('/{id}', [FoundationController::class, 'getFoundationById'])->middleware('permission:LEER_FUNDACION');
+        Route::get('/search/term/{term?}', [FoundationController::class, 'searchFoundationByTerm'])->middleware('permission:LEER_FUNDACION');
+        Route::post('/create', [FoundationController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
     });
 
     Route::prefix('project')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
-        Route::get('/', [ProjectController::class, 'getProject']);
+        Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PRTOYECTO');
+    });
+
+    Route::prefix('fundacionDetalle')->group(function () {
+        Route::get('/', [FoudationStudenBriefcaseController::class, 'getFoundationSolicitud']);
+        Route::post('/create/ld', [FoudationStudenBriefcaseController::class, 'createFoundationSolicitud']);
     });
 });
+
+

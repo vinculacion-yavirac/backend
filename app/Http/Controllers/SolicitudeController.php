@@ -32,17 +32,50 @@ class SolicitudeController extends Controller
         ], 200);
     }
 
+    // public function searchSolicitudeByTerm($term = '')
+    // {
+    //     $solicitudes = solicitude::where('created_by', 'like', '%' . $term . '%')->where('archived', false)->get();
+
+    //     $solicitudes->load(['created_by', 'created_by.person']);
+
+    //     return new JsonResponse([
+    //         'status' =>'success',
+    //         'data' =>['solicitudes' => $solicitudes]
+    //     ]);
+    // }
+
     public function searchSolicitudeByTerm($term = '')
     {
-        $solicitudes = solicitude::where('type_of_request', 'like', '%' . $term . '%')->where('archived', false)->get();
+      
+        $solicitudes = Solicitude::where('id', '!=', 0)
+            ->where('archived', false)
+            ->where(function ($query) use ($term) {
+                $query->where('type_of_request', 'like', '%' . $term . '%')
+                    ->orWhereHas('created_by', function ($query) use ($term) {
+                        $query->where('person', 'like', '%' . $term . '%')
+                         ->orWhere('email', 'like', '%' . $term . '%');
+                    });
+                    // ->query->where('created_by', function ($query) use ($term) {
+                    //         $query->where('person', 'like', '%' . $term . '%')
+                    //             ->orWhere('names', 'like', '%' . $term . '%');
+                    //     });
+                    // ->orWhereHas('created_by', function ($query) use ($term) {
+                    //     $query->where('person', 'like', '%' . $term . '%')
+                    //         ->orWhere('name', 'like', '%' . $term . '%');
+                    // });
+            })
+            ->get();
 
         $solicitudes->load(['created_by', 'created_by.person']);
 
-        return new JsonResponse([
-            'status' =>'success',
-            'data' =>['solicitudes' => $solicitudes]
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'solicitudes' => $solicitudes
+            ],
         ]);
     }
+
 
     public function searchArchivedSolicitudeByTerm($term = '')
     {

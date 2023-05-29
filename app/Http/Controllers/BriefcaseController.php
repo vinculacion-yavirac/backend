@@ -60,9 +60,14 @@ class BriefcaseController extends Controller
         try {
             // Crear registro del documento oficial
             $briefcases = Briefcase::create(array_merge(
-                $request->except('files', 'comments'),
+                $request->except('foundations','solicitudes','briefcases'),
                 ['created_by' => auth()->user()->id]
             ));
+
+            // $briefcases = Briefcase::create(array_merge(
+            //     $request->except('foundations','solicitudes','briefcases'),
+            //     ['created_by' => auth()->user()->id]
+            // ));
 
             // Guardar comentario
             if ($request->comment){

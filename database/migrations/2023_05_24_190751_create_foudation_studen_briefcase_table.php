@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('foudation_studen_briefcase', function (Blueprint $table) {
+        Schema::create('foudation_studen_briefcases', function (Blueprint $table) {
             $table->id();
 
             $table->integer('foundations')->unsigned()->nullable();
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('foudation_studen_briefcase');
+        Schema::dropIfExists('foudation_studen_briefcases');
     }
 };

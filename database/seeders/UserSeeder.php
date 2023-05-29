@@ -32,5 +32,37 @@ class UserSeeder extends Seeder
             'person' => $person->id,
         ]);
         $user->assignRole('Super Administrador');
+
+
+        $personOne = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '175516802',
+            'names' => 'Hector Steveen',
+            'last_names' => 'Ordoñez',
+        ]);
+
+
+        $userOne = User::create([
+            'email' => 'zh311505@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personOne->id,
+        ]);
+        $userOne->assignRole('Docente Vinculación');
+
+
+        $personTwo = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '175516802',
+            'names' => 'Rodolfo',
+            'last_names' => 'Vera',
+        ]);
+
+
+        $userTwo = User::create([
+            'email' => 'rodolfo@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personTwo->id,
+        ]);
+        $userTwo->assignRole('Docente Tutor');
     }
 }

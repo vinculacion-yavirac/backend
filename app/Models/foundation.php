@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Foundation extends Model
 {
@@ -24,4 +26,11 @@ class Foundation extends Model
         
     ];
 
+    public function created_by(){
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+    public function solicitud(){
+        return $this->belongsToMany(Solicitude::class,'foudation_studen_briefcases');
+    }
 }

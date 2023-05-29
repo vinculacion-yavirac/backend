@@ -49,6 +49,25 @@ class PermissionSeeder extends Seeder
             'ELIMINAR_SOLICITUD',
             'EXPORTAR_SOLICITUD',
             'IMPORTAR_SOLICITUD',
+
+            'LEER_FUNDACION',
+            'CREAR_FUNDACION',
+            'ACTUALIZAR_FUNDACION',
+            'ARCHIVAR_FUNDACION',
+            'RESTAURAR_FUNDACION',
+            'ELIMINAR_FUNDACION',
+            'EXPORTAR_FUNDACION',
+            'IMPORTAR_FUNDACION',
+
+
+            'LEER_PRTOYECTO',
+            'CREAR_PRTOYECTO',
+            'ACTUALIZAR_PRTOYECTO',
+            'ARCHIVAR_PRTOYECTO',
+            'RESTAURAR_PRTOYECTO',
+            'ELIMINAR_PRTOYECTO',
+            'EXPORTAR_PRTOYECTO',
+            'IMPORTAR_PRTOYECTO',
         ];
 
         foreach ($permissions as $permission) {
