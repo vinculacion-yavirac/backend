@@ -23,7 +23,7 @@ class PermissionSeeder extends Seeder
             'ARCHIVAR_USUARIOS',
             'RESTAURAR_USUARIOS',
             'ELIMINAR_USUARIOS',
-            
+
             'LEER_ROLES',
             'CREAR_ROLES',
             'ACTUALIZAR_ROLES',
