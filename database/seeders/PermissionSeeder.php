@@ -23,7 +23,7 @@ class PermissionSeeder extends Seeder
             'ARCHIVAR_USUARIOS',
             'RESTAURAR_USUARIOS',
             'ELIMINAR_USUARIOS',
-            
+
             'LEER_ROLES',
             'CREAR_ROLES',
             'ACTUALIZAR_ROLES',
@@ -49,6 +49,16 @@ class PermissionSeeder extends Seeder
             'ELIMINAR_SOLICITUD',
             'EXPORTAR_SOLICITUD',
             'IMPORTAR_SOLICITUD',
+
+            'LEER_PROYECTO',
+            'CREAR_PROYECTO',
+            'ACTUALIZAR_PROYECTO',
+            'ARCHIVAR_PROYECTO',
+            'RESTAURAR_PROYECTO',
+            'ELIMINAR_PROYECTO',
+            'EXPORTAR_PROYECTO',
+            'IMPORTAR_PROYECTO',
+
         ];
 
         foreach ($permissions as $permission) {
