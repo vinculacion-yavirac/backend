@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\AvanzeController;
 use App\Http\Controllers\BriefcaseController;
 use App\Http\Controllers\SolicitudeController;
 use Illuminate\Http\Request;
@@ -163,5 +163,24 @@ Route::middleware('authentication')->group(function () {
         Route::get('/briefcaset/{id}', [CommentsController::class, 'getCommentsByBriefcase']);
         //ruta para agregar un comentario en un oficio
         Route::post('/create', [CommentsController::class, 'createComment']);
+    });
+     //AVANZES
+       Route::prefix('avanze')->group(function () {
+        //ruta para obtener todos los comentarios de un oficio por id
+        Route::get('/', [AvanzeController::class, 'getAllAvanzes']);
+        //ruta para obtener un oficio por id
+        Route::get('/{id}', [AvanzeController::class, 'getAllAvanzesById']);
+        //ruta para obtener una lista de oficios por termino
+        // Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm']);
+        //ruta para crear un oficio
+        Route::post('/create', [AvanzeController::class, 'createAvanzes']);
+        //ruta para actualizar un oficio
+        Route::put('/update/{id}', [AvanzeController::class, 'updateAvanzes']);
+        //ruta para archivar un oficio
+        // Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase']);
+        //ruta para restaurar un oficio
+        // Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase']);
+        //ruta para eliminar un oficio
+        Route::delete('/delete/{id}', [AvanzeController::class, 'deleteAvanzeById']);
     });
 });

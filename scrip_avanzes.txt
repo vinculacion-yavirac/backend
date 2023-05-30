@@ -1,0 +1,9 @@
+CREATE TABLE `avanzes` (
+  `id` int(11) NOT NULL,
+  `resumen` text NOT NULL,
+  `indicadores` text NOT NULL,
+  `medios` text NOT NULL,
+  `observacion` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
