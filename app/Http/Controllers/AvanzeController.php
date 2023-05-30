@@ -32,19 +32,6 @@ class AvanzeController extends Controller
         ], 200);
     }
 
-    public function searchBriefcaseByTerm($term = '')
-    {
-        $briefcase = briefcase::where('subject', 'like', '%' . $term . '%')->where('archived', false)->get();
-
-        $briefcase->load(['comments', 'files', 'created_by', 'created_by.person']);
-
-        return new JsonResponse([
-            'status' => 'success',
-            'data' => [
-                'briefcase' => $briefcase,
-            ],
-        ], 200);
-    }
 
 
     public function createAvanzes(Request $request)
