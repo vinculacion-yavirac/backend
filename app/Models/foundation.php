@@ -29,8 +29,4 @@ class Foundation extends Model
     public function created_by(){
         return $this->belongsTo(User::class,'created_by');
     }
-
-    public function solicitud(){
-        return $this->belongsToMany(Solicitude::class,'foudation_studen_briefcases');
-    }
 }

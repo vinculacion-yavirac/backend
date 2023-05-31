@@ -28,9 +28,9 @@ class Briefcase extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function documents()
     {
-        return $this->hasMany(Comment::class, 'briefcases');
+        return $this->hasMany(Documents::class, 'documents');
     }
 
     public function files()

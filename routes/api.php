@@ -187,10 +187,10 @@ Route::middleware('authentication')->group(function () {
         Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PRTOYECTO');
     });
 
-    Route::prefix('fundacionDetalle')->group(function () {
-        Route::get('/', [FoudationStudenBriefcaseController::class, 'getFoundationSolicitud']);
-        Route::post('/create/ld', [FoudationStudenBriefcaseController::class, 'createFoundationSolicitud']);
-    });
+    // Route::prefix('fundacionDetalle')->group(function () {
+    //     Route::get('/', [FoudationStudenBriefcaseController::class, 'getFoundationSolicitud']);
+    //     Route::post('/create/ld', [FoudationStudenBriefcaseController::class, 'createFoundationSolicitud']);
+    // });
      //AVANZES
        Route::prefix('avanze')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id

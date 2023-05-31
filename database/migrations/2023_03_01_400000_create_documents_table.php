@@ -15,9 +15,12 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('subject');
+            $table->string('name');
             $table->string('description', 300);
-            $table->string('status')->default('pendiente');
+            $table->boolean('status')->default('false');
+
+            $table->integer('briefcases')->unsigned()->nullable();
+            $table->foreign('briefcases')->references('id')->on('briefcases');
 
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
