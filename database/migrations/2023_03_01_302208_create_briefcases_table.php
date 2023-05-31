@@ -15,10 +15,8 @@ return new class extends Migration
     {
         Schema::create('briefcases', function (Blueprint $table) {
             $table->increments('id');
+            
             $table->string('type_briefcase');
-
-            $table->integer('documents')->unsigned()->nullable();
-            $table->foreign('documents')->references('id')->on('documents');
 
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
