@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('description', 300);
-            $table->boolean('status')->default('false');
+            $table->boolean('status')->default(false);
 
             $table->integer('briefcases')->unsigned()->nullable();
             $table->foreign('briefcases')->references('id')->on('briefcases');
