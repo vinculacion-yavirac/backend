@@ -16,11 +16,11 @@ class Project extends Model
         'created_by',
     ];
 
-    public function foundations (){
+    public function foundations(){
         return $this->belongsTo(Foundation:: class,'foundations');
     }
 
-    public function created_by (){
+    public function created_by(){
         return $this->belongsTo(User:: class, 'created_by');
     }
 

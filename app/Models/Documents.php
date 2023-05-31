@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Solicitude extends Model
+class Documents extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'solicitudes',
+        'name',
+        'description',
         'status',
         'created_by',
         'archived',
         'archived_at',
-        'created_at',
         'archived_by',
     ];
+
 
     public function created_by()
     {
@@ -28,8 +30,13 @@ class Solicitude extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function projects(){
-    //     return $this->belongsToMany(Integrante::class,'projects');
-    // }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'briefcases');
+    }
 
+    public function files()
+    {
+        return $this->hasMany(File::class, 'briefcases');
+    }
 }
