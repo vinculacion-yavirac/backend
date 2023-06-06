@@ -13,17 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('instegrantes', function (Blueprint $table) {
+        Schema::create('integrantes', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('solicitudes')->unsigned()->nullable();
-            $table->foreign('solicitudes')->references('id')->on('solicitudes');
+            $table->integer('solicitude_id')->unsigned()->nullable();
+            $table->foreign('solicitude_id')->references('id')->on('solicitudes');
 
-            $table->integer('briefcases')->unsigned()->nullable();
-            $table->foreign('briefcases')->references('id')->on('briefcases');
+            $table->integer('briefcase_id')->unsigned()->nullable();
+            $table->foreign('briefcase_id')->references('id')->on('briefcases');
 
-            $table->integer('projects')->unsigned()->nullable();
-            $table->foreign('projects')->references('id')->on('projects');
+            $table->integer('project_id')->unsigned()->nullable();
+            $table->foreign('project_id')->references('id')->on('projects');
 
             $table->timestamps();
         });

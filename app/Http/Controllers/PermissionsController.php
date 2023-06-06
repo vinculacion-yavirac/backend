@@ -24,14 +24,14 @@ class PermissionsController extends Controller
     //funcion para obtener permisos por rol
     public function getPermissionsByRole($role)
     {
-        //obtener permisos por rol
-        $permissions = Permission::role($role)->get();
-        //devolver permisos
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'permissions' => $permissions
-            ]
-        ]);
-    }
+             //obtener permisos por rol
+             $permissions = Permission::role($role)->get();
+             //devolver permisos
+             return response()->json([
+                 'status' => 'success',
+                 'data' => [
+                     'permissions' => $permissions
+                 ]
+             ]);
+         }
 }

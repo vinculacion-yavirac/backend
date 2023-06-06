@@ -91,5 +91,30 @@ class FoundationController extends Controller
     }
 
 
+        public function getFoundationByProject($projects)
+        {
+             if (!is_array($projects)) {
+                    // Manejar el caso cuando $foundations no es un array
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Foundations must be an array.'
+                    ]);
+                }
+
+            $foundations = Foundation::where(function ($query) use ($projects) {
+                    foreach ($projects as $projects) {
+                        $query->orWhere('foundations', $projects);
+                    }
+                })->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'foundations' => $foundations
+                ]
+            ]);
+        }
+
+
 
 }
