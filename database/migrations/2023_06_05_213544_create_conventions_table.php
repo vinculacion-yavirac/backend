@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create('conventions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('actividad')->nullable();
+            $table->timestamp('signature_date');
+            $table->timestamp('expiration_date');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('activities');
+        Schema::dropIfExists('conventions');
     }
 };

@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('anexo_has_archivos', function (Blueprint $table) {
+        Schema::create('certificates', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_anexo')->nullable();
-            $table->integer('id_archivo')->unsigned()->nullable();
-            $table->integer('tipo_anexo')->nullable();
-            $table->foreign(['id_archivo'], 'anexo_has_archivo_files')->references(['id'])->on('files');
+            $table->string('code',20);
+            $table->string('certificate_url',200);
+            $table->timestamps();
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('anexo_has_archivos');
+        Schema::dropIfExists('certificates');
     }
 };

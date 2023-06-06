@@ -13,15 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('sub_lines_investigations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->boolean('status');
-            $table->integer('foundations')->unsigned()->nullable();
-            $table->foreign('foundations')->references('id')->on('foundations');
-
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->string('description',100);
             $table->timestamps();
         });
     }
@@ -33,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('sub_lines_investigations');
     }
 };

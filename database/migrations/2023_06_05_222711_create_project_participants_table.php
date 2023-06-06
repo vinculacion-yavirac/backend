@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('criterio_economico', function (Blueprint $table) {
-            $table->string('nombre')->nullable();
-            $table->string('criterio')->nullable();
-            $table->integer('id')->primary();
+        Schema::create('project_participants', function (Blueprint $table) {
+            $table->increments('id');
+            $table->json('functions');
+            $table->timestamp('assignment_date');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('criterio_economico');
+        Schema::dropIfExists('project_participants');
     }
 };

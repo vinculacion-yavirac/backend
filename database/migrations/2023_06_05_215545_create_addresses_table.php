@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('objetivo_general', function (Blueprint $table) {
-            $table->string('nombre')->nullable();
-            $table->string('objetivo')->nullable();
-            $table->string('indicador_verificable')->nullable();
-            $table->string('metodo_verificacion')->nullable();
-            $table->integer('id')->primary();
+        Schema::create('addresses', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name',200);
+            $table->timestamps();
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('objetivo_general');
+        Schema::dropIfExists('addresses');
     }
 };
