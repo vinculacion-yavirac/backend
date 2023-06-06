@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('research_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name',20);
+            $table->unsignedBigInteger('career_id')->nullable();
+            $table->foreign('career_id')->references('id')->on('careers');
             $table->timestamps();
         });
     }

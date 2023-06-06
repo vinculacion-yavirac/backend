@@ -18,6 +18,15 @@ return new class extends Migration
             $table->string('type_of_request');
             $table->string('status');
 
+            $table->integer('solicitudes_status_id')->unsigned()->nullable();
+            $table->foreign('solicitudes_status_id')->references('id')->on('catalogs');
+
+            $table->integer('type_request_id')->unsigned()->nullable();
+            $table->foreign('type_request_id')->references('id')->on('catalogs');
+
+            $table->integer('who_made_request_id')->unsigned()->nullable();
+            $table->foreign('who_made_request_id')->references('id')->on('project_participants');
+
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
 

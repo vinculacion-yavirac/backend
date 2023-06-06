@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('goals', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('target_name',500);
-            $table->json('media_verification');
-            $table->string('verifiable_indicators');
+            $table->string('activity_name',200);
+            $table->integer('goals_id')->unsigned()->nullable();
+            $table->foreign('goals_id')->references('id')->on('goals');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('goals');
+        Schema::dropIfExists('activities');
     }
 };

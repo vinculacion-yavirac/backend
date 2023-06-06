@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name',200);
+            $table->unsignedBigInteger('father_code')->nullable();
+            $table->foreign('father_code')->references('id')->on('addresses');
             $table->timestamps();
         });
     }
