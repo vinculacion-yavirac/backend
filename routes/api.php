@@ -1,5 +1,7 @@
 <?php
 use App\Http\Controllers\AvanzeController;
+use App\Http\Controllers\ActividadesController;
+
 use App\Http\Controllers\BriefcaseController;
 use App\Http\Controllers\FoundationController;
 use App\Http\Controllers\SolicitudeController;
@@ -218,6 +220,24 @@ Route::middleware('authentication')->group(function () {
         // Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase']);
         //ruta para eliminar un oficio
         Route::delete('/delete/{id}', [AvanzeController::class, 'deleteAvanzeById']);
+    });
+    Route::prefix('actividades')->group(function () {
+        //ruta para obtener todos los comentarios de un oficio por id
+        Route::get('/', [ActividadesController::class, 'getAllActividades']);
+        //ruta para obtener un oficio por id
+        Route::get('/{id}', [ActividadesController::class, 'getAllActividadesById']);
+        //ruta para obtener una lista de oficios por termino
+        // Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm']);
+        //ruta para crear un oficio
+        Route::post('/create', [ActividadesController::class, 'createActividades']);
+        //ruta para actualizar un oficio
+        Route::put('/update/{id}', [ActividadesController::class, 'updateActividades']);
+        //ruta para archivar un oficio
+        // Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase']);
+        //ruta para restaurar un oficio
+        // Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase']);
+        //ruta para eliminar un oficio
+        Route::delete('/delete/{id}', [ActividadesController::class, 'deleteActividadesById']);
     });
 });
 
