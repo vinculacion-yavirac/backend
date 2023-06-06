@@ -19,9 +19,10 @@ return new class extends Migration
             $table->string('name',100);
             $table->string('logo',20);
             $table->boolean('state');
-            //$table->string('parish',200);
             $table->string('place_location',200);
             $table->string('postal_code',20);
+            $table->unsignedBigInteger('parish_id')->nullable();
+            $table->foreign('parish_id')->references('id')->on('addresses');
             $table->timestamps();
         });
     }
