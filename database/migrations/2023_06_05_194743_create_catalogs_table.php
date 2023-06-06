@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('observaciones', function (Blueprint $table) {
+        Schema::create('catalogs', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('observacion')->nullable();
-            $table->string('estado')->nullable();
+            $table->string('code',20);
+            $table->string('catalog_type',20);
+            $table->string('catalog_value',100);
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('observaciones');
+        Schema::dropIfExists('catalogs');
     }
 };

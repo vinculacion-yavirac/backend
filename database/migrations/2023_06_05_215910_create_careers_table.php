@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('locations_has_foundations', function (Blueprint $table) {
+        Schema::create('careers', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type_ubicacion');
-            $table->integer('locations')->unsigned()->nullable();
-            $table->foreign('locations')->references('id')->on('locations');
-
-            $table->integer('foundations')->unsigned()->nullable();
-            $table->foreign('foundations')->references('id')->on('foundations');
+            $table->string('name',100);
+            $table->string('code',20);
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('locations_has_foundations');
+        Schema::dropIfExists('careers');
     }
 };

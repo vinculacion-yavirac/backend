@@ -15,17 +15,11 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('type');
-            $table->longText('content');
+            $table->string('name',100);
+            $table->string('type',200);
+            $table->text('content',100);
             $table->integer('size');
-
-
-            $table->integer('documents')->unsigned()->nullable();
-            $table->foreign('documents')->references('id')->on('documents');
-
-            $table->integer('uploaded_by')->unsigned()->nullable();
-            $table->foreign('uploaded_by')->references('id')->on('users');
+            $table->timestamps();
         });
     }
 

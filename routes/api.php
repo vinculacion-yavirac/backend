@@ -1,7 +1,6 @@
 <?php
 use App\Http\Controllers\AvanzeController;
 use App\Http\Controllers\BriefcaseController;
-use App\Http\Controllers\FoudationStudenBriefcaseController;
 use App\Http\Controllers\FoundationController;
 use App\Http\Controllers\SolicitudeController;
 use Illuminate\Http\Request;
@@ -15,6 +14,7 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\IntegranteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -157,11 +157,13 @@ Route::middleware('authentication')->group(function () {
     //Files
     Route::prefix('solicitud')->group(function () {
         Route::get('/', [SolicitudeController::class, 'getSolicitude'])->middleware('permission:LEER_SOLICITUD');
+        Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById'])->middleware('permission:LEER_SOLICITUD');
         Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
         Route::put('/archive/{id}', [SolicitudeController::class, 'ArchiveSolicitud'])->middleware('permission:ARCHIVAR_SOLICITUD');
         Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude'])->middleware('permission:LEER_SOLICITUD');
         Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
         Route::put('/restore/{id}', [SolicitudeController::class, 'restaureSolicitud'])->middleware('permission:RESTAURAR_SOLICITUD');
+        Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
     });
 
     //Comments
@@ -176,21 +178,28 @@ Route::middleware('authentication')->group(function () {
     Route::prefix('fundacion')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
         Route::get('/', [FoundationController::class, 'getFoundation'])->middleware('permission:LEER_FUNDACION');
-       
+
         Route::get('/{id}', [FoundationController::class, 'getFoundationById'])->middleware('permission:LEER_FUNDACION');
         Route::get('/search/term/{term?}', [FoundationController::class, 'searchFoundationByTerm'])->middleware('permission:LEER_FUNDACION');
         Route::post('/create', [FoundationController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
+        Route::get('/projects/{value}', [FoundationController::class, 'getFoundationByProject']);
     });
 
     Route::prefix('project')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
         Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PRTOYECTO');
+        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
+        Route::get('/{id}', [ProjectController::class, 'getProjectById']);
     });
 
-    // Route::prefix('fundacionDetalle')->group(function () {
-    //     Route::get('/', [FoudationStudenBriefcaseController::class, 'getFoundationSolicitud']);
-    //     Route::post('/create/ld', [FoudationStudenBriefcaseController::class, 'createFoundationSolicitud']);
-    // });
+
+    //Integrantes detalle de la tabla project y solicitude
+     Route::prefix('integrantes')->group(function () {
+         Route::get('/', [IntegranteController::class, 'index']);
+         Route::post('/create', [IntegranteController::class, 'store']);
+    });
+
+
      //AVANZES
        Route::prefix('avanze')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id

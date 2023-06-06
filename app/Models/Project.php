@@ -16,12 +16,19 @@ class Project extends Model
         'created_by',
     ];
 
-    public function foundations(){
-        return $this->belongsTo(Foundation:: class,'foundations');
-    }
-
     public function created_by(){
-        return $this->belongsTo(User:: class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function foundations(){
+            return $this->belongsTo(Foundation::class, 'foundations');
+    }
+
+    public function solicitudes(){
+        return $this->belongsToMany(Solicitude::class,'integrantes');
+    }
+
+    //public function integrantes(){
+      // return $this->belongsToMany(Integrante::class, 'project_integrante');
+    //}
 }

@@ -7,18 +7,50 @@ use App\Models\Person;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Models\Solicitude;
+use Illuminate\Support\Facades\DB;
 
 class SolicitudeController extends Controller
 {
+
+    //Obtener todas las solicitudes
     public function getSolicitude()
     {
-        $solicitudes = Solicitude::where('id', '!=', 0)->where('archived', false)->get();
-        $solicitudes->load(['created_by', 'created_by.person']);
+        $solicitudes = Solicitude::where('id', '!=', 0)
+        ->where('archived', false)
+        ->where('status','=','Pendiente')
+        ->orWhere('status','=','Pre Aprobado')->get();
+        $solicitudes->load(['created_by', 'created_by.person','projects','projects.foundations']);
         return new JsonResponse([
             'status' => 'success',
             'data' => ['solicitudes' => $solicitudes],
         ], 200);
     }
+
+
+    //Obtener las Solicitudes por su id
+     public function getSolicitudeById($id)
+     {
+         $solicitudes = Solicitude::where('id', $id)
+             ->where('id', '!=', 0)
+             ->where('archived', false)
+             ->first();
+
+         if (!$solicitudes) {
+             return response()->json([
+                 'message' => 'Solicitud no encontrada'
+             ]);
+         }
+
+         $solicitudes->load(['created_by', 'created_by.person','projects','projects.foundations']);
+         $solicitudes->projects = $solicitudes->projects()->first();
+
+         return response()->json([
+             'status' => 'success',
+             'data' => [
+                 'solicitudes' => $solicitudes
+             ],
+         ]);
+     }
 
     public function getArchivedSolicitude()
     {
@@ -32,21 +64,9 @@ class SolicitudeController extends Controller
         ], 200);
     }
 
-    // public function searchSolicitudeByTerm($term = '')
-    // {
-    //     $solicitudes = solicitude::where('created_by', 'like', '%' . $term . '%')->where('archived', false)->get();
-
-    //     $solicitudes->load(['created_by', 'created_by.person']);
-
-    //     return new JsonResponse([
-    //         'status' =>'success',
-    //         'data' =>['solicitudes' => $solicitudes]
-    //     ]);
-    // }
-
     public function searchSolicitudeByTerm($term = '')
     {
-      
+
         $solicitudes = Solicitude::where('id', '!=', 0)
             ->where('archived', false)
             ->where(function ($query) use ($term) {
@@ -55,14 +75,6 @@ class SolicitudeController extends Controller
                         $query->where('person', 'like', '%' . $term . '%')
                          ->orWhere('email', 'like', '%' . $term . '%');
                     });
-                    // ->query->where('created_by', function ($query) use ($term) {
-                    //         $query->where('person', 'like', '%' . $term . '%')
-                    //             ->orWhere('names', 'like', '%' . $term . '%');
-                    //     });
-                    // ->orWhereHas('created_by', function ($query) use ($term) {
-                    //     $query->where('person', 'like', '%' . $term . '%')
-                    //         ->orWhere('name', 'like', '%' . $term . '%');
-                    // });
             })
             ->get();
 
@@ -125,4 +137,58 @@ class SolicitudeController extends Controller
             ],
         ], 200);
     }
+
+    //Transacion para asignar al estudiante y proyectos
+        public function assignSolicitude(Request $request, $id)
+        {
+            $request->validate([
+                'status' => 'required',
+                'projects' => 'required|array',
+                'projects.*.id' => 'required|exists:projects,id',
+            ]);
+
+            try {
+                DB::beginTransaction();
+
+                // Buscar la solicitud
+                $solicitudes = Solicitude::find($id);
+                if (!$solicitudes) {
+                    return response()->json([
+                        'message' => 'No se encontró la solicitud',
+                    ], 404);
+                }
+
+                // Actualizar el estado de la solicitud
+                $solicitudes->status = $request->status;
+                $solicitudes->save();
+
+                // Asociar los proyectos a la solicitud
+                $projectIds = collect($request->projects)->pluck('id');
+                $solicitudes->projects()->sync($projectIds);
+
+                DB::commit();
+
+                // Cargar los proyectos asociados para la respuesta
+                //$solicitudes->load('projects');
+                $solicitudes->load(['created_by', 'created_by.person','projects','projects.foundations']);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Relación actualizada correctamente',
+                    'data' => [
+                        'solicitudes' => $solicitudes,
+                    ],
+                ], 200);
+            } catch (\Exception $e) {
+                DB::rollback();
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error al actualizar la relación: ' . $e->getMessage(),
+                ], 500);
+            }
+        }
+
+
+
 }

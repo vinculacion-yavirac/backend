@@ -13,16 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('research_lines', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('comment');
-
-            $table->integer('documents')->unsigned()->nullable();
-            $table->foreign('documents')->references('id')->on('documents');
-
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-
+            $table->string('name',20);
             $table->timestamps();
         });
     }
@@ -34,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('research_lines');
     }
 };

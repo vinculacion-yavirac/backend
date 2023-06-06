@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Foundation extends Model
 {
     use HasFactory;
-     
+
     protected $fillable = [
         'name',
         'status',
@@ -23,10 +23,14 @@ class Foundation extends Model
         'direct_benefit',
         'indirect_benefits',
         'created_by',
-        
+
     ];
 
     public function created_by(){
         return $this->belongsTo(User::class,'created_by');
+    }
+
+    public static function project(){
+        return $this->hasMany(Project::class, 'projects');
     }
 }

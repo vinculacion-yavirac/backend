@@ -24,8 +24,6 @@ return new class extends Migration
             $table->string('place_birth')->nullable();
             $table->string('mobile_phone')->nullable();
             $table->string('landline_phone')->nullable();
-            $table->integer('locations')->unsigned()->nullable();
-            $table->foreign('locations')->references('id')->on('locations');
 
             $table->timestamps();
         });

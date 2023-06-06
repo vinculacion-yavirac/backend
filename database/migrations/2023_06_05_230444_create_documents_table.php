@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('objetivo_especifico', function (Blueprint $table) {
-            $table->string('objetivo_especifico')->nullable();
-            $table->string('indicadores_verificables')->nullable();
-            $table->string('medio_verificacion')->nullable();
-            $table->integer('id')->primary();
+        Schema::create('documents', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name',100);
+            $table->string('template',200);
+            $table->boolean('state');
+            $table->integer('order');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('objetivo_especifico');
+        Schema::dropIfExists('documents');
     }
 };

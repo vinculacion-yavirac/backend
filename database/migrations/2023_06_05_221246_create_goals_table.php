@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('firma_has_people', function (Blueprint $table) {
+        Schema::create('goals', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_firmas')->nullable();
-            $table->integer('id_people')->unsigned()->nullable();
-            $table->string('charge')->nullable();
-            $table->foreign(['id_people'], 'firma_has_people_people')->references(['id'])->on('people');
+            $table->string('target_name',500);
+            $table->json('media_verification');
+            $table->string('verifiable_indicators');
+            $table->timestamps();
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('firma_has_people');
+        Schema::dropIfExists('goals');
     }
 };
