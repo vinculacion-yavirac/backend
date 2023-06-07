@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('template',200);
             $table->boolean('state');
             $table->integer('order');
+            $table->integer('responsible_id')->unsigned()->nullable()->comment('role responsible for filling out the document.');
+            $table->foreign('responsible_id')->references('id')->on('roles');
             $table->timestamps();
         });
     }
