@@ -12,130 +12,146 @@ use Illuminate\Support\Facades\DB;
 class SolicitudeController extends Controller
 {
 
-    //Obtener todas las solicitudes
+    //Obtener las solicitudes de vinculacion
     public function getSolicitude()
     {
-        $solicitudes = Solicitude::where('id', '!=', 0)
-        ->where('archived', false)
-        ->where('status','=','Pendiente')
-        ->orWhere('status','=','Pre Aprobado')->get();
-        $solicitudes->load(['created_by', 'created_by.person','projects','projects.foundations']);
-        return new JsonResponse([
-            'status' => 'success',
-            'data' => ['solicitudes' => $solicitudes],
-        ], 200);
+       $solicitudes = Solicitude::where('id', '!=', 0)
+           ->where('archived', false)
+           ->whereHas('type_request_id', function ($query) {
+               $query->where('catalog_type', 'Tipo Solicitud')
+                     ->where('catalog_value', 'Vinculación');
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->get();
+
+       return response()->json([
+           'status' => 'success',
+           'data' => ['solicitudes' => $solicitudes],
+       ], 200);
     }
 
 
     //Obtener las Solicitudes por su id
      public function getSolicitudeById($id)
      {
-         $solicitudes = Solicitude::where('id', $id)
-             ->where('id', '!=', 0)
-             ->where('archived', false)
-             ->first();
+       $solicitudes = Solicitude::where('id', $id)
+           ->where('id', '!=', 0)
+           ->where('archived', false)
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->first();
 
-         if (!$solicitudes) {
-             return response()->json([
-                 'message' => 'Solicitud no encontrada'
-             ]);
-         }
+       if (!$solicitudes) {
+           return response()->json([
+               'message' => 'Solicitud no encontrada'
+           ]);
+       }
 
-         $solicitudes->load(['created_by', 'created_by.person','projects','projects.foundations']);
-         $solicitudes->projects = $solicitudes->projects()->first();
-
-         return response()->json([
-             'status' => 'success',
-             'data' => [
-                 'solicitudes' => $solicitudes
-             ],
-         ]);
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'solicitudes' => $solicitudes
+           ],
+       ]);
      }
 
+
+    //Obtener lista de solicitudes archivadas
     public function getArchivedSolicitude()
     {
-        $solicitudes = Solicitude::where('id', '!=', 0)->where('archived', true)->get();
-        $solicitudes->load(['created_by', 'created_by.person']);
-        return new JsonResponse([
-            'status' => 'success',
-            'data' => [
-                'solicitudes' => $solicitudes,
-            ],
-        ], 200);
+      $solicitudes = Solicitude::where('id', '!=', 0)
+          ->where('archived', true)
+          ->whereHas('type_request_id', function ($query) {
+              $query->where('catalog_type', 'Tipo Solicitud')
+                  ->where('catalog_value', 'Vinculación');
+          })
+          ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+          ->get();
+
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+              'solicitudes' => $solicitudes,
+          ],
+      ]);
     }
 
     public function searchSolicitudeByTerm($term = '')
     {
+       $solicitudes = Solicitude::where('id', '!=', 0)
+           ->where('archived', false)
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('created_by.person', function ($query) use ($term) {
+                   $query->where('names', 'like', '%' . $term . '%')
+                       ->orWhere('last_names', 'like', '%' . $term . '%')
+                       ->orWhere('identification', 'like', '%' . $term . '%');
+               });
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->get();
 
-        $solicitudes = Solicitude::where('id', '!=', 0)
-            ->where('archived', false)
-            ->where(function ($query) use ($term) {
-                $query->where('type_of_request', 'like', '%' . $term . '%')
-                    ->orWhereHas('created_by', function ($query) use ($term) {
-                        $query->where('person', 'like', '%' . $term . '%')
-                         ->orWhere('email', 'like', '%' . $term . '%');
-                    });
-            })
-            ->get();
-
-        $solicitudes->load(['created_by', 'created_by.person']);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'solicitudes' => $solicitudes
-            ],
-        ]);
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'solicitudes' => $solicitudes
+           ],
+       ]);
     }
 
 
     public function searchArchivedSolicitudeByTerm($term = '')
     {
-        $solicitudes = solicitude::where('type_of_request', 'like', '%' . $term . '%')->where('archived', true)->get();
+       $solicitudes = Solicitude::where('id', '!=', 0)
+           ->where('archived', true)
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('created_by.person', function ($query) use ($term) {
+                   $query->where('names', 'like', '%' . $term . '%')
+                       ->orWhere('last_names', 'like', '%' . $term . '%')
+                       ->orWhere('identification', 'like', '%' . $term . '%');
+               });
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->get();
 
-        $solicitudes->load(['created_by', 'created_by.person']);
-
-        return new JsonResponse([
-            'status' =>'success',
-            'data' =>['solicitudes' => $solicitudes]
-        ]);
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'solicitudes' => $solicitudes
+           ],
+       ]);
     }
 
     public function ArchiveSolicitud($id)
     {
-        $solicitudes = Solicitude::where('id', $id)->where('type_of_request', '!=', 'admin')->first();
+      $solicitudes = Solicitude::findOrFail($id);
 
-        if (!$solicitudes) {
-            return response()->json(['message' => 'La solicitud no existe']);
-        }
+      $solicitudes->archived = true;
+      $solicitudes->archived_at = now();
+      $solicitudes->archived_by = auth()->user()->id;
+      $solicitudes->save();
 
-        $solicitudes->archived = true;
-        $solicitudes->archived_at = now();
-        $solicitudes->archived_by = auth()->user()->id;
-        $solicitudes->save();
-
-        return new JsonResponse([
-            'status' => 'success',
-            'message' => 'Solicitud archivado correctamente',
-            'data' => [
-                'solicitudes' => $solicitudes,
-            ],
-        ], 200);
+      return new JsonResponse([
+          'status' => 'success',
+          'message' => 'Solicitud archivada correctamente',
+          'data' => [
+              'solicitudes' => $solicitudes,
+          ],
+      ], 200);
     }
 
     public function restaureSolicitud($id)
     {
-        $solicitudes = Solicitude::find($id);
-        $solicitudes->archived = false;
-        $solicitudes->save();
+      $solicitudes = Solicitude::findOrFail($id);
 
-        return new JsonResponse([
-            'status' => 'success',
-            'message' => 'Solicitud restaurada correctamente',
-            'data' => [
-                'rsolicitudes' => $solicitudes,
-            ],
-        ], 200);
+      $solicitudes->archived = false;
+      $solicitudes->save();
+
+      return new JsonResponse([
+          'status' => 'success',
+          'message' => 'Solicitud restaurada correctamente',
+          'data' => [
+              'solicitudes' => $solicitudes,
+          ],
+      ], 200);
     }
 
     //Transacion para asignar al estudiante y proyectos
