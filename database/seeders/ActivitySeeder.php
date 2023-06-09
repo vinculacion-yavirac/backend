@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\SchoolPeriod;
+use App\Models\Activity;
 
-class SchoolPeriodSeeder extends Seeder
+class ActivitySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,21 +15,22 @@ class SchoolPeriodSeeder extends Seeder
      */
     public function run()
     {
-    $schoolPeriods = [
+
+    $activities = [
         [
-            'name' => 'Periodo 1',
-            'state' => true,
+            'activity_name' => 'Actividad 1',
+            'goals_id' => 1,
         ],
         [
-            'name' => 'Periodo 2',
-            'state' => true,
+            'activity_name' => 'Actividad 2',
+            'goals_id' => 2,
         ],
         // Agrega más registros si es necesario
     ];
 
-    foreach ($schoolPeriods as $schoolPeriod) {
-        SchoolPeriod::create($schoolPeriod);
+    foreach ($activities as $activity) {
+        Activity::create($activity);
     }
 
-   }
+    }
 }

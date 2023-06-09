@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('code',20);
             $table->string('catalog_type',20);
             $table->string('catalog_value',100);
+            $table->timestamps();
         });
     }
 

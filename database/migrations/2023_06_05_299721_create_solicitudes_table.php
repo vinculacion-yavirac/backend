@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('comment');
+
+            $table->timestamp('approval_date');
 
             $table->integer('solicitudes_status_id')->unsigned()->nullable();
             $table->foreign('solicitudes_status_id')->references('id')->on('catalogs');

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Convention;
 
 class ConventionSeeder extends Seeder
 {
@@ -14,18 +15,21 @@ class ConventionSeeder extends Seeder
      */
     public function run()
     {
-        // Poblar la tabla 'conventions' con datos de muestra
-        DB::table('conventions')->insert([
-            [
-                'signature_date' => now(),
-                'expiration_date' => now()->addYear(),
-            ],
-            [
-                'signature_date' => now(),
-                'expiration_date' => now()->addYear(),
-            ],
-            // Agrega más datos de muestra si es necesario
-        ]);
+    $conventions = [
+        [
+            'signature_date' => '2023-01-01 00:00:00',
+            'expiration_date' => '2024-12-31 23:59:59',
+        ],
+        [
+            'signature_date' => '2024-01-01 00:00:00',
+            'expiration_date' => '2025-12-31 23:59:59',
+        ],
+    ];
+
+    foreach ($conventions as $convention) {
+        Convention::create($convention);
     }
 
+    // Agrega más registros si es necesario
+    }
 }

@@ -15,19 +15,20 @@ class File extends Model
         'name',
         'type',
         'content',
-        'briefcase',
-        'uploaded_by',
+        'observation',
+        'state',
+        'size',
+        'briefcase_id',
+        'document_id',
     ];
-
-    public $timestamps = false;
 
     public function briefcase()
     {
-        return $this->belongsTo(Briefcases::class, 'briefcases');
+        return $this->belongsTo(Briefcase::class);
     }
 
-    public function uploaded_by()
+    public function document()
     {
-        return $this->belongsTo(User::class, 'uploaded_by');
+        return $this->belongsTo(Document::class);
     }
 }

@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Statistic extends Model
+class Career extends Model
 {
     use HasFactory;
 
-      protected $fillable = [
-        'counter',
-        'year',
-    ];
+    protected $fillable = ['name', 'code'];
+
+    // Relaciones u otras funciones del modelo, si las hay
 }

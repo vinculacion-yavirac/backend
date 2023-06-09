@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Integrantes extends Model
+class SchoolPeriod extends Model
 {
     use HasFactory;
 
+    protected $table = 'school_periods';
+
     protected $fillable = [
-        'solicitude_id',
-        'briefcase_id',
-        'project_id',
+        'name',
+        'state',
     ];
 
+    public $timestamps = true;
 }
