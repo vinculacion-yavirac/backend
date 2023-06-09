@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('responsible', function (Blueprint $table) {
+        Schema::create('responsibles', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
-            //$table->integer('project_id')->unsigned()->nullable();
-            //$table->foreign('project_id')->references('id')->on('projects');
             $table->integer('charge_id')->unsigned()->nullable();
             $table->foreign('charge_id')->references('id')->on('catalogs');
             $table->timestamps();

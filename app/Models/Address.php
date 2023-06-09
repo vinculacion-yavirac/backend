@@ -5,20 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Documents extends Model
+class Address extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'template',
-        'state',
-        'order',
-        'responsible_id',
+        'father_code',
     ];
 
-    public function responsible()
+    public function father()
     {
-        return $this->belongsTo(Role::class, 'responsible_id');
+        return $this->belongsTo(Address::class, 'father_code');
     }
 }

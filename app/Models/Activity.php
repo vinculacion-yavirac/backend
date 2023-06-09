@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LocationPerson extends Model
+class Activity extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'numero_casa',
+        'activity_name',
+        'goals_id',
     ];
 
+    public function goal()
+    {
+        return $this->belongsTo(Goal::class, 'goals_id');
+    }
 }

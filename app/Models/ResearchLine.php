@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Location extends Model
+class ResearchLine extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'country',
-        'city',
-        'province',
-        'parish',
-        'postal_code',
-        'description',
+        'name',
+        'career_id',
     ];
 
+    public function career()
+    {
+        return $this->belongsTo(Career::class);
+    }
 }

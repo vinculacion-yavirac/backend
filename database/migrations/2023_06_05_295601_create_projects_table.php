@@ -47,11 +47,11 @@ return new class extends Migration
             $table->unsignedBigInteger('sub_line_investigation_id')->nullable();
             $table->foreign('sub_line_investigation_id')->references('id')->on('sub_lines_investigations');
             $table->unsignedBigInteger('authorized_by')->nullable();
-            $table->foreign('authorized_by')->references('id')->on('responsible');
+            $table->foreign('authorized_by')->references('id')->on('responsibles');
             $table->unsignedBigInteger('made_by')->nullable();
-            $table->foreign('made_by')->references('id')->on('responsible');
+            $table->foreign('made_by')->references('id')->on('responsibles');
             $table->unsignedBigInteger('approved_by')->nullable();
-            $table->foreign('approved_by')->references('id')->on('responsible');
+            $table->foreign('approved_by')->references('id')->on('responsibles');
             $table->unsignedBigInteger('catalogue_id')->nullable();
             $table->foreign('catalogue_id')->references('id')->on('catalogs');
             $table->unsignedBigInteger('state_id')->nullable();

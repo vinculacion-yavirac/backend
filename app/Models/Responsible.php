@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class Responsible extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'comment',
-        'briefcases',
-        'created_at',
-        'updated_at',
-        'created_by',
+        'user_id',
+        'charge_id',
     ];
 
-    public function created_by()
+    public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function charge()
+    {
+        return $this->belongsTo(Catalog::class, 'charge_id');
     }
 }

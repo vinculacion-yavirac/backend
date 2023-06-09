@@ -10,32 +10,15 @@ class Briefcase extends Model
     use HasFactory;
 
     protected $fillable = [
-        'subject',
-        'description',
-        'created_by',
-        'archived',
-        'archived_at',
-        'archived_by',
+        'observations',
+        'state',
+        'document_url',
+        'project_participant_id',
     ];
 
-    public function created_by()
+    public function projectParticipant()
     {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function archived_by()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function documents()
-    {
-        return $this->hasMany(Documents::class, 'documents');
-    }
-
-    public function files()
-    {
-        return $this->hasMany(File::class, 'briefcases');
+        return $this->belongsTo(ProjectParticipant::class);
     }
 
 }
