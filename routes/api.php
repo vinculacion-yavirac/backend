@@ -166,6 +166,12 @@ Route::middleware('authentication')->group(function () {
         Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
         Route::put('/restore/{id}', [SolicitudeController::class, 'restaureSolicitud'])->middleware('permission:RESTAURAR_SOLICITUD');
         Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
+        Route::get('/filter/type/{status}', [SolicitudeController::class, 'filterSolicitudeByValue']);
+        Route::get('/filter/status/{status}', [SolicitudeController::class, 'filterSolicitudeByStatus']);
+        Route::get('/search/type/vinculacion/{term?}', [SolicitudeController::class, 'searchSolicitudeVinculacionByTerm']);
+        Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
+        Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
+        Route::get('/search/status/preaprobado/{term?}', [SolicitudeController::class, 'searchPreAprobadoByTerm']);
     });
 
     //Comments

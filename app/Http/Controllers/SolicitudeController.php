@@ -17,10 +17,6 @@ class SolicitudeController extends Controller
     {
        $solicitudes = Solicitude::where('id', '!=', 0)
            ->where('archived', false)
-           ->whereHas('type_request_id', function ($query) {
-               $query->where('catalog_type', 'Tipo Solicitud')
-                     ->where('catalog_value', 'Vinculación');
-           })
            ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
            ->get();
 
@@ -60,10 +56,6 @@ class SolicitudeController extends Controller
     {
       $solicitudes = Solicitude::where('id', '!=', 0)
           ->where('archived', true)
-          ->whereHas('type_request_id', function ($query) {
-              $query->where('catalog_type', 'Tipo Solicitud')
-                  ->where('catalog_value', 'Vinculación');
-          })
           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
           ->get();
 
@@ -81,9 +73,125 @@ class SolicitudeController extends Controller
            ->where('archived', false)
            ->where(function ($query) use ($term) {
                $query->orWhereHas('created_by.person', function ($query) use ($term) {
-                   $query->where('names', 'like', '%' . $term . '%')
-                       ->orWhere('last_names', 'like', '%' . $term . '%')
-                       ->orWhere('identification', 'like', '%' . $term . '%');
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+               });
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->get();
+
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'solicitudes' => $solicitudes
+           ],
+       ]);
+    }
+
+
+    //buscar por Vinculacion
+    public function searchSolicitudeVinculacionByTerm($term = '')
+    {
+       $solicitudes = Solicitude::where('id', '!=', 0)
+           ->where('archived', false)
+           ->whereHas('type_request_id', function ($query) {
+               $query->where('catalog_type', 'Tipo Solicitud')
+                   ->where('catalog_value', 'Vinculación');
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('created_by.person', function ($query) use ($term) {
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+               });
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->get();
+
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'solicitudes' => $solicitudes
+           ],
+       ]);
+    }
+
+
+    //buscar por Certificado
+    public function searchCertificateByTerm($term = '')
+    {
+       $solicitudes = Solicitude::where('id', '!=', 0)
+           ->where('archived', false)
+           ->whereHas('type_request_id', function ($query) {
+               $query->where('catalog_type', 'Tipo Solicitud')
+                   ->where('catalog_value', 'Certificado');
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('created_by.person', function ($query) use ($term) {
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+               });
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->get();
+
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'solicitudes' => $solicitudes
+           ],
+       ]);
+    }
+
+
+    //buscar por Pendiente
+    public function searchPendienteByTerm($term = '')
+    {
+       $solicitudes = Solicitude::where('id', '!=', 0)
+           ->where('archived', false)
+           ->whereHas('solicitudes_status_id', function ($query) {
+               $query->where('catalog_type', 'Estado Solicitud')
+                   ->where('catalog_value', 'Pendiente');
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('created_by.person', function ($query) use ($term) {
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+               });
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->get();
+
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'solicitudes' => $solicitudes
+           ],
+       ]);
+    }
+
+
+    //buscar por Pre Aprobado
+    public function searchPreAprobadoByTerm($term = '')
+    {
+       $solicitudes = Solicitude::where('id', '!=', 0)
+           ->where('archived', false)
+           ->whereHas('solicitudes_status_id', function ($query) {
+               $query->where('catalog_type', 'Estado Solicitud')
+                   ->where('catalog_value', 'Pre Aprobado');
+           })
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('created_by.person', function ($query) use ($term) {
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
                });
            })
            ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
@@ -104,9 +212,9 @@ class SolicitudeController extends Controller
            ->where('archived', true)
            ->where(function ($query) use ($term) {
                $query->orWhereHas('created_by.person', function ($query) use ($term) {
-                   $query->where('names', 'like', '%' . $term . '%')
-                       ->orWhere('last_names', 'like', '%' . $term . '%')
-                       ->orWhere('identification', 'like', '%' . $term . '%');
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
                });
            })
            ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
@@ -138,6 +246,7 @@ class SolicitudeController extends Controller
       ], 200);
     }
 
+
     public function restaureSolicitud($id)
     {
       $solicitudes = Solicitude::findOrFail($id);
@@ -148,6 +257,41 @@ class SolicitudeController extends Controller
       return new JsonResponse([
           'status' => 'success',
           'message' => 'Solicitud restaurada correctamente',
+          'data' => [
+              'solicitudes' => $solicitudes,
+          ],
+      ], 200);
+    }
+
+    public function filterSolicitudeByValue($value = '')
+    {
+      $solicitudes = Solicitude::whereHas('type_request_id', function ($query) use ($value) {
+          $query->where('catalog_type', 'Tipo Solicitud')
+              ->where('catalog_value', $value);
+      })
+      ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+      ->get();
+
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+              'solicitudes' => $solicitudes,
+          ],
+      ], 200);
+    }
+
+
+    public function filterSolicitudeByStatus($status = '')
+    {
+      $solicitudes = Solicitude::whereHas('solicitudes_status_id', function ($query) use ($status) {
+          $query->where('catalog_type', 'Estado Solicitud')
+              ->where('catalog_value', $status);
+      })
+      ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+      ->get();
+
+      return response()->json([
+          'status' => 'success',
           'data' => [
               'solicitudes' => $solicitudes,
           ],
