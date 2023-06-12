@@ -17,7 +17,7 @@ class SolicitudeController extends Controller
     {
        $solicitudes = Solicitude::where('id', '!=', 0)
            ->where('archived', false)
-           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'who_made_request_id','who_made_request_id.project')
            ->get();
 
        return response()->json([
@@ -33,7 +33,7 @@ class SolicitudeController extends Controller
        $solicitudes = Solicitude::where('id', $id)
            ->where('id', '!=', 0)
            ->where('archived', false)
-           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'who_made_request_id','who_made_request_id.project')
            ->first();
 
        if (!$solicitudes) {
@@ -302,35 +302,27 @@ class SolicitudeController extends Controller
         public function assignSolicitude(Request $request, $id)
         {
             $request->validate([
-                'status' => 'required',
-                'projects' => 'required|array',
-                'projects.*.id' => 'required|exists:projects,id',
+                'approval_date' => 'nullable|date',
+                'who_made_request_id' => 'required',
             ]);
 
             try {
                 DB::beginTransaction();
 
                 // Buscar la solicitud
-                $solicitudes = Solicitude::find($id);
-                if (!$solicitudes) {
-                    return response()->json([
-                        'message' => 'No se encontró la solicitud',
-                    ], 404);
-                }
+                $solicitudes = Solicitude::findOrFail($id);
 
                 // Actualizar el estado de la solicitud
-                $solicitudes->status = $request->status;
+                $solicitudes->approval_date = now();
                 $solicitudes->save();
 
                 // Asociar los proyectos a la solicitud
-                $projectIds = collect($request->projects)->pluck('id');
-                $solicitudes->projects()->sync($projectIds);
-
+                $solicitudes->who_made_request_id = $request->who_made_request_id;
+                $solicitudes->save();
                 DB::commit();
 
                 // Cargar los proyectos asociados para la respuesta
-                //$solicitudes->load('projects');
-                $solicitudes->load(['created_by', 'created_by.person','projects','projects.foundations']);
+                $solicitudes->load(['created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'who_made_request_id','who_made_request_id.project']);
 
                 return response()->json([
                     'status' => 'success',
@@ -349,6 +341,42 @@ class SolicitudeController extends Controller
             }
         }
 
+        public function getProjectByFoundation($project)
+        {
+            try {
+                // Obtener el proyecto por su nombre
+                 //$project = Project::where('id', $project)->orWhere('name', $project)->first();
 
+                if (is_numeric($project)) {
+                    // Buscar el proyecto por ID
+                    //$project = Project::find($project);
+                     // Buscar el proyecto por ID y cargar las fundaciones y sus campos
+                     $project = Project::with('foundations')->find($project);
+                } else {
+                    // Buscar el proyecto por nombre
+                    //$project = Project::where('name', $project)->first();
+                    // Buscar el proyecto por nombre y cargar las fundaciones y sus campos
+                    $project = Project::with('foundations')->where('name', $project)->first();
+                }
 
+                if (!$project) {
+                    throw new \Exception('Project not found.');
+                }
+
+                // Obtener la fundación asociada al proyecto
+                $foundations = $project->foundations;
+
+                return response()->json([
+                    'status' => 'success',
+                    'data' => [
+                        'project' => $project
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        }
 }

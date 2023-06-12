@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Person;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
@@ -89,37 +90,37 @@ class UsersController extends Controller
     }
 
 
-    public function searchUsuariosByRoleTerm($roleId, $term = '')
-    {
-        $query = User::where('archived', false)
-            ->whereHas('roles', function ($query) use ($roleId) {
-                $query->where('id', $roleId);
-            });
+    //public function searchUsuariosByRoleTerm($roleId, $term = '')
+    //{
+       // $query = User::where('archived', false)
+      //      ->whereHas('roles', function ($query) use ($roleId) {
+      //          $query->where('id', $roleId);
+      //      });
 
-        if ($term) {
-            $query->where(function ($query) use ($term) {
-                $query->where('email', 'like', '%' . $term . '%')
-                    ->orWhereHas('person', function ($query) use ($term) {
-                        $query->where('names', 'like', '%' . $term . '%')
-                            ->orWhere('last_names', 'like', '%' . $term . '%')
-                            ->orWhere('identification', 'like', '%' . $term . '%')
-                            ->orWhere('identification_type', 'like', '%' . $term . '%')
-                            ->orWhereRaw("concat(names, ' ', last_names) like ?", ['%' . $term . '%']);
-                    });
-            });
-        }
+      //  if ($term) {
+      //      $query->where(function ($query) use ($term) {
+       //         $query->where('email', 'like', '%' . $term . '%')
+       //             ->orWhereHas('person', function ($query) use ($term) {
+       //                 $query->where('names', 'like', '%' . $term . '%')
+       //                     ->orWhere('last_names', 'like', '%' . $term . '%')
+       //                     ->orWhere('identification', 'like', '%' . $term . '%')
+        //                    ->orWhere('identification_type', 'like', '%' . $term . '%')
+        //                    ->orWhereRaw("concat(names, ' ', last_names) like ?", ['%' . $term . '%']);
+         //           });
+        //    });
+      // }
 
-        $users = $query->get();
+       // $users = $query->get();
 
-        $users->load(['person']);
+      //  $users->load(['person']);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'users' => $users
-            ],
-        ]);
-    }
+      //  return response()->json([
+       //     'status' => 'success',
+       //     'data' => [
+       //         'users' => $users
+       //     ],
+      //  ]);
+   // }
 
 
     public function createUser(Request $request)
@@ -426,4 +427,46 @@ class UsersController extends Controller
 
         return json_encode($isValid);
     }
+
+
+        public function searchUsuariosByRoleTerm($roleId, $term = '')
+        {
+            $query = User::where('archived', false)
+                ->whereHas('roles', function ($query) use ($roleId) {
+                    $query->where('id', $roleId);
+                });
+
+            $role = Role::find($roleId);
+
+            if ($term) {
+                $query->where(function ($query) use ($term) {
+                    $query->where('email', 'like', '%' . $term . '%')
+                        ->orWhereHas('person', function ($query) use ($term) {
+                            $query->where('names', 'like', '%' . $term . '%')
+                                ->orWhere('last_names', 'like', '%' . $term . '%')
+                                ->orWhere('identification', 'like', '%' . $term . '%')
+                                ->orWhere('identification_type', 'like', '%' . $term . '%')
+                                ->orWhereRaw("concat(names, ' ', last_names) like ?", ['%' . $term . '%']);
+                        });
+                });
+            }
+
+            $users = $query->get();
+
+            $users->load(['person']);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'role' => $role,
+                    'users' => $users
+                ],
+            ]);
+        }
+
+
+
+
+
+
 }

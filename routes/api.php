@@ -16,7 +16,7 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\IntegranteController;
+use App\Http\Controllers\ProjectParticipantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -158,8 +158,8 @@ Route::middleware('authentication')->group(function () {
 
     //Files
     Route::prefix('solicitud')->group(function () {
-        Route::get('/', [SolicitudeController::class, 'getSolicitude'])->middleware('permission:LEER_SOLICITUD');
-        Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById'])->middleware('permission:LEER_SOLICITUD');
+        Route::get('/', [SolicitudeController::class, 'getSolicitude']);
+        Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
         Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
         Route::put('/archive/{id}', [SolicitudeController::class, 'ArchiveSolicitud'])->middleware('permission:ARCHIVAR_SOLICITUD');
         Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude'])->middleware('permission:LEER_SOLICITUD');
@@ -202,47 +202,25 @@ Route::middleware('authentication')->group(function () {
 
 
     //Integrantes detalle de la tabla project y solicitude
-     Route::prefix('integrantes')->group(function () {
-         Route::get('/', [IntegranteController::class, 'index']);
-         Route::post('/create', [IntegranteController::class, 'store']);
+     Route::prefix('participant')->group(function () {
+         Route::get('/', [ProjectParticipantController::class, 'getProyectParticipant']);
+         Route::post('/create', [ProjectParticipantController::class, 'store']);
     });
 
 
      //AVANZES
        Route::prefix('avanze')->group(function () {
-        //ruta para obtener todos los comentarios de un oficio por id
         Route::get('/', [AvanzeController::class, 'getAllAvanzes']);
-        //ruta para obtener un oficio por id
         Route::get('/{id}', [AvanzeController::class, 'getAllAvanzesById']);
-        //ruta para obtener una lista de oficios por termino
-        // Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm']);
-        //ruta para crear un oficio
         Route::post('/create', [AvanzeController::class, 'createAvanzes']);
-        //ruta para actualizar un oficio
         Route::put('/update/{id}', [AvanzeController::class, 'updateAvanzes']);
-        //ruta para archivar un oficio
-        // Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase']);
-        //ruta para restaurar un oficio
-        // Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase']);
-        //ruta para eliminar un oficio
         Route::delete('/delete/{id}', [AvanzeController::class, 'deleteAvanzeById']);
     });
     Route::prefix('actividades')->group(function () {
-        //ruta para obtener todos los comentarios de un oficio por id
         Route::get('/', [ActividadesController::class, 'getAllActividades']);
-        //ruta para obtener un oficio por id
         Route::get('/{id}', [ActividadesController::class, 'getAllActividadesById']);
-        //ruta para obtener una lista de oficios por termino
-        // Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm']);
-        //ruta para crear un oficio
         Route::post('/create', [ActividadesController::class, 'createActividades']);
-        //ruta para actualizar un oficio
         Route::put('/update/{id}', [ActividadesController::class, 'updateActividades']);
-        //ruta para archivar un oficio
-        // Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase']);
-        //ruta para restaurar un oficio
-        // Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase']);
-        //ruta para eliminar un oficio
         Route::delete('/delete/{id}', [ActividadesController::class, 'deleteActividadesById']);
     });
 });

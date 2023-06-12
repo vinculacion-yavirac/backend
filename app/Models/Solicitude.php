@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Solicitude extends Model
 {
     use HasFactory;
@@ -41,6 +41,12 @@ class Solicitude extends Model
     {
         return $this->belongsTo(ProjectParticipant::class, 'who_made_request_id');
     }
+
+    //public function users()
+    //{
+       // return $this->belongsToMany(User::class);
+    //}
+
 
     // Relación con el modelo User para el creador de la solicitud
     public function created_by()

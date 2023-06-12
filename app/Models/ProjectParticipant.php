@@ -27,22 +27,22 @@ class ProjectParticipant extends Model
             'assignment_date' => 'datetime',
         ];
 
-        public function level()
+        public function level_id()
         {
             return $this->belongsTo(Catalog::class, 'level_id');
         }
 
-        public function catalogue()
+        public function catalogue_id()
         {
             return $this->belongsTo(Catalog::class, 'catalogue_id');
         }
 
-        public function schedule()
+        public function schedule_id()
         {
             return $this->belongsTo(Catalog::class, 'schedule_id');
         }
 
-        public function state()
+        public function state_id()
         {
             return $this->belongsTo(Catalog::class, 'state_id');
         }
@@ -52,7 +52,7 @@ class ProjectParticipant extends Model
             return $this->belongsTo(Project::class);
         }
 
-        public function participant()
+        public function participant_id()
         {
             return $this->belongsTo(User::class, 'participant_id');
         }
