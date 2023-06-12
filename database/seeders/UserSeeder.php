@@ -71,12 +71,12 @@ class UserSeeder extends Seeder
             'identification_type' => 'Cédula',
             'identification' => '175516806',
             'names' => 'Alejandra',
-            'last_names' => 'Vera',
+            'last_names' => 'Molina',
         ]);
 
 
         $userTre = User::create([
-            'email' => 'Alejandra@gmail.com',
+            'email' => 'alejandra@gmail.com',
             'password' => Hash::make('yavirac1810'),
             'person' => $personTre->id,
         ]);
@@ -92,14 +92,70 @@ class UserSeeder extends Seeder
 
 
         $userFour = User::create([
-            'email' => 'Oscar@gmail.com',
+            'email' => 'oscar@gmail.com',
             'password' => Hash::make('yavirac1810'),
             'person' => $personFour->id,
         ]);
         $userFour->assignRole('Estudiante');
 
+        $personFive = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '175516835',
+            'names' => 'Mac',
+            'last_names' => 'de Marco',
+        ]);
 
 
+        $userFive = User::create([
+            'email' => 'mac@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personFive->id,
+        ]);
+        $userFive->assignRole('Estudiante');
+
+        $personSix = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '175516825',
+            'names' => 'Gustavo',
+            'last_names' => 'Cerati',
+        ]);
+
+        $userSix = User::create([
+            'email' => 'gustavo@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personSix->id,
+        ]);
+        $userSix->assignRole('Estudiante');
+
+
+        $personSeven = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '175516845',
+            'names' => ' kurt',
+            'last_names' => 'Cobain',
+        ]);
+
+        $userSeven = User::create([
+            'email' => 'kurt@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personSeven->id,
+        ]);
+        $userSeven->assignRole('Estudiante');
+
+
+        $personEigth = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '175516804',
+            'names' => 'Amy',
+            'last_names' => 'Winehouse',
+        ]);
+
+        $userEigth = User::create([
+            'email' => 'amy@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personEigth->id,
+        ]);
+        $userEigth->assignRole('Estudiante');
 
     }
 }
