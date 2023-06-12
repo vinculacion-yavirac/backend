@@ -9,7 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Person;
+use App\Models\Solicitude;
 
 
 class User extends Authenticatable implements JWTSubject
@@ -93,5 +95,10 @@ class User extends Authenticatable implements JWTSubject
     public function archived_by()
     {
         return $this->belongsTo(Person::class, 'archived_by');
+    }
+
+    public function solicitude()
+    {
+        return $this->belongsToMany(Solicitude::class);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Solicitude extends Model
 {
     use HasFactory;
@@ -25,31 +25,37 @@ class Solicitude extends Model
     ];
 
     // Relación con el modelo Catalog para el estado de las solicitudes
-    public function status()
+    public function solicitudes_status_id()
     {
-        return $this->belongsTo(Catalog::class, 'solicitudes_status_id');
+        return $this->belongsTo(Catalogue::class, 'solicitudes_status_id');
     }
 
     // Relación con el modelo Catalog para el tipo de solicitud
-    public function type()
+    public function type_request_id()
     {
-        return $this->belongsTo(Catalog::class, 'type_request_id');
+        return $this->belongsTo(Catalogue::class, 'type_request_id');
     }
 
     // Relación con el modelo ProjectParticipant para el solicitante de la solicitud
-    public function requester()
+    public function who_made_request_id()
     {
         return $this->belongsTo(ProjectParticipant::class, 'who_made_request_id');
     }
 
+    //public function users()
+    //{
+       // return $this->belongsToMany(User::class);
+    //}
+
+
     // Relación con el modelo User para el creador de la solicitud
-    public function creator()
+    public function created_by()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
     // Relación con el modelo User para el archivador de la solicitud
-    public function archiver()
+    public function archived_by()
     {
         return $this->belongsTo(User::class, 'archived_by');
     }
