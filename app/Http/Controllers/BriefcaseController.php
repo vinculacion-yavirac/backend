@@ -12,12 +12,14 @@ class BriefcaseController extends Controller
    /**
     * Summary of getBriefcase
     * @return JsonResponse
+    * Obtener todos los portafolios
     */
    public function getBriefcase()
      {
-        $briefcases = Briefcase::all();
-
-        $briefcases->load(['project_participant_id.participant_id.person']);
+        $briefcases =  Briefcase::where('id', '!=', 0)
+           ->where('archived', false)
+           ->with('project_participant_id.participant_id.person')
+           ->get();
 
         return new JsonResponse([
             'status' => 'success',
@@ -27,16 +29,99 @@ class BriefcaseController extends Controller
         ], 200);
     }
 
+    /**
+     * Summary of getBriefcaseById
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     * Obtener por el id
+     */
     public function getBriefcaseById($id)
     {
-        $briefcases = Briefcase::where('id', $id)->get();
+      $briefcases = Briefcase::where('id', $id)
+          ->where('id', '!=', 0)
+          ->where('archived', false)
+          ->with('project_participant_id.participant_id.person')
+          ->first();
 
-        $briefcases->load(['comments', 'files']);
+      if (!$briefcases) {
+          return response()->json([
+              'message' => 'Portafolio no encontrada'
+          ]);
+      }
 
-        return new JsonResponse([
-            'status' => 'success',
-            'data' => ['briefcases#' . $id => $briefcases]
-        ], 200);
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+              'briefcases' => $briefcases
+          ],
+      ]);
+    }
+
+    /**
+     * Summary of getArchivedBriefcase
+     * @return \Illuminate\Http\JsonResponse
+     * Obtener todos los archivados
+     */
+    public function getArchivedBriefcase()
+    {
+      $briefcases = Briefcase::where('id', '!=', 0)
+          ->where('archived', true)
+          ->with('created_by', 'created_by.person')
+          ->get();
+
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+              'briefcases' => $briefcases,
+          ],
+      ]);
+    }
+
+
+    /**
+     * Summary of ArchiveBriefcase
+     * @param mixed $id
+     * @return JsonResponse
+     * Archivar portafolio
+     */
+    public function ArchiveBriefcase($id)
+    {
+      $briefcases = Briefcase::findOrFail($id);
+
+      $briefcases->archived = true;
+      $briefcases->archived_at = now();
+      $briefcases->archived_by = auth()->user()->id;
+      $briefcases->save();
+
+      return new JsonResponse([
+          'status' => 'success',
+          'message' => 'Portafolio archivada correctamente',
+          'data' => [
+              'briefcases' => $briefcases,
+          ],
+      ], 200);
+    }
+
+    /**
+     * Summary of restaureBriefcase
+     * @param mixed $id
+     * @return JsonResponse
+     * Restaurar un portafolio
+     */
+    public function restaureBriefcase($id)
+    {
+      $briefcases = Briefcase::findOrFail($id);
+
+      $briefcases->archived = false;
+      $briefcases->save();
+
+      return new JsonResponse([
+          'status' => 'success',
+          'message' => 'Solicitud restaurada correctamente',
+          'data' => [
+              'briefcases' => $briefcases,
+          ],
+      ], 200);
     }
 
     public function searchBriefcaseByTerm($term = '')
@@ -128,45 +213,8 @@ class BriefcaseController extends Controller
         }
     }
 
-    public function archiveBriefcase($id)
-    {
-        $briefcases = Briefcase::find($id);
 
-        if (!$briefcases) {
-            return response()->json([
-                'message' => 'Portafolio no encontrado'
-            ]);
-        }
 
-        $briefcases->archived = true;
-        $briefcases->archived_at = now();
-        $briefcases->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Portafolio archivado correctamente'
-        ]);
-    }
-
-    public function restoreBriefcase($id)
-    {
-        $briefcases = Briefcase::find($id);
-
-        if (!$briefcases) {
-            return response()->json([
-                'message' => 'Portafolio no encontrado'
-            ]);
-        }
-
-        $briefcases->archived = false;
-        $briefcases->archived_at = null;
-        $briefcases->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Portafolio restaurado correctamente'
-        ]);
-    }
 
     public function deleteBriefcase($id)
     {

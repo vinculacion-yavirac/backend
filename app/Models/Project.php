@@ -43,6 +43,10 @@ class Project extends Model
         'state_id',
         'stateTwo_id',
         'frequency_id',
+        'created_by',
+        'archived',
+        'archived_at',
+        'archived_by',
     ];
 
     protected $casts = [
@@ -109,5 +113,10 @@ class Project extends Model
     public function frequency()
     {
         return $this->belongsTo(Catalog::class, 'frequency_id');
+    }
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }
