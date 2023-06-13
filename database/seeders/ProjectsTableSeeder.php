@@ -49,6 +49,10 @@ class ProjectsTableSeeder extends Seeder
              'state_id' => 2,
              'stateTwo_id' => 2,
              'frequency_id' => 1,
+             'created_by' => 9,
+             'archived' => false,
+             'archived_at' => null,
+             'archived_by' => null,
          ],
          [
              'code' => 'P002',
@@ -82,6 +86,10 @@ class ProjectsTableSeeder extends Seeder
              'state_id' => 2,
              'stateTwo_id' => 2,
              'frequency_id' => 1,
+             'created_by' => 9,
+             'archived' => false,
+             'archived_at' => null,
+             'archived_by' => null,
          ],
 
 

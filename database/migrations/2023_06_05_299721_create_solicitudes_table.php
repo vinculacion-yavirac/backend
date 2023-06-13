@@ -24,8 +24,8 @@ return new class extends Migration
             $table->integer('type_request_id')->unsigned()->nullable();
             $table->foreign('type_request_id')->references('id')->on('catalogs');
 
-            $table->integer('who_made_request_id')->unsigned()->nullable();
-            $table->foreign('who_made_request_id')->references('id')->on('project_participants');
+            $table->integer('project_id')->unsigned()->nullable();
+            $table->foreign('project_id')->references('id')->on('projects');
 
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');

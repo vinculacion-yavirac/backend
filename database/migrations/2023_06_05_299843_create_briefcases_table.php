@@ -16,8 +16,17 @@ return new class extends Migration
         Schema::create('briefcases', function (Blueprint $table) {
             $table->increments('id');
             $table->string('observations');
-            $table->string('state',20);
-            $table->string('document_url',200);
+            $table->boolean('state')->default(true);
+
+            $table->boolean('archived')->default(false);
+            $table->timestamp('archived_at')->nullable();
+
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->integer('archived_by')->unsigned()->nullable();
+            $table->foreign('archived_by')->references('id')->on('users');
+            
             $table->integer('project_participant_id')->unsigned()->nullable();
             $table->foreign('project_participant_id')->references('id')->on('project_participants');
             $table->timestamps();

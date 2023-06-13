@@ -8,13 +8,115 @@ use App\Models\Project;
 
 class ProjectController extends Controller
 {
+
+    /**
+     * Summary of getProject
+     * @return JsonResponse
+     * Obtener todas las fundaciones
+     */
     public function getProject(){
-        $projects = Project::all();
-        $projects -> load(['foundations','created_by']);
+        $projects = Project::where('id', '!=', 0)
+           ->where('archived', false)
+           ->with('created_by', 'created_by.person')
+           ->get();
         return new JsonResponse([
             'status' => 'success',
             'data' => ['projects' => $projects]
         ],200);
+    }
+
+    /**
+     * Summary of getProjectById
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     * Obtener por el id
+     */
+    public function getProjectById($id)
+    {
+      $projects = Project::where('id', $id)
+          ->where('id', '!=', 0)
+          ->where('archived', false)
+          ->with('created_by', 'created_by.person')
+          ->first();
+
+      if (!$projects) {
+          return response()->json([
+              'message' => 'Proyecto no encontrada'
+          ]);
+      }
+
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+              'projects' => $projects
+          ],
+      ]);
+    }
+
+    /**
+     * Summary of getArchivedProject
+     * @return \Illuminate\Http\JsonResponse
+     * Obtener todas las archivadas por true
+     */
+    public function getArchivedProject()
+    {
+      $projects = Project::where('id', '!=', 0)
+          ->where('archived', true)
+          ->with('created_by', 'created_by.person')
+          ->get();
+
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+              'projects' => $projects,
+          ],
+      ]);
+    }
+
+    /**
+     * Summary of ArchiveProject
+     * @param mixed $id
+     * @return JsonResponse
+     * Archivar proyecto por el id
+     */
+    public function ArchiveProject($id)
+    {
+      $projects = Project::findOrFail($id);
+
+      $projects->archived = true;
+      $projects->archived_at = now();
+      $projects->archived_by = auth()->user()->id;
+      $projects->save();
+
+      return new JsonResponse([
+          'status' => 'success',
+          'message' => 'Proyecto archivada correctamente',
+          'data' => [
+              'projects' => $projects,
+          ],
+      ], 200);
+    }
+
+    /**
+     * Summary of restaureProject
+     * @param mixed $id
+     * @return JsonResponse
+     * restarurar proyecto por id
+     */
+    public function restaureProject($id)
+    {
+      $projects = Project::findOrFail($id);
+
+      $projects->archived = false;
+      $projects->save();
+
+      return new JsonResponse([
+          'status' => 'success',
+          'message' => 'Solicitud restaurada correctamente',
+          'data' => [
+              'projects' => $projects,
+          ],
+      ], 200);
     }
 
         public function getProjectByFoundation($project)
@@ -55,28 +157,4 @@ class ProjectController extends Controller
                 ]);
             }
         }
-
-
-        public function getProjectById($id)
-             {
-                 $projects = Project::where('id', $id)
-                     ->where('id', '!=', 0)
-                     ->first();
-
-                 if (!$projects) {
-                     return response()->json([
-                         'message' => 'Solicitud no encontrada'
-                     ]);
-                 }
-
-                 $projects->load(['foundations']);
-                          $projects->foundations = $projects->foundations()->first();
-
-                          return response()->json([
-                              'status' => 'success',
-                              'data' => [
-                                  'projects' => $projects
-                              ],
-                          ]);
-              }
 }
