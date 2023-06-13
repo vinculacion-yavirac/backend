@@ -19,14 +19,20 @@ class BriefcaseSeeder extends Seeder
     $briefcases = [
         [
             'observations' => 'Observation 1',
-            'state' => 'Active',
-            'document_url' => 'https://example.com/document1.pdf',
+            'state' => true,
+            'archived' => false,
+            'archived_at' => null,
+            'created_by' => 9,
+            'archived_by' => null,
             'project_participant_id' => 1,
         ],
         [
             'observations' => 'Observation 2',
-            'state' => 'Inactive',
-            'document_url' => 'https://example.com/document2.pdf',
+            'state' => true,
+            'archived' => false,
+            'archived_at' => null,
+            'created_by' => 9,
+            'archived_by' => null,
             'project_participant_id' => 2,
         ],
         // Agrega más registros si es necesario

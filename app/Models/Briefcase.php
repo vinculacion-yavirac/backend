@@ -12,13 +12,16 @@ class Briefcase extends Model
     protected $fillable = [
         'observations',
         'state',
-        'document_url',
+        'created_by',
+        'archived',
+        'archived_at',
+        'archived_by',
         'project_participant_id',
     ];
 
-    public function projectParticipant()
+    public function project_participant_id()
     {
-        return $this->belongsTo(ProjectParticipant::class);
+        return $this->belongsTo(ProjectParticipant::class,'project_participant_id');
     }
 
 }

@@ -37,9 +37,9 @@ class Solicitude extends Model
     }
 
     // Relación con el modelo ProjectParticipant para el solicitante de la solicitud
-    public function who_made_request_id()
+    public function project_id()
     {
-        return $this->belongsTo(ProjectParticipant::class, 'who_made_request_id');
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     //public function users()

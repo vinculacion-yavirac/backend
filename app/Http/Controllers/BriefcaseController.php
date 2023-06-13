@@ -9,11 +9,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BriefcaseController extends Controller
 {
+   /**
+    * Summary of getBriefcase
+    * @return JsonResponse
+    */
    public function getBriefcase()
      {
         $briefcases = Briefcase::all();
 
-        $briefcases->load(['comments', 'files', 'created_by', 'created_by.person']);
+        $briefcases->load(['project_participant_id.participant_id.person']);
 
         return new JsonResponse([
             'status' => 'success',

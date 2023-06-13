@@ -12,12 +12,17 @@ use Illuminate\Support\Facades\DB;
 class SolicitudeController extends Controller
 {
 
-    //Obtener las solicitudes de vinculacion
+    
+    /**
+     * Summary of getSolicitude
+     * @return \Illuminate\Http\JsonResponse
+     * Obtener las solicitudes de vinculacion
+     */
     public function getSolicitude()
     {
        $solicitudes = Solicitude::where('id', '!=', 0)
            ->where('archived', false)
-           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'who_made_request_id','who_made_request_id.project')
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'project_id')
            ->get();
 
        return response()->json([
@@ -27,13 +32,19 @@ class SolicitudeController extends Controller
     }
 
 
-    //Obtener las Solicitudes por su id
+    
+     /**
+      * Summary of getSolicitudeById
+      * @param mixed $id
+      * @return \Illuminate\Http\JsonResponse
+      * Obtener las Solicitudes por su id
+      */
      public function getSolicitudeById($id)
      {
        $solicitudes = Solicitude::where('id', $id)
            ->where('id', '!=', 0)
            ->where('archived', false)
-           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'who_made_request_id','who_made_request_id.project')
+           ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'project_id')
            ->first();
 
        if (!$solicitudes) {
@@ -303,7 +314,7 @@ class SolicitudeController extends Controller
         {
             $request->validate([
                 'approval_date' => 'nullable|date',
-                'who_made_request_id' => 'required',
+                'project_id' => 'required',
             ]);
 
             try {
@@ -317,12 +328,12 @@ class SolicitudeController extends Controller
                 $solicitudes->save();
 
                 // Asociar los proyectos a la solicitud
-                $solicitudes->who_made_request_id = $request->who_made_request_id;
+                $solicitudes->project_id = $request->project_id;
                 $solicitudes->save();
                 DB::commit();
 
                 // Cargar los proyectos asociados para la respuesta
-                $solicitudes->load(['created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'who_made_request_id','who_made_request_id.project']);
+                $solicitudes->load(['created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'project_id']);
 
                 return response()->json([
                     'status' => 'success',

@@ -10,7 +10,7 @@ class ProjectController extends Controller
 {
     public function getProject(){
         $projects = Project::all();
-        $projects -> load(['foundations','created_by']);
+        //$projects -> load(['foundations','created_by']);
         return new JsonResponse([
             'status' => 'success',
             'data' => ['projects' => $projects]
