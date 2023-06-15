@@ -124,6 +124,25 @@ class BriefcaseController extends Controller
       ], 200);
     }
 
+    public function filterBriefcaseByStatus($state = '')
+    {
+      $briefcases = Briefcase::where('id', '!=', 0)
+      ->where('archived', false)
+      ->where('state', $state)
+      ->with('project_participant_id.participant_id.person')
+      ->get();
+
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+            'briefcases' => $briefcases
+          ],
+      ], 200);
+    }
+
+
+
+
     public function searchBriefcaseByTerm($term = '')
     {
         $briefcases = briefcase::where('subject', 'like', '%' . $term . '%')->where('archived', false)->get();

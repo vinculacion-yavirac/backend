@@ -129,9 +129,8 @@ Route::middleware('authentication')->group(function () {
 
     //briefcase
     Route::prefix('briefcase')->group(function () {
-        //ruta para obtener todos los oficios
         Route::get('/', [BriefcaseController::class, 'getBriefcase'])->middleware('permission:LEER_PORTAFOLIO');
-        //ruta para obtener un oficio por id
+        Route::get('/filter/state/{state}', [BriefcaseController::class, 'filterBriefcaseByStatus']);
         Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById'])->middleware('permission:LEER_PORTAFOLIO');
         //ruta para obtener una lista de oficios por termino
         Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm'])->middleware('permission:LEER_PORTAFOLIO');
