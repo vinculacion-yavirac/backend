@@ -135,14 +135,14 @@ Route::middleware('authentication')->group(function () {
         Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm'])->middleware('permission:LEER_PORTAFOLIO');
         Route::get('/search/state/aprobado/{term?}', [BriefcaseController::class, 'searchAprobadoByTerm']);
         Route::get('/search/state/pendiente/{term?}', [BriefcaseController::class, 'searchPendienteByTerm']);
+        Route::get('/archived/list', [BriefcaseController::class, 'getArchivedBriefcase']);
+        Route::get('/search/archived/term/{term?}', [BriefcaseController::class, 'searchArchivedBriefcaseByTerm']);
+        Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase'])->middleware('permission:ARCHIVAR_PORTAFOLIO');
+        Route::put('/restore/{id}', [BriefcaseController::class, 'restaureBriefcase'])->middleware('permission:RESTAURAR_PORTAFOLIO');
         //ruta para crear un oficio
         Route::post('/create', [BriefcaseController::class, 'createBriefcase'])->middleware('permission:CREAR_PORTAFOLIO');
         //ruta para actualizar un oficio
         Route::put('/update/{id}', [BriefcaseController::class, 'updateBriefcase'])->middleware('permission:ACTUALIZAR_PORTAFOLIO');
-        //ruta para archivar un oficio
-        Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase'])->middleware('permission:ARCHIVAR_PORTAFOLIO');
-        //ruta para restaurar un oficio
-        Route::put('/restore/{id}', [BriefcaseController::class, 'restoreBriefcase'])->middleware('permission:RESTAURAR_PORTAFOLIO');
         //ruta para eliminar un oficio
         Route::put('/delete/{id}', [BriefcaseController::class, 'restoreBriefcase'])->middleware('permission:ELIMINAR_PORTAFOLIO');
     });
