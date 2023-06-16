@@ -132,8 +132,9 @@ Route::middleware('authentication')->group(function () {
         Route::get('/', [BriefcaseController::class, 'getBriefcase'])->middleware('permission:LEER_PORTAFOLIO');
         Route::get('/filter/state/{state}', [BriefcaseController::class, 'filterBriefcaseByStatus']);
         Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById'])->middleware('permission:LEER_PORTAFOLIO');
-        //ruta para obtener una lista de oficios por termino
         Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm'])->middleware('permission:LEER_PORTAFOLIO');
+        Route::get('/search/state/aprobado/{term?}', [BriefcaseController::class, 'searchAprobadoByTerm']);
+        Route::get('/search/state/pendiente/{term?}', [BriefcaseController::class, 'searchPendienteByTerm']);
         //ruta para crear un oficio
         Route::post('/create', [BriefcaseController::class, 'createBriefcase'])->middleware('permission:CREAR_PORTAFOLIO');
         //ruta para actualizar un oficio
