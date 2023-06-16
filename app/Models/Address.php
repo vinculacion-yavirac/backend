@@ -14,7 +14,7 @@ class Address extends Model
         'father_code',
     ];
 
-    public function father()
+    public function father_code()
     {
         return $this->belongsTo(Address::class, 'father_code');
     }

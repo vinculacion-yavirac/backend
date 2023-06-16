@@ -3,7 +3,7 @@ use App\Http\Controllers\AvanzeController;
 use App\Http\Controllers\ActividadesController;
 
 use App\Http\Controllers\BriefcaseController;
-use App\Http\Controllers\FoundationController;
+use App\Http\Controllers\BeneficiaryInstitutionsController;
 use App\Http\Controllers\SolicitudeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -129,12 +129,12 @@ Route::middleware('authentication')->group(function () {
 
     //briefcase
     Route::prefix('briefcase')->group(function () {
-        //ruta para obtener todos los oficios
         Route::get('/', [BriefcaseController::class, 'getBriefcase'])->middleware('permission:LEER_PORTAFOLIO');
-        //ruta para obtener un oficio por id
+        Route::get('/filter/state/{state}', [BriefcaseController::class, 'filterBriefcaseByStatus']);
         Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById'])->middleware('permission:LEER_PORTAFOLIO');
-        //ruta para obtener una lista de oficios por termino
         Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm'])->middleware('permission:LEER_PORTAFOLIO');
+        Route::get('/search/state/aprobado/{term?}', [BriefcaseController::class, 'searchAprobadoByTerm']);
+        Route::get('/search/state/pendiente/{term?}', [BriefcaseController::class, 'searchPendienteByTerm']);
         //ruta para crear un oficio
         Route::post('/create', [BriefcaseController::class, 'createBriefcase'])->middleware('permission:CREAR_PORTAFOLIO');
         //ruta para actualizar un oficio
@@ -183,14 +183,13 @@ Route::middleware('authentication')->group(function () {
     });
 
     //fundacion
-    Route::prefix('fundacion')->group(function () {
+    Route::prefix('beneficiary-institution')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
-        Route::get('/', [FoundationController::class, 'getFoundation'])->middleware('permission:LEER_FUNDACION');
-
-        Route::get('/{id}', [FoundationController::class, 'getFoundationById'])->middleware('permission:LEER_FUNDACION');
-        Route::get('/search/term/{term?}', [FoundationController::class, 'searchFoundationByTerm'])->middleware('permission:LEER_FUNDACION');
-        Route::post('/create', [FoundationController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
-        Route::get('/projects/{value}', [FoundationController::class, 'getFoundationByProject']);
+        Route::get('/', [BeneficiaryInstitutionsController::class, 'getBeneficiaryInstitution'])->middleware('permission:LEER_FUNDACION');
+        Route::get('/{id}', [BeneficiaryInstitutionsController::class, 'getFoundationById'])->middleware('permission:LEER_FUNDACION');
+        Route::get('/search/term/{term?}', [BeneficiaryInstitutionsController::class, 'searchFoundationByTerm'])->middleware('permission:LEER_FUNDACION');
+        Route::post('/create', [BeneficiaryInstitutionsController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
+        Route::get('/projects/{value}', [BeneficiaryInstitutionsController::class, 'getFoundationByProject']);
     });
 
     Route::prefix('project')->group(function () {

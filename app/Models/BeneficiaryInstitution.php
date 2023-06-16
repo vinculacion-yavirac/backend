@@ -21,7 +21,7 @@ class BeneficiaryInstitution extends Model
             'parish_id',
         ];
 
-        public function parish()
+        public function parish_id()
         {
             return $this->belongsTo(Address::class, 'parish_id');
         }

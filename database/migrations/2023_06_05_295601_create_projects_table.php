@@ -14,8 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
+            $table->increments('id');  
             $table->string('code',20);
             $table->string('name',200);
             $table->string('field',100);
@@ -80,6 +79,8 @@ return new class extends Migration
 
             $table->integer('archived_by')->unsigned()->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
+
+            $table->timestamps();
         });
     }
 

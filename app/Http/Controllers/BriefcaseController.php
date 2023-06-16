@@ -124,19 +124,112 @@ class BriefcaseController extends Controller
       ], 200);
     }
 
+    /**
+     * Summary of filterBriefcaseByStatus
+     * @param mixed $state
+     * @return \Illuminate\Http\JsonResponse
+     * Filtro para obtener el state 
+     */
+    public function filterBriefcaseByStatus($state = '')
+    {
+      $briefcases = Briefcase::where('id', '!=', 0)
+      ->where('archived', false)
+      ->where('state', $state)
+      ->with('project_participant_id.participant_id.person')
+      ->get();
+
+      return response()->json([
+          'status' => 'success',
+          'data' => [
+            'briefcases' => $briefcases
+          ],
+      ], 200);
+    }
+
+
+    /**
+     * Summary of searchBriefcaseByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse
+     * Buscador del portafolio
+     */
     public function searchBriefcaseByTerm($term = '')
     {
-        $briefcases = briefcase::where('subject', 'like', '%' . $term . '%')->where('archived', false)->get();
+       $briefcases = Briefcase::where('id', '!=', 0)
+           ->where('archived', false)
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+               });
+           })
+           ->with('project_participant_id.participant_id.person')
+           ->get();
 
-        $briefcases->load(['comments', 'files', 'created_by', 'created_by.person']);
-
-        return new JsonResponse([
-            'status' => 'success',
-            'data' => [
-                'briefcases' => $briefcases,
-            ],
-        ], 200);
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'briefcases' => $briefcases
+           ],
+       ]);
     }
+
+    /**
+     * Summary of searchAprobadoByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse
+     * Buscador para state tipo true
+     */
+    public function searchAprobadoByTerm($term = '')
+    {
+       $briefcases = Briefcase::where('id', '!=', 0)
+           ->where('archived', false)
+           ->where('state', true)
+           ->with('project_participant_id.participant_id.person')
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+               });
+           })
+           ->with('project_participant_id.participant_id.person')
+           ->get();
+
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'briefcases' => $briefcases
+           ],
+       ]);
+    }
+
+    public function searchPendienteByTerm($term = '')
+    {
+       $briefcases = Briefcase::where('id', '!=', 0)
+           ->where('archived', false)
+           ->where('state', false)
+           ->with('project_participant_id.participant_id.person')
+           ->where(function ($query) use ($term) {
+               $query->orWhereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+               });
+           })
+           ->with('project_participant_id.participant_id.person')
+           ->get();
+
+       return response()->json([
+           'status' => 'success',
+           'data' => [
+               'briefcases' => $briefcases
+           ],
+       ]);
+    }
+
+
 
 
     public function createBriefcase(Request $request)
