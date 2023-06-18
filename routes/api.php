@@ -186,8 +186,14 @@ Route::middleware('authentication')->group(function () {
     Route::prefix('beneficiary-institution')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
         Route::get('/', [BeneficiaryInstitutionsController::class, 'getBeneficiaryInstitution'])->middleware('permission:LEER_FUNDACION');
-        Route::get('/{id}', [BeneficiaryInstitutionsController::class, 'getFoundationById'])->middleware('permission:LEER_FUNDACION');
-        Route::get('/search/term/{term?}', [BeneficiaryInstitutionsController::class, 'searchFoundationByTerm'])->middleware('permission:LEER_FUNDACION');
+        Route::get('/archived/list', [BeneficiaryInstitutionsController::class, 'getArchivedBeneficiaryInstitution']);
+        Route::get('/{id}', [BeneficiaryInstitutionsController::class, 'getBeneficiaryInstitutionById'])->middleware('permission:LEER_FUNDACION');
+        Route::put('/archive/{id}', [BeneficiaryInstitutionsController::class, 'archiveBeneficiaryInstitution']);
+        Route::put('/restore/{id}', [BeneficiaryInstitutionsController::class, 'restaureBeneficiaryInstitution']);
+        Route::get('/search/term/{term?}', [BeneficiaryInstitutionsController::class, 'searchBeneficiaryInstitutionByTerm'])->middleware('permission:LEER_FUNDACION');
+        Route::get('/filter/state/{state}', [BeneficiaryInstitutionsController::class, 'filterBeneficiaryInstitutionByStatus']);
+        Route::get('/search/state/activo/{term?}', [BeneficiaryInstitutionsController::class, 'searchActivasByTerm']);
+        Route::get('/search/state/inactivo/{term?}', [BeneficiaryInstitutionsController::class, 'searchInactivaByTerm']);
         Route::post('/create', [BeneficiaryInstitutionsController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
         Route::get('/projects/{value}', [BeneficiaryInstitutionsController::class, 'getFoundationByProject']);
     });

@@ -24,6 +24,10 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
             'place_location' => 'Lugar 1',
             'postal_code' => '12345',
             'parish_id' => 1,
+            'created_by' => 5,
+            'archived' => false,
+            'archived_at' => '2023-06-09 02:38:10',
+            'archived_by' => 1,
         ],
         [
             'ruc' => '0987654321',
@@ -33,6 +37,10 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
             'place_location' => 'Lugar 2',
             'postal_code' => '54321',
             'parish_id' => 2,
+            'created_by' => 5,
+            'archived' => false,
+            'archived_at' => '2023-06-09 02:38:10',
+            'archived_by' => 1,
         ],
         // Agrega más registros de instituciones beneficiarias si es necesario
     ];

@@ -41,6 +41,16 @@ class CatalogSeeder extends Seeder
             'catalog_type' => 'Nivel',
             'catalog_value' => 'primero',
         ],
+        [
+            'code' => 'P01',
+            'catalog_type' => 'Estado Proyecto',
+            'catalog_value' => 'En Ejecucion',
+        ],
+        [
+            'code' => 'P02',
+            'catalog_type' => 'Estado Proyecto',
+            'catalog_value' => 'Culminado',
+        ],
     ];
 
     foreach ($catalogs as $catalog) {
