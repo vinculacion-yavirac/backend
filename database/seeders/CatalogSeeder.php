@@ -34,7 +34,7 @@ class CatalogSeeder extends Seeder
         [
             'code' => 'SEO2',
             'catalog_type' => 'Estado Solicitud',
-            'catalog_value' => 'Pre Aprobado',
+            'catalog_value' => 'Aprobado',
         ],
         [
             'code' => 'N01',

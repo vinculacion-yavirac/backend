@@ -171,7 +171,7 @@ Route::middleware('authentication')->group(function () {
         Route::get('/search/type/vinculacion/{term?}', [SolicitudeController::class, 'searchSolicitudeVinculacionByTerm']);
         Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
         Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
-        Route::get('/search/status/preaprobado/{term?}', [SolicitudeController::class, 'searchPreAprobadoByTerm']);
+        Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
     });
 
     //Comments

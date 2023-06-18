@@ -221,13 +221,13 @@ class SolicitudeController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * Buscar por Pre Aprobado
      */
-    public function searchPreAprobadoByTerm($term = '')
+    public function searchAprobadoByTerm($term = '')
     {
        $solicitudes = Solicitude::where('id', '!=', 0)
            ->where('archived', false)
            ->whereHas('solicitudes_status_id', function ($query) {
                $query->where('catalog_type', 'Estado Solicitud')
-                   ->where('catalog_value', 'Pre Aprobado');
+                   ->where('catalog_value', 'Aprobado');
            })
            ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
            ->where(function ($query) use ($term) {
