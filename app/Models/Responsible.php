@@ -14,9 +14,9 @@ class Responsible extends Model
         'charge_id',
     ];
 
-    public function user()
+    public function user_id()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 
     public function charge()
