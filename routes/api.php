@@ -138,7 +138,7 @@ Route::middleware('authentication')->group(function () {
         Route::get('/archived/list', [BriefcaseController::class, 'getArchivedBriefcase']);
         Route::get('/search/archived/term/{term?}', [BriefcaseController::class, 'searchArchivedBriefcaseByTerm']);
         Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase'])->middleware('permission:ARCHIVAR_PORTAFOLIO');
-        Route::put('/restore/{id}', [BriefcaseController::class, 'restaureBriefcase'])->middleware('permission:RESTAURAR_PORTAFOLIO');
+        Route::put('/restore/{id}', [BriefcaseController::class, 'restaureBriefcase'])->middleware('permission:.');
         //ruta para crear un oficio
         Route::post('/create', [BriefcaseController::class, 'createBriefcase'])->middleware('permission:CREAR_PORTAFOLIO');
         //ruta para actualizar un oficio
@@ -195,8 +195,13 @@ Route::middleware('authentication')->group(function () {
     Route::prefix('project')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
         Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PRTOYECTO');
-        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
+        Route::get('/archived/list', [ProjectController::class, 'getArchivedProject']);
         Route::get('/{id}', [ProjectController::class, 'getProjectById']);
+        Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
+        Route::put('/restore/{id}', [ProjectController::class, 'restaureProject']);
+        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
+        Route::get('/search/term/{term?}', [ProjectController::class, 'searchProjectByTerm']);
+        Route::get('/search/archived/term/{term?}', [ProjectController::class, 'searchArchivedProjectByTerm']);
     });
 
 
