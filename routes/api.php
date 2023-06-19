@@ -45,9 +45,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
 });
 
-
-
-
 //Rutas protegidas
 Route::middleware('authentication')->group(function () {
 
@@ -122,6 +119,7 @@ Route::middleware('authentication')->group(function () {
     });
 
 
+    //Portafolio
     Route::prefix('briefcase')->group(function () {
         $controller = BriefcaseController::class;
     
@@ -143,15 +141,6 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:RESTAURAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::put('/restore/{id}', [$controller, 'restoreBriefcase']);
         });
-    });
-
-    //Files
-    Route::prefix('files')->group(function () {
-        Route::get('/', [FilesController::class, 'getFiles']);
-        Route::get('/{id}', [FilesController::class, 'getFileById']);
-        Route::delete('/delete/{id}', [FilesController::class, 'deleteFileById']);
-        Route::post('/upload/{id}', [FilesController::class, 'uploadFiles']);
-        Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
     });
 
     
@@ -186,6 +175,36 @@ Route::middleware('authentication')->group(function () {
     });
 
 
+    //PROYECTO
+    Route::prefix('project')->group(function () {
+        Route::middleware('permission:LEER_PRTOYECTO')->group(function () {
+            Route::get('/', [ProjectController::class, 'getProject']);
+            Route::get('/{id}', [ProjectController::class, 'getProjectById']);
+            Route::get('/archived/list', [ProjectController::class, 'getArchivedProject']);
+            Route::get('/search/term/{term?}', [ProjectController::class, 'searchProjectByTerm']);
+            Route::get('/search/archived/term/{term?}', [ProjectController::class, 'searchArchivedProjectByTerm']);
+        });
+        Route::middleware('permission:ARCHIVAR_PRTOYECTO')->group(function () {
+            Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
+        });
+    
+        Route::middleware('permission:RESTAURAR_PRTOYECTO')->group(function () {
+            Route::put('/restore/{id}', [ProjectController::class, 'restoreProject']);
+        });
+        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
+    });
+
+
+    //Files
+    Route::prefix('files')->group(function () {
+        Route::get('/', [FilesController::class, 'getFiles']);
+        Route::get('/{id}', [FilesController::class, 'getFileById']);
+        Route::delete('/delete/{id}', [FilesController::class, 'deleteFileById']);
+        Route::post('/upload/{id}', [FilesController::class, 'uploadFiles']);
+        Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
+    });
+
+
     //Comments
     Route::prefix('comments')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
@@ -208,18 +227,6 @@ Route::middleware('authentication')->group(function () {
         Route::get('/search/state/inactivo/{term?}', [BeneficiaryInstitutionsController::class, 'searchInactivaByTerm']);
         Route::post('/create', [BeneficiaryInstitutionsController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
         Route::get('/projects/{value}', [BeneficiaryInstitutionsController::class, 'getFoundationByProject']);
-    });
-
-    Route::prefix('project')->group(function () {
-        //ruta para obtener todos los comentarios de un oficio por id
-        Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PRTOYECTO');
-        Route::get('/archived/list', [ProjectController::class, 'getArchivedProject']);
-        Route::get('/{id}', [ProjectController::class, 'getProjectById']);
-        Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
-        Route::put('/restore/{id}', [ProjectController::class, 'restaureProject']);
-        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
-        Route::get('/search/term/{term?}', [ProjectController::class, 'searchProjectByTerm']);
-        Route::get('/search/archived/term/{term?}', [ProjectController::class, 'searchArchivedProjectByTerm']);
     });
 
 
