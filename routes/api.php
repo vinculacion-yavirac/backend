@@ -154,23 +154,37 @@ Route::middleware('authentication')->group(function () {
         Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
     });
 
-    //Files
+    
+    //SOLICITUD
     Route::prefix('solicitud')->group(function () {
-        Route::get('/', [SolicitudeController::class, 'getSolicitude']);
-        Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
-        Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
-        Route::put('/archive/{id}', [SolicitudeController::class, 'ArchiveSolicitud'])->middleware('permission:ARCHIVAR_SOLICITUD');
-        Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude'])->middleware('permission:LEER_SOLICITUD');
-        Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
-        Route::put('/restore/{id}', [SolicitudeController::class, 'restaureSolicitud'])->middleware('permission:RESTAURAR_SOLICITUD');
-        Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
-        Route::get('/filter/type/{status}', [SolicitudeController::class, 'filterSolicitudeByValue']);
-        Route::get('/filter/status/{status}', [SolicitudeController::class, 'filterSolicitudeByStatus']);
-        Route::get('/search/type/vinculacion/{term?}', [SolicitudeController::class, 'searchSolicitudeVinculacionByTerm']);
-        Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
-        Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
-        Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
+    
+        Route::middleware('permission:LEER_SOLICITUD')->group(function () {
+            Route::get('/', [SolicitudeController::class, 'getSolicitudes']);
+            Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
+            Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude']);
+            Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
+            Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm']);
+            Route::get('/filter/value/{status}', [SolicitudeController::class, 'filterSolicitudeByValue']);
+            Route::get('/filter/status/{status}', [SolicitudeController::class, 'filterSolicitudeByStatus']);
+            Route::get('/search/type/vinculacion/{term?}', [SolicitudeController::class, 'searchSolicitudeVinculacionByTerm']);
+            Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
+            Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
+            Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
+        });
+    
+        Route::middleware('permission:ARCHIVAR_SOLICITUD')->group(function () {
+            Route::put('/archive/{id}', [SolicitudeController::class, 'archiveSolicitud']);
+        });
+    
+        Route::middleware('permission:RESTAURAR_SOLICITUD')->group(function () {
+            Route::put('/restore/{id}', [SolicitudeController::class, 'restoreSolicitud']);
+        });
+
+        Route::middleware('permission:ACTUALIZAR_SOLICITUD')->group(function () {
+            Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
+        });
     });
+
 
     //Comments
     Route::prefix('comments')->group(function () {
