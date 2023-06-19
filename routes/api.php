@@ -121,30 +121,28 @@ Route::middleware('authentication')->group(function () {
         Route::get('/role/{value}', [PermissionsController::class, 'getPermissionsByRole'])->middleware('permission:LEER_PERMISOS');
     });
 
-    //Statistics
-    Route::prefix('statistics')->group(function () {
-        //ruta para obtener las estadísticas
-        Route::get('/{id}', [StatisticsController::class, 'getOficios']);
-    });
 
-    //briefcase
     Route::prefix('briefcase')->group(function () {
-        Route::get('/', [BriefcaseController::class, 'getBriefcase'])->middleware('permission:LEER_PORTAFOLIO');
-        Route::get('/filter/state/{state}', [BriefcaseController::class, 'filterBriefcaseByStatus']);
-        Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById'])->middleware('permission:LEER_PORTAFOLIO');
-        Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm'])->middleware('permission:LEER_PORTAFOLIO');
-        Route::get('/search/state/aprobado/{term?}', [BriefcaseController::class, 'searchAprobadoByTerm']);
-        Route::get('/search/state/pendiente/{term?}', [BriefcaseController::class, 'searchPendienteByTerm']);
-        Route::get('/archived/list', [BriefcaseController::class, 'getArchivedBriefcase']);
-        Route::get('/search/archived/term/{term?}', [BriefcaseController::class, 'searchArchivedBriefcaseByTerm']);
-        Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase'])->middleware('permission:ARCHIVAR_PORTAFOLIO');
-        Route::put('/restore/{id}', [BriefcaseController::class, 'restaureBriefcase'])->middleware('permission:.');
-        //ruta para crear un oficio
-        Route::post('/create', [BriefcaseController::class, 'createBriefcase'])->middleware('permission:CREAR_PORTAFOLIO');
-        //ruta para actualizar un oficio
-        Route::put('/update/{id}', [BriefcaseController::class, 'updateBriefcase'])->middleware('permission:ACTUALIZAR_PORTAFOLIO');
-        //ruta para eliminar un oficio
-        Route::put('/delete/{id}', [BriefcaseController::class, 'restoreBriefcase'])->middleware('permission:ELIMINAR_PORTAFOLIO');
+        $controller = BriefcaseController::class;
+    
+        Route::middleware('permission:LEER_PORTAFOLIO')->group(function () use ($controller) {
+            Route::get('/', [$controller, 'getBriefcase']);
+            Route::get('/{id}', [$controller, 'getBriefcaseById']);
+            Route::get('/archived/list', [$controller, 'getArchivedBriefcase']);
+            Route::get('/search/term/{term?}', [$controller, 'searchBriefcaseByTerm']);
+            Route::get('/search/archived/term/{term?}', [$controller, 'searchArchivedBriefcaseByTerm']);
+            Route::get('/filter/state/{state}', [$controller, 'filterBriefcaseByStatus']);
+            Route::get('/search/state/aprobado/{term?}', [$controller, 'searchAprobadoByTerm']);
+            Route::get('/search/state/pendiente/{term?}', [$controller, 'searchPendienteByTerm']);
+        });
+    
+        Route::middleware('permission:ARCHIVAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::put('/archive/{id}', [$controller, 'archiveBriefcase']);
+        });
+
+        Route::middleware('permission:RESTAURAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::put('/restore/{id}', [$controller, 'restoreBriefcase']);
+        });
     });
 
     //Files
