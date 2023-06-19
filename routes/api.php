@@ -45,9 +45,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
 });
 
-
-
-
 //Rutas protegidas
 Route::middleware('authentication')->group(function () {
 
@@ -121,31 +118,82 @@ Route::middleware('authentication')->group(function () {
         Route::get('/role/{value}', [PermissionsController::class, 'getPermissionsByRole'])->middleware('permission:LEER_PERMISOS');
     });
 
-    //Statistics
-    Route::prefix('statistics')->group(function () {
-        //ruta para obtener las estadísticas
-        Route::get('/{id}', [StatisticsController::class, 'getOficios']);
+
+    //Portafolio
+    Route::prefix('briefcase')->group(function () {
+        $controller = BriefcaseController::class;
+    
+        Route::middleware('permission:LEER_PORTAFOLIO')->group(function () use ($controller) {
+            Route::get('/', [$controller, 'getBriefcase']);
+            Route::get('/{id}', [$controller, 'getBriefcaseById']);
+            Route::get('/archived/list', [$controller, 'getArchivedBriefcase']);
+            Route::get('/search/term/{term?}', [$controller, 'searchBriefcaseByTerm']);
+            Route::get('/search/archived/term/{term?}', [$controller, 'searchArchivedBriefcaseByTerm']);
+            Route::get('/filter/state/{state}', [$controller, 'filterBriefcaseByStatus']);
+            Route::get('/search/state/aprobado/{term?}', [$controller, 'searchAprobadoByTerm']);
+            Route::get('/search/state/pendiente/{term?}', [$controller, 'searchPendienteByTerm']);
+        });
+    
+        Route::middleware('permission:ARCHIVAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::put('/archive/{id}', [$controller, 'archiveBriefcase']);
+        });
+
+        Route::middleware('permission:RESTAURAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::put('/restore/{id}', [$controller, 'restoreBriefcase']);
+        });
     });
 
-    //briefcase
-    Route::prefix('briefcase')->group(function () {
-        Route::get('/', [BriefcaseController::class, 'getBriefcase'])->middleware('permission:LEER_PORTAFOLIO');
-        Route::get('/filter/state/{state}', [BriefcaseController::class, 'filterBriefcaseByStatus']);
-        Route::get('/{id}', [BriefcaseController::class, 'getBriefcaseById'])->middleware('permission:LEER_PORTAFOLIO');
-        Route::get('/search/term/{term?}', [BriefcaseController::class, 'searchBriefcaseByTerm'])->middleware('permission:LEER_PORTAFOLIO');
-        Route::get('/search/state/aprobado/{term?}', [BriefcaseController::class, 'searchAprobadoByTerm']);
-        Route::get('/search/state/pendiente/{term?}', [BriefcaseController::class, 'searchPendienteByTerm']);
-        Route::get('/archived/list', [BriefcaseController::class, 'getArchivedBriefcase']);
-        Route::get('/search/archived/term/{term?}', [BriefcaseController::class, 'searchArchivedBriefcaseByTerm']);
-        Route::put('/archive/{id}', [BriefcaseController::class, 'archiveBriefcase'])->middleware('permission:ARCHIVAR_PORTAFOLIO');
-        Route::put('/restore/{id}', [BriefcaseController::class, 'restaureBriefcase'])->middleware('permission:.');
-        //ruta para crear un oficio
-        Route::post('/create', [BriefcaseController::class, 'createBriefcase'])->middleware('permission:CREAR_PORTAFOLIO');
-        //ruta para actualizar un oficio
-        Route::put('/update/{id}', [BriefcaseController::class, 'updateBriefcase'])->middleware('permission:ACTUALIZAR_PORTAFOLIO');
-        //ruta para eliminar un oficio
-        Route::put('/delete/{id}', [BriefcaseController::class, 'restoreBriefcase'])->middleware('permission:ELIMINAR_PORTAFOLIO');
+    
+    //SOLICITUD
+    Route::prefix('solicitud')->group(function () {
+    
+        Route::middleware('permission:LEER_SOLICITUD')->group(function () {
+            Route::get('/', [SolicitudeController::class, 'getSolicitudes']);
+            Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
+            Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude']);
+            Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
+            Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm']);
+            Route::get('/filter/value/{status}', [SolicitudeController::class, 'filterSolicitudeByValue']);
+            Route::get('/filter/status/{status}', [SolicitudeController::class, 'filterSolicitudeByStatus']);
+            Route::get('/search/type/vinculacion/{term?}', [SolicitudeController::class, 'searchSolicitudeVinculacionByTerm']);
+            Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
+            Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
+            Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
+        });
+    
+        Route::middleware('permission:ARCHIVAR_SOLICITUD')->group(function () {
+            Route::put('/archive/{id}', [SolicitudeController::class, 'archiveSolicitud']);
+        });
+    
+        Route::middleware('permission:RESTAURAR_SOLICITUD')->group(function () {
+            Route::put('/restore/{id}', [SolicitudeController::class, 'restoreSolicitud']);
+        });
+
+        Route::middleware('permission:ACTUALIZAR_SOLICITUD')->group(function () {
+            Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
+        });
     });
+
+
+    //PROYECTO
+    Route::prefix('project')->group(function () {
+        Route::middleware('permission:LEER_PRTOYECTO')->group(function () {
+            Route::get('/', [ProjectController::class, 'getProject']);
+            Route::get('/{id}', [ProjectController::class, 'getProjectById']);
+            Route::get('/archived/list', [ProjectController::class, 'getArchivedProject']);
+            Route::get('/search/term/{term?}', [ProjectController::class, 'searchProjectByTerm']);
+            Route::get('/search/archived/term/{term?}', [ProjectController::class, 'searchArchivedProjectByTerm']);
+        });
+        Route::middleware('permission:ARCHIVAR_PRTOYECTO')->group(function () {
+            Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
+        });
+    
+        Route::middleware('permission:RESTAURAR_PRTOYECTO')->group(function () {
+            Route::put('/restore/{id}', [ProjectController::class, 'restoreProject']);
+        });
+        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
+    });
+
 
     //Files
     Route::prefix('files')->group(function () {
@@ -156,23 +204,6 @@ Route::middleware('authentication')->group(function () {
         Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
     });
 
-    //Files
-    Route::prefix('solicitud')->group(function () {
-        Route::get('/', [SolicitudeController::class, 'getSolicitude']);
-        Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
-        Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
-        Route::put('/archive/{id}', [SolicitudeController::class, 'ArchiveSolicitud'])->middleware('permission:ARCHIVAR_SOLICITUD');
-        Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude'])->middleware('permission:LEER_SOLICITUD');
-        Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm'])->middleware('permission:LEER_SOLICITUD');
-        Route::put('/restore/{id}', [SolicitudeController::class, 'restaureSolicitud'])->middleware('permission:RESTAURAR_SOLICITUD');
-        Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
-        Route::get('/filter/type/{status}', [SolicitudeController::class, 'filterSolicitudeByValue']);
-        Route::get('/filter/status/{status}', [SolicitudeController::class, 'filterSolicitudeByStatus']);
-        Route::get('/search/type/vinculacion/{term?}', [SolicitudeController::class, 'searchSolicitudeVinculacionByTerm']);
-        Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
-        Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
-        Route::get('/search/status/preaprobado/{term?}', [SolicitudeController::class, 'searchPreAprobadoByTerm']);
-    });
 
     //Comments
     Route::prefix('comments')->group(function () {
@@ -186,22 +217,16 @@ Route::middleware('authentication')->group(function () {
     Route::prefix('beneficiary-institution')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
         Route::get('/', [BeneficiaryInstitutionsController::class, 'getBeneficiaryInstitution'])->middleware('permission:LEER_FUNDACION');
-        Route::get('/{id}', [BeneficiaryInstitutionsController::class, 'getFoundationById'])->middleware('permission:LEER_FUNDACION');
-        Route::get('/search/term/{term?}', [BeneficiaryInstitutionsController::class, 'searchFoundationByTerm'])->middleware('permission:LEER_FUNDACION');
+        Route::get('/archived/list', [BeneficiaryInstitutionsController::class, 'getArchivedBeneficiaryInstitution']);
+        Route::get('/{id}', [BeneficiaryInstitutionsController::class, 'getBeneficiaryInstitutionById'])->middleware('permission:LEER_FUNDACION');
+        Route::put('/archive/{id}', [BeneficiaryInstitutionsController::class, 'archiveBeneficiaryInstitution']);
+        Route::put('/restore/{id}', [BeneficiaryInstitutionsController::class, 'restaureBeneficiaryInstitution']);
+        Route::get('/search/term/{term?}', [BeneficiaryInstitutionsController::class, 'searchBeneficiaryInstitutionByTerm'])->middleware('permission:LEER_FUNDACION');
+        Route::get('/filter/state/{state}', [BeneficiaryInstitutionsController::class, 'filterBeneficiaryInstitutionByStatus']);
+        Route::get('/search/state/activo/{term?}', [BeneficiaryInstitutionsController::class, 'searchActivasByTerm']);
+        Route::get('/search/state/inactivo/{term?}', [BeneficiaryInstitutionsController::class, 'searchInactivaByTerm']);
         Route::post('/create', [BeneficiaryInstitutionsController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
         Route::get('/projects/{value}', [BeneficiaryInstitutionsController::class, 'getFoundationByProject']);
-    });
-
-    Route::prefix('project')->group(function () {
-        //ruta para obtener todos los comentarios de un oficio por id
-        Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PRTOYECTO');
-        Route::get('/archived/list', [ProjectController::class, 'getArchivedProject']);
-        Route::get('/{id}', [ProjectController::class, 'getProjectById']);
-        Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
-        Route::put('/restore/{id}', [ProjectController::class, 'restaureProject']);
-        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
-        Route::get('/search/term/{term?}', [ProjectController::class, 'searchProjectByTerm']);
-        Route::get('/search/archived/term/{term?}', [ProjectController::class, 'searchArchivedProjectByTerm']);
     });
 
 

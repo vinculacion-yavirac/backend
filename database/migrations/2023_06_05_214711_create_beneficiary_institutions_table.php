@@ -21,8 +21,19 @@ return new class extends Migration
             $table->boolean('state');
             $table->string('place_location',200);
             $table->string('postal_code',20);
+            
             $table->unsignedBigInteger('parish_id')->nullable();
             $table->foreign('parish_id')->references('id')->on('addresses');
+
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->boolean('archived')->default(false);
+            $table->timestamp('archived_at')->nullable();
+
+            $table->integer('archived_by')->unsigned()->nullable();
+            $table->foreign('archived_by')->references('id')->on('users');
+
             $table->timestamps();
         });
     }

@@ -14,16 +14,45 @@ class ProjectController extends Controller
      * @return JsonResponse
      * Obtener todas las fundaciones
      */
-    public function getProject(){
-        $projects = Project::where('id', '!=', 0)
-           ->where('archived', false)
-           ->with('created_by.person','beneficiary_institution_id','stateTwo_id','authorized_by.user_id.person')
-           ->get();
-        return new JsonResponse([
+    public function getProject()
+    {
+        $projects = Project::where('archived', false)
+            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
+            ->get();
+
+        return response()->json([
             'status' => 'success',
             'data' => ['projects' => $projects]
-        ],200);
+        ], 200);
     }
+
+        /**
+     * Summary of getProjectById
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     * Obtener por el id
+     */
+    public function getProjectById($id)
+    {
+        $projects = Project::where('id', $id)
+            ->where('archived', false)
+            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
+            ->first();
+
+        if (!$projects) {
+            return response()->json([
+                'message' => 'Proyecto no encontrado'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projects' => $projects
+            ],
+        ]);
+    }
+
 
     /**
      * Summary of getArchivedProject
@@ -45,130 +74,114 @@ class ProjectController extends Controller
       ]);
     }
 
+
     /**
-     * Summary of getProjectById
-     * @param mixed $id
+     * Summary of searchProjectByTerm
+     * @param mixed $term
      * @return \Illuminate\Http\JsonResponse
-     * Obtener por el id
+     * Buscador de proyectos
      */
-    public function getProjectById($id)
+    public function searchProjectByTerm($term = '')
     {
-      $projects = Project::where('id', $id)
-          ->where('id', '!=', 0)
-          ->where('archived', false)
-          ->with('created_by.person','beneficiary_institution_id','stateTwo_id','authorized_by.user_id.person')
-          ->first();
-
-      if (!$projects) {
-          return response()->json([
-              'message' => 'Proyecto no encontrada'
-          ]);
-      }
-
-      return response()->json([
-          'status' => 'success',
-          'data' => [
-              'projects' => $projects
-          ],
-      ]);
+        $projects = Project::where('archived', false)
+            ->where(function ($query) use ($term) {
+                $lowerTerm = strtolower($term);
+                $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%'])
+                    ->orWhereHas('beneficiary_institution_id', function ($query) use ($lowerTerm) {
+                        $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%'])
+                            ->orWhereRaw('LOWER(code) like ?', ['%' . $lowerTerm . '%']);
+                    })
+                    ->orWhereHas('authorized_by.user_id.person', function ($query) use ($lowerTerm) {
+                        $query->whereRaw('LOWER(names) like ?', ['%' . $lowerTerm . '%']);
+                    });
+            })
+            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
+            ->get();
+    
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projects' => $projects
+            ],
+        ]);
+    }
+    
+    
+    /**
+     * Summary of searchArchivedProjectByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse
+     * Buscador de archivados
+     */
+    public function searchArchivedProjectByTerm($term = '')
+    {
+        $projects = Project::where('archived', true)
+            ->where(function ($query) use ($term) {
+                $lowerTerm = strtolower($term);
+                $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%'])
+                    ->orWhereHas('beneficiary_institution_id', function ($query) use ($lowerTerm) {
+                        $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%'])
+                            ->orWhereRaw('LOWER(code) like ?', ['%' . $lowerTerm . '%']);
+                    })
+                    ->orWhereHas('authorized_by.user_id.person', function ($query) use ($lowerTerm) {
+                        $query->whereRaw('LOWER(names) like ?', ['%' . $lowerTerm . '%']);
+                    });
+            })
+            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
+            ->get();
+    
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projects' => $projects
+            ],
+        ]);
     }
 
-
     /**
-     * Summary of ArchiveProject
+     * Summary of archiveProject
      * @param mixed $id
      * @return JsonResponse
      * Archivar proyecto por el id
      */
     public function archiveProject($id)
     {
-      $projects = Project::findOrFail($id);
+        $project = Project::findOrFail($id);
+        $project->update([
+            'archived' => true,
+            'archived_at' => now(),
+            'archived_by' => auth()->user()->id,
+        ]);
 
-      $projects->archived = true;
-      $projects->archived_at = now();
-      $projects->archived_by = auth()->user()->id;
-      $projects->save();
-
-      return new JsonResponse([
-          'status' => 'success',
-          'message' => 'Proyecto archivada correctamente',
-          'data' => [
-              'projects' => $projects,
-          ],
-      ], 200);
+        return new JsonResponse([
+            'status' => 'success',
+            'message' => 'Proyecto archivado correctamente',
+            'data' => [
+                'project' => $project,
+            ],
+        ], 200);
     }
 
     /**
-     * Summary of restaureProject
+     * Summary of restoreProject
      * @param mixed $id
      * @return JsonResponse
-     * restarurar proyecto por id
+     * Restaurar proyecto por id
      */
-    public function restaureProject($id)
+    public function restoreProject($id)
     {
-      $projects = Project::findOrFail($id);
+        $project = Project::findOrFail($id);
+        $project->update(['archived' => false]);
 
-      $projects->archived = false;
-      $projects->save();
-
-      return new JsonResponse([
-          'status' => 'success',
-          'message' => 'Solicitud restaurada correctamente',
-          'data' => [
-              'projects' => $projects,
-          ],
-      ], 200);
-    }
-
-
-    public function searchProjectByTerm($term = '')
-    {
-        $projects = Project::where('archived', false)
-            ->where(function ($query) use ($term) {
-                $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%'])
-                    ->orWhereHas('beneficiary_institution_id', function ($query) use ($term) {
-                        $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%'])
-                            ->orWhereRaw('LOWER(code) like ?', ['%' . strtolower($term) . '%']);
-                    })
-                    ->orWhereHas('authorized_by.user_id.person', function ($query) use ($term) {
-                        $query->whereRaw('LOWER(names) like ?', ['%' . strtolower($term) . '%']);
-                    });
-            })
-            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
-            ->get();
-
-        return response()->json([
+        return new JsonResponse([
             'status' => 'success',
+            'message' => 'Proyecto restaurado correctamente',
             'data' => [
-                'projects' => $projects
+                'project' => $project,
             ],
-        ]);
+        ], 200);
     }
 
-
-    public function searchArchivedProjectByTerm($term = '')
-    {
-        $projects = Project::where('archived', true)
-            ->where(function ($query) use ($term) {
-                $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%'])
-                    ->orWhereHas('beneficiary_institution_id', function ($query) use ($term) {
-                        $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%'])
-                            ->orWhereRaw('LOWER(code) like ?', ['%' . strtolower($term) . '%']);
-                    })
-                    ->orWhereHas('authorized_by.user_id.person', function ($query) use ($term) {
-                        $query->whereRaw('LOWER(names) like ?', ['%' . strtolower($term) . '%']);
-                    });
-            })
-            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
-            ->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'projects' => $projects
-            ],
-        ]);
-    }
 
         public function getProjectByFoundation($project)
         {
