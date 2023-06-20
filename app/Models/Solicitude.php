@@ -22,6 +22,7 @@ class Solicitude extends Model
         'archived',
         'archived_at',
         'archived_by',
+        'project_id'
     ];
 
     // Relación con el modelo Catalog para el estado de las solicitudes
@@ -41,14 +42,6 @@ class Solicitude extends Model
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
-
-    //public function users()
-    //{
-       // return $this->belongsToMany(User::class);
-    //}
-
-
-    // Relación con el modelo User para el creador de la solicitud
     public function created_by()
     {
         return $this->belongsTo(User::class, 'created_by');
