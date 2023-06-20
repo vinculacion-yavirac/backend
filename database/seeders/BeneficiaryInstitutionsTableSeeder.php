@@ -18,7 +18,7 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
     $beneficiaryInstitutions = [
         [
             'ruc' => '1234567890',
-            'name' => 'Institución Beneficiaria 1',
+            'name' => 'Alas de Colibri',
             'logo' => 'logo1.png',
             'state' => true,
             'place_location' => 'Lugar 1',
@@ -31,7 +31,7 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
         ],
         [
             'ruc' => '0987654321',
-            'name' => 'Institución Beneficiaria 2',
+            'name' => 'Gad Guayabanba',
             'logo' => 'logo2.png',
             'state' => false,
             'place_location' => 'Lugar 2',

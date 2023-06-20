@@ -19,7 +19,7 @@ class ProjectsTableSeeder extends Seeder
      $projects = [
          [
              'code' => 'P001',
-             'name' => 'Proyecto 1',
+             'name' => 'Recursos Humano',
              'field' => 'Campo de proyecto',
              'term_execution' => 5,
              'start_date' => now(),
@@ -39,7 +39,7 @@ class ProjectsTableSeeder extends Seeder
              'attached_project' => json_encode(['Proyecto adjunto 1', 'Proyecto adjunto 2']),
              'convention_id' => 1,
              'school_period_id' => 2,
-             'beneficiary_institution_id' => 2,
+             'beneficiary_institution_id' => 1,
              'career_id' => 2,
              'sub_line_investigation_id' => 2,
              'authorized_by' => 2,
@@ -56,7 +56,7 @@ class ProjectsTableSeeder extends Seeder
          ],
          [
              'code' => 'P002',
-             'name' => 'Proyecto 12',
+             'name' => 'Oficios del Gad',
              'field' => 'Campo de proyecto',
              'term_execution' => 5,
              'start_date' => now(),
