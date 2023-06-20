@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class SolicitudeController extends Controller
 {
 
-    
+
     /**
      * Summary of getSolicitudes
      * @return \Illuminate\Http\JsonResponse
@@ -31,7 +31,7 @@ class SolicitudeController extends Controller
     }
 
 
-    
+
      /**
      * Summary of getSolicitudeById
      * @param mixed $id
@@ -116,7 +116,7 @@ class SolicitudeController extends Controller
     public function searchArchivedSolicitudeByTerm($term = '')
     {
          $term = strtolower($term);
- 
+
          $solicitudes = Solicitude::where('archived', true)
              ->whereHas('created_by.person', function ($query) use ($term) {
                  $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
@@ -125,7 +125,7 @@ class SolicitudeController extends Controller
              })
              ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
              ->get();
- 
+
          return response()->json([
              'status' => 'success',
              'data' => [
@@ -306,7 +306,7 @@ class SolicitudeController extends Controller
             ],
         ]);
     }
-    
+
 
     /**
      * Summary of archiveSolicitud
@@ -377,6 +377,7 @@ class SolicitudeController extends Controller
 
             $solicitudes->update([
                 'approval_date' => now(),
+                'solicitudes_status_id' => 4,
                 'project_id' => $request->project_id,
             ]);
 
