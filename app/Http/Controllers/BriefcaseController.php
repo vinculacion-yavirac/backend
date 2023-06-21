@@ -38,7 +38,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person','project_participant_id.project_id')
+            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id')
             ->first();
 
         if (!$briefcases) {
