@@ -12,11 +12,11 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\EmailsController;
-use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticipantController;
+use App\Http\Controllers\DocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -150,6 +150,23 @@ Route::middleware('authentication')->group(function () {
         });
     });
 
+     //DOCUMENTO
+     Route::prefix('document')->group(function () {
+        Route::middleware('permission:LEER_DOCUMENTO')->group(function () {
+            Route::get('/', [DocumentController::class, 'getDocuments']);
+           // Route::get('/{id}', [DocumentController::class, 'getProjectById']);
+           // Route::get('/archived/list', [DocumentController::class, 'getArchivedProject']);
+           // Route::get('/search/term/{term?}', [DocumentController::class, 'searchProjectByTerm']);
+           // Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchArchivedProjectByTerm']);
+        });
+        Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
+         //   Route::put('/archive/{id}', [DocumentController::class, 'archiveProject']);
+        });
+    
+        Route::middleware('permission:RESTAURAR_DOCUMENTO')->group(function () {
+         //   Route::put('/restore/{id}', [DocumentController::class, 'restoreProject']);
+        });
+    });
 
     //SOLICITUD
     Route::prefix('solicitud')->group(function () {
