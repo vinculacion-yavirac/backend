@@ -6,6 +6,7 @@ use App\Models\Briefcase;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class BriefcaseController extends Controller
 {
@@ -37,7 +38,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person')
+            ->with('project_participant_id.participant_id.person','project_participant_id.project_id')
             ->first();
 
         if (!$briefcases) {
@@ -246,4 +247,52 @@ class BriefcaseController extends Controller
             ],
         ]);
     }
-}
+
+    public function updateBriefcase(Request $request, $id)
+    {
+        $request->validate([
+            'observations' => 'nullable',
+            'state' => 'nullable',
+            //'created_by' => 'required',
+            //'archived' => 'required',
+            //'archived_at' => 'nullable',
+            //'archived_by' => 'nullable',
+            'updated_at' => 'nullable|date'
+            //'project_participant_id' => 'required|exists:project_participants,id',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $briefcases = Briefcase::findOrFail($id);
+
+            $briefcases->update([
+                'observations' => $request->observations,
+                'updated_at' => now(),
+                'state' => true,
+                //'created_by' => $request->created_by,
+                //'archived' => $request->archived,
+                //'archived_at' => $request->archived_at,
+                //'archived_by' => $request->archived_by,
+                //'project_participant_id' => $request->project_participant_id,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Portafolio actualizado correctamente',
+                'data' => [
+                    'briefcases' => $briefcases,
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al actualizar el modelo: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    }

@@ -141,6 +141,10 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:RESTAURAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::put('/restore/{id}', [$controller, 'restoreBriefcase']);
         });
+
+        Route::middleware('permission:ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::put('/update/{id}', [$controller, 'updateBriefcase']);
+        });
     });
 
     
