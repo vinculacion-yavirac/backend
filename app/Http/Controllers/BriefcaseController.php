@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Comment;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use App\Models\ProjectParticipant;
+
 
 class BriefcaseController extends Controller
 {
@@ -74,7 +76,7 @@ class BriefcaseController extends Controller
         ]);
     }
 
-    
+
     /**
      * Summary of archiveBriefcase
      * @param mixed $id
@@ -100,7 +102,7 @@ class BriefcaseController extends Controller
         ], 200);
     }
 
-   
+
     /**
      * Summary of restoreBriefcase
      * @param mixed $id
@@ -178,7 +180,7 @@ class BriefcaseController extends Controller
      * Summary of filterBriefcaseByStatus
      * @param mixed $state
      * @return \Illuminate\Http\JsonResponse
-     * Filtro para obtener el state 
+     * Filtro para obtener el state
      */
     public function filterBriefcaseByStatus($state = '')
     {
@@ -295,4 +297,66 @@ class BriefcaseController extends Controller
             ], 500);
         }
     }
+
+     /**
+    * Summary of createBriefcase
+    * @param \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\JsonResponse
+    * Crear un nuevo portafolio
+    */
+    public function createBriefcase(Request $request)
+    {
+        $request->validate([
+            'observations' => 'required',
+            'state' => 'required',
+            'created_by' => 'required|exists:users,id',
+            'archived' => 'required',
+            'project_participant_id' => 'required|exists:project_participants,id',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Obtener el participante del proyecto
+            
+
+            $briefcase = new Briefcase([
+                'observations' => $request->observations,
+                'state' => $request->state,
+                'created_by' => auth()->user()->id,
+                'archived' => $request->archived ?? false,
+                'archived_at' => null,
+                'archived_by' => null,
+                'project_participant_id' => $request->project_participant_id,
+            ]);
+
+            $briefcase->created_by = auth()->user()->id; // Asignar el ID del usuario al campo 'created_by'
+
+            $briefcase->save();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Portafolio creado correctamente',
+                'data' => [
+                    'briefcase' => $briefcase,
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al crear el portafolio: ' . $e->getMessage(),
+            ], 500);
+        }
     }
+
+
+
+
+
+
+
+}

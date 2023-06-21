@@ -24,4 +24,9 @@ class Briefcase extends Model
         return $this->belongsTo(ProjectParticipant::class,'project_participant_id');
     }
 
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class,'created_by');
+    }
 }
