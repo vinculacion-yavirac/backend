@@ -37,8 +37,8 @@ class Briefcase extends Model
     }
     */
 
-    public function documents()
+    public function files()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(File::class);
     }
 }

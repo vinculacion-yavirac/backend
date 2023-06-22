@@ -42,6 +42,6 @@ class File extends Model
 
     public function document()
     {
-        return $this->belongsTo(Document::class, 'document_id');
+        return $this->belongsTo(Documents::class, 'document_id');
     }
 }

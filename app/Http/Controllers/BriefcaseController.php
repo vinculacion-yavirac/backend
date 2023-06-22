@@ -37,11 +37,12 @@ class BriefcaseController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * Obtener por el id
      */
-    public function getBriefcaseById($id)
+    
+     public function getBriefcaseById($id)
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id')
+            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id','files.briefcase','files.document')
             ->first();
 
         if (!$briefcases) {
@@ -57,6 +58,11 @@ class BriefcaseController extends Controller
             ],
         ]);
     }
+
+
+
+
+
 
     /**
      * Summary of getArchivedPortafolio
