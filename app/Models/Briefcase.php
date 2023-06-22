@@ -29,4 +29,16 @@ class Briefcase extends Model
     {
         return $this->belongsTo(User::class,'created_by');
     }
+
+    /*
+    public function documents()
+    {
+        return $this->belongsToMany(Documents::class, 'file')->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
+    }
+    */
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
 }

@@ -23,4 +23,14 @@ class Documents extends Model
     {
         return $this->belongsTo(Role::class, 'responsible_id');
     }
+
+    public function briefcases()
+    {
+        return $this->belongsToMany(Briefcase::class, 'files')->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
+    }
+
+    public static function firstOrCreate(array $attributes, array $values = [])
+    {
+        return static::query()->firstOrNew($attributes, $values)->fill($values);
+    }
 }

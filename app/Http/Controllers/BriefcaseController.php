@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Briefcase;
+use App\Models\Documents;
+use App\Models\File;
 use Illuminate\Http\Request;
-use App\Models\Comment;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use App\Models\ProjectParticipant;
+
 
 
 class BriefcaseController extends Controller
@@ -353,6 +354,77 @@ class BriefcaseController extends Controller
         }
     }
 
+
+
+    public function updateBriefcaseRelacion(Request $request, $id)
+    {
+        $request->validate([
+            'briefcase.observations' => 'nullable|string',
+            'briefcase.state' => 'nullable|boolean',
+            'briefcase.created_by' => 'nullable|integer',
+            'briefcase.archived' => 'nullable|boolean',
+            'briefcase.archived_at' => 'nullable|date',
+            'briefcase.archived_by' => 'nullable|integer',
+            'document' => 'required|array',
+            'document.*.name' => 'required|string',
+            'document.*.template' => 'nullable|string',
+            'document.*.state' => 'nullable|boolean',
+            'document.*.order' => 'nullable|integer',
+            'document.*.responsible_id' => 'nullable|integer',
+            'file.*.name' => 'nullable|string',
+            'file.*.type' => 'nullable|string',
+            'file.*.content' => 'nullable|string',
+            'file.*.observation' => 'nullable|string',
+            'file.*.state' => 'nullable|boolean',
+            'file.*.size' => 'nullable|integer',
+        ]);
+
+        // Iniciar la transacción
+        DB::beginTransaction();
+
+        try {
+            // Actualizar el briefcase
+            $briefcaseData = $request->input('briefcase');
+            $briefcase = Briefcase::findOrFail($id);
+            $briefcase->fill($briefcaseData);
+            $briefcase->save();
+
+            // Actualizar los documentos
+            $documentData = $request->input('document');
+            foreach ($documentData as $documentItem) {
+                $document = Documents::firstOrCreate(['id' => $documentItem['id']]);
+                $document->fill($documentItem);
+                $document->save();
+            }
+
+            // Actualizar los archivos
+            $fileData = $request->input('file');
+            foreach ($fileData as $fileItem) {
+                $file = File::findOrFail($fileItem['id']);
+                $file->fill($fileItem);
+                $file->save();
+            }
+
+            // Confirmar la transacción
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'El briefcase y sus relaciones han sido actualizados correctamente.',
+            ], 200);
+        } catch (\Exception $e) {
+            // Revertir la transacción en caso de error
+            DB::rollback();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al actualizar el briefcase y sus relaciones: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    
 
 
 

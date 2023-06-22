@@ -22,6 +22,8 @@ class File extends Model
         'document_id',
     ];
 
+    /*
+
     public function briefcase()
     {
         return $this->belongsTo(Briefcase::class);
@@ -30,5 +32,16 @@ class File extends Model
     public function document()
     {
         return $this->belongsTo(Document::class);
+    }
+    */
+
+    public function briefcase()
+    {
+        return $this->belongsTo(Briefcase::class, 'briefcase_id');
+    }
+
+    public function document()
+    {
+        return $this->belongsTo(Document::class, 'document_id');
     }
 }
