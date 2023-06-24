@@ -59,11 +59,6 @@ class BriefcaseController extends Controller
         ]);
     }
 
-
-
-
-
-
     /**
      * Summary of getArchivedPortafolio
      * @return \Illuminate\Http\JsonResponse
@@ -257,200 +252,80 @@ class BriefcaseController extends Controller
         ]);
     }
 
-     /**
-    * Summary of createBriefcase
-    * @param \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\JsonResponse
-    * Crear un nuevo portafolio
-    */
+
+
+    /**
+     * Summary of createBriefcase
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return \Illuminate\Http\JsonResponse
+     * crear transaccion de documentos archivos y portafolio
+     */
     public function createBriefcase(Request $request)
     {
-        $request->validate([
-            'observations' => 'required',
-            'state' => 'required',
-            'created_by' => 'required|exists:users,id',
-            'archived' => 'required',
-            'project_participant_id' => 'required|exists:project_participants,id',
-        ]);
-
         try {
             DB::beginTransaction();
 
-            // Obtener el participante del proyecto
-            
-
-            $briefcase = new Briefcase([
-                'observations' => $request->observations,
-                'state' => $request->state,
-                'created_by' => auth()->user()->id,
-                'archived' => $request->archived ?? false,
-                'archived_at' => null,
-                'archived_by' => null,
-                'project_participant_id' => $request->project_participant_id,
-            ]);
-
-            $briefcase->created_by = auth()->user()->id; // Asignar el ID del usuario al campo 'created_by'
-
-            $briefcase->save();
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Portafolio creado correctamente',
-                'data' => [
-                    'briefcase' => $briefcase,
-                ],
-            ], 200);
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error al crear el portafolio: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-
-
-
-
-    public function createRelation(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-    
             // Obtener los datos del formulario
             $requestData = $request->all();
-    
+
             // Crear el portafolio
             $briefcase = Briefcase::create($requestData['briefcases']);
-    
+
             // Verificar si se creó correctamente el portafolio
             if (!$briefcase) {
                 throw new \Exception("No se pudo crear el portafolio.");
             }
-    
+
             // Crear los documentos
             $documents = $requestData['documents'];
-    
+
             foreach ($documents as $documentData) {
                 // Crear el documento
                 $document = Documents::create($documentData);
-    
+
                 // Verificar si se creó correctamente el documento
                 if (!$document) {
                     throw new \Exception("No se pudo crear el documento.");
                 }
-    
+
                 // Obtener los archivos relacionados con el documento
                 $files = $documentData['files'];
-    
+
                 foreach ($files as $fileData) {
                     // Crear el archivo
                     $file = new File();
-    
+
                     // Asignar los datos del archivo
                     $file->fill($fileData);
-    
+
                     // Verificar si se asignaron correctamente los datos del archivo
                     if (!$file->save()) {
                         throw new \Exception("No se pudo crear el archivo.");
                     }
-    
+
                     // Establecer la relación entre el archivo y el documento
                     //$document->files()->attach($file->id);
                     $file->briefcases()->associate($briefcase);
                     $file->documents()->associate($document);
                 }
             }
-    
+
             DB::commit();
-    
+
             return response()->json([
                 'message' => 'La relación entre el portafolio y los documentos se ha creado exitosamente.'
             ], 200);
         } catch (\Exception $e) {
             DB::rollback();
-    
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 400);
-        }
-    }
-
-
-    /**
-     * Summary of updateRelation
-     * @param \Illuminate\Http\Request $request
-     * @param mixed $id
-     * @throws \Exception
-     * @return \Illuminate\Http\JsonResponse
-     * Transacion documentos archivos y portafolios
-     */
-    public function updateBriefcase(Request $request, $id)
-    {
-        try {
-            DB::beginTransaction();
-
-            // Obtener los datos del formulario
-            $requestData = $request->all();
-
-            // Obtener el portafolio existente
-            $briefcase = Briefcase::findOrFail($id);
-
-            // Actualizar los datos del portafolio
-            $briefcase->update($requestData['briefcases']);
-
-            // Verificar si se actualizó correctamente el portafolio
-            if (!$briefcase) {
-                throw new \Exception("No se pudo actualizar el portafolio.");
-            }
-
-            // Actualizar los documentos
-            $documents = $requestData['documents'];
-
-            foreach ($documents as $documentData) {
-                // Obtener el documento existente o crear uno nuevo si no existe
-                $document = Documents::updateOrCreate(['id' => $documentData['id']], $documentData);
-
-                // Verificar si se actualizó correctamente el documento
-                if (!$document) {
-                    throw new \Exception("No se pudo actualizar el documento.");
-                }
-
-                // Obtener los archivos relacionados con el documento
-                $files = $documentData['files'];
-
-                foreach ($files as $fileData) {
-                    // Obtener el archivo existente o crear uno nuevo si no existe
-                    $file = File::updateOrCreate(['id' => $fileData['id']], $fileData);
-
-                    // Verificar si se actualizó correctamente el archivo
-                    if (!$file) {
-                        throw new \Exception("No se pudo actualizar el archivo.");
-                    }
-
-                    // Establecer la relación entre el archivo y el documento
-                    $file->briefcases()->associate($briefcase);
-                    $file->documents()->associate($document);
-                    $file->save();
-                }
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'message' => 'La relación entre el portafolio y los documentos se ha actualizado exitosamente.'
-            ], 200);
-        } catch (\Exception $e) {
-            DB::rollback();
 
             return response()->json([
                 'error' => $e->getMessage()
             ], 400);
         }
     }
+
+   
+
 
 }
