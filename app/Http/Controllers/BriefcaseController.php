@@ -325,6 +325,80 @@ class BriefcaseController extends Controller
         }
     }
 
+
+
+    /**
+     * Summary of updateBriefcase
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @throws \Exception
+     * @return \Illuminate\Http\JsonResponse
+     * Actualizar transaccion de documentos archivos y portafolio
+     */
+    public function updateBriefcase(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+    
+            // Obtener los datos del formulario
+            $requestData = $request->all();
+    
+            // Obtener el portafolio existente
+            $briefcase = Briefcase::findOrFail($id);
+    
+            // Actualizar los datos del portafolio
+            $briefcase->update($requestData['briefcases']);
+    
+            // Verificar si se actualizó correctamente el portafolio
+            if (!$briefcase) {
+                throw new \Exception("No se pudo actualizar el portafolio.");
+            }
+    
+            // Actualizar los documentos
+            $documents = $requestData['documents'];
+    
+            foreach ($documents as $documentData) {
+                // Obtener el documento existente o crear uno nuevo si no existe
+                $document = Documents::updateOrCreate(['id' => $documentData['id']], $documentData);
+    
+                // Verificar si se actualizó correctamente el documento
+                if (!$document) {
+                    throw new \Exception("No se pudo actualizar el documento.");
+                }
+    
+                // Obtener los archivos relacionados con el documento
+                $files = $documentData['files'];
+    
+                foreach ($files as $fileData) {
+                    // Obtener el archivo existente o crear uno nuevo si no existe
+                    $file = File::updateOrCreate(['id' => $fileData['id']], $fileData);
+    
+                    // Verificar si se actualizó correctamente el archivo
+                    if (!$file) {
+                        throw new \Exception("No se pudo actualizar el archivo.");
+                    }
+    
+                    // Establecer la relación entre el archivo y el documento
+                    $file->briefcases()->associate($briefcase);
+                    $file->documents()->associate($document);
+                    $file->save();
+                }
+            }
+    
+            DB::commit();
+    
+            return response()->json([
+                'message' => 'La relación entre el portafolio y los documentos se ha actualizado exitosamente.'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+    
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
    
 
 
