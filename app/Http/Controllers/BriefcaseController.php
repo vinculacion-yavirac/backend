@@ -257,54 +257,6 @@ class BriefcaseController extends Controller
         ]);
     }
 
-    public function updateBriefcase(Request $request, $id)
-    {
-        $request->validate([
-            'observations' => 'nullable',
-            'state' => 'nullable',
-            //'created_by' => 'required',
-            //'archived' => 'required',
-            //'archived_at' => 'nullable',
-            //'archived_by' => 'nullable',
-            'updated_at' => 'nullable|date'
-            //'project_participant_id' => 'required|exists:project_participants,id',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $briefcases = Briefcase::findOrFail($id);
-
-            $briefcases->update([
-                'observations' => $request->observations,
-                'updated_at' => now(),
-                'state' => true,
-                //'created_by' => $request->created_by,
-                //'archived' => $request->archived,
-                //'archived_at' => $request->archived_at,
-                //'archived_by' => $request->archived_by,
-                //'project_participant_id' => $request->project_participant_id,
-            ]);
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Portafolio actualizado correctamente',
-                'data' => [
-                    'briefcases' => $briefcases,
-                ],
-            ], 200);
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error al actualizar el modelo: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
      /**
     * Summary of createBriefcase
     * @param \Illuminate\Http\Request $request
@@ -362,96 +314,7 @@ class BriefcaseController extends Controller
 
 
 
-    public function updateBriefcaseRelacion(Request $request, $id)
-    {
-        $request->validate([
-            'briefcase.observations' => 'nullable|string',
-            'briefcase.state' => 'nullable|boolean',
-            'briefcase.created_by' => 'nullable|integer',
-            'briefcase.archived' => 'nullable|boolean',
-            'briefcase.archived_at' => 'nullable|date',
-            'briefcase.archived_by' => 'nullable|integer',
-            'document' => 'nullable|array',
-            'document.*.name' => 'required|string',
-            'document.*.template' => 'nullable|string',
-            'document.*.state' => 'nullable|boolean',
-            'document.*.order' => 'nullable|integer',
-            'document.*.responsible_id' => 'nullable|integer',
-            'file.*.name' => 'nullable|string',
-            'file.*.type' => 'nullable|string',
-            'file.*.content' => 'nullable|string',
-            'file.*.observation' => 'nullable|string',
-            'file.*.state' => 'nullable|boolean',
-            'file.*.size' => 'nullable|integer',
-        ]);
 
-        // Iniciar la transacción
-        DB::beginTransaction();
-
-        try {
-            // Actualizar el briefcase
-            $briefcaseData = $request->input('briefcase');
-            $briefcase = Briefcase::findOrFail($id);
-            $briefcase->fill($briefcaseData);
-            $briefcase->save();
-            
-            
-            /*
-            $briefcaseData = $request->input('briefcase');
-            if (!empty($briefcaseData)) {
-                $briefcase = Briefcase::findOrFail($id);
-                $briefcase->fill($briefcaseData);
-                $briefcase->save();
-            }
-            */
-            // Actualizar los documentos
-            
-            $documentData = $request->input('document');
-            foreach ($documentData as $documentItem) {
-                $document = Documents::firstOrCreate(['id' => $documentItem['id']]);
-                $document->fill($documentItem);
-                $document->save();
-            }
-            
-
-            /*
-            $documentData = $request->input('document');
-            if (!is_null($documentData)) {
-                foreach ($documentData as $documentItem) {
-                    if (isset($documentItem['id'])) {
-                        $document = Documents::firstOrCreate(['id' => $documentItem['id']]);
-                        $document->fill($documentItem);
-                        $document->save();
-                    }
-                }
-            }
-
-            */
-            // Actualizar los archivos
-            $fileData = $request->input('file');
-            foreach ($fileData as $fileItem) {
-                $file = File::findOrFail($fileItem['id']);
-                $file->fill($fileItem);
-                $file->save();
-            }
-
-            // Confirmar la transacción
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'El briefcase y sus relaciones han sido actualizados correctamente.',
-            ], 200);
-        } catch (\Exception $e) {
-            // Revertir la transacción en caso de error
-            DB::rollback();
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error al actualizar el briefcase y sus relaciones: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
 
     public function createRelation(Request $request)
     {
@@ -511,6 +374,79 @@ class BriefcaseController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
     
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+
+    /**
+     * Summary of updateRelation
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @throws \Exception
+     * @return \Illuminate\Http\JsonResponse
+     * Transacion documentos archivos y portafolios
+     */
+    public function updateBriefcase(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Obtener los datos del formulario
+            $requestData = $request->all();
+
+            // Obtener el portafolio existente
+            $briefcase = Briefcase::findOrFail($id);
+
+            // Actualizar los datos del portafolio
+            $briefcase->update($requestData['briefcases']);
+
+            // Verificar si se actualizó correctamente el portafolio
+            if (!$briefcase) {
+                throw new \Exception("No se pudo actualizar el portafolio.");
+            }
+
+            // Actualizar los documentos
+            $documents = $requestData['documents'];
+
+            foreach ($documents as $documentData) {
+                // Obtener el documento existente o crear uno nuevo si no existe
+                $document = Documents::updateOrCreate(['id' => $documentData['id']], $documentData);
+
+                // Verificar si se actualizó correctamente el documento
+                if (!$document) {
+                    throw new \Exception("No se pudo actualizar el documento.");
+                }
+
+                // Obtener los archivos relacionados con el documento
+                $files = $documentData['files'];
+
+                foreach ($files as $fileData) {
+                    // Obtener el archivo existente o crear uno nuevo si no existe
+                    $file = File::updateOrCreate(['id' => $fileData['id']], $fileData);
+
+                    // Verificar si se actualizó correctamente el archivo
+                    if (!$file) {
+                        throw new \Exception("No se pudo actualizar el archivo.");
+                    }
+
+                    // Establecer la relación entre el archivo y el documento
+                    $file->briefcases()->associate($briefcase);
+                    $file->documents()->associate($document);
+                    $file->save();
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'La relación entre el portafolio y los documentos se ha actualizado exitosamente.'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+
             return response()->json([
                 'error' => $e->getMessage()
             ], 400);
