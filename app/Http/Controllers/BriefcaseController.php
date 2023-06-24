@@ -42,7 +42,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id','files.briefcase','files.document')
+            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id','file','file.document')
             ->first();
 
         if (!$briefcases) {
@@ -371,7 +371,7 @@ class BriefcaseController extends Controller
             'briefcase.archived' => 'nullable|boolean',
             'briefcase.archived_at' => 'nullable|date',
             'briefcase.archived_by' => 'nullable|integer',
-            'document' => 'required|array',
+            'document' => 'nullable|array',
             'document.*.name' => 'required|string',
             'document.*.template' => 'nullable|string',
             'document.*.state' => 'nullable|boolean',
@@ -394,15 +394,39 @@ class BriefcaseController extends Controller
             $briefcase = Briefcase::findOrFail($id);
             $briefcase->fill($briefcaseData);
             $briefcase->save();
-
+            
+            
+            /*
+            $briefcaseData = $request->input('briefcase');
+            if (!empty($briefcaseData)) {
+                $briefcase = Briefcase::findOrFail($id);
+                $briefcase->fill($briefcaseData);
+                $briefcase->save();
+            }
+            */
             // Actualizar los documentos
+            
             $documentData = $request->input('document');
             foreach ($documentData as $documentItem) {
                 $document = Documents::firstOrCreate(['id' => $documentItem['id']]);
                 $document->fill($documentItem);
                 $document->save();
             }
+            
 
+            /*
+            $documentData = $request->input('document');
+            if (!is_null($documentData)) {
+                foreach ($documentData as $documentItem) {
+                    if (isset($documentItem['id'])) {
+                        $document = Documents::firstOrCreate(['id' => $documentItem['id']]);
+                        $document->fill($documentItem);
+                        $document->save();
+                    }
+                }
+            }
+
+            */
             // Actualizar los archivos
             $fileData = $request->input('file');
             foreach ($fileData as $fileItem) {
@@ -429,12 +453,68 @@ class BriefcaseController extends Controller
         }
     }
 
-
+    public function createRelation(Request $request)
+    {
+        try {
+            DB::beginTransaction();
     
-
-
-
-
-
+            // Obtener los datos del formulario
+            $requestData = $request->all();
+    
+            // Crear el portafolio
+            $briefcase = Briefcase::create($requestData['briefcases']);
+    
+            // Verificar si se creó correctamente el portafolio
+            if (!$briefcase) {
+                throw new \Exception("No se pudo crear el portafolio.");
+            }
+    
+            // Crear los documentos
+            $documents = $requestData['documents'];
+    
+            foreach ($documents as $documentData) {
+                // Crear el documento
+                $document = Documents::create($documentData);
+    
+                // Verificar si se creó correctamente el documento
+                if (!$document) {
+                    throw new \Exception("No se pudo crear el documento.");
+                }
+    
+                // Obtener los archivos relacionados con el documento
+                $files = $documentData['files'];
+    
+                foreach ($files as $fileData) {
+                    // Crear el archivo
+                    $file = new File();
+    
+                    // Asignar los datos del archivo
+                    $file->fill($fileData);
+    
+                    // Verificar si se asignaron correctamente los datos del archivo
+                    if (!$file->save()) {
+                        throw new \Exception("No se pudo crear el archivo.");
+                    }
+    
+                    // Establecer la relación entre el archivo y el documento
+                    //$document->files()->attach($file->id);
+                    $file->briefcases()->associate($briefcase);
+                    $file->documents()->associate($document);
+                }
+            }
+    
+            DB::commit();
+    
+            return response()->json([
+                'message' => 'La relación entre el portafolio y los documentos se ha creado exitosamente.'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+    
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
 
 }

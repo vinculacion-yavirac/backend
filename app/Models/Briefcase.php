@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,11 +11,12 @@ class Briefcase extends Model
     use HasFactory;
 
     protected $fillable = [
+
         'observations',
         'state',
-        'created_by',
         'archived',
         'archived_at',
+        'created_by',
         'archived_by',
         'project_participant_id',
     ];
@@ -27,18 +29,41 @@ class Briefcase extends Model
 
     public function created_by()
     {
-        return $this->belongsTo(User::class,'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function archived_by()
+    {
+        return $this->belongsTo(User::class, 'archived_by');
+    }
+    
+    /*
+    public function documents()
+    {
+        return $this->belongsToMany(Documents::class, 'files', 'briefcase_id','document_id')
+            ->using(File::class)
+            ->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
+    }
+
+    */
+
+    public function documents()
+    {
+        return $this->belongsToMany(Documents::class, 'files', 'briefcase_id', 'document_id')
+            ->using(File::class)
+            ->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'briefcase_id');
+    }
+}
+
 
     /*
     public function documents()
     {
-        return $this->belongsToMany(Documents::class, 'file')->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
+        return $this->belongsToMany(Documents::class, 'files', 'briefcase_id', 'document_id');
     }
     */
-
-    public function files()
-    {
-        return $this->hasMany(File::class);
-    }
-}

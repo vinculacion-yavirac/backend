@@ -12,11 +12,16 @@ class Documents extends Model
     use HasFactory;
 
     protected $fillable = [
+
         'name',
         'template',
         'state',
         'order',
         'responsible_id',
+        'created_by',
+        'archived',
+        'archived_at',
+        'archived_by',
     ];
 
     public function responsible_id()
@@ -24,13 +29,49 @@ class Documents extends Model
         return $this->belongsTo(Role::class, 'responsible_id');
     }
 
-    public function briefcases()
+    public function created_by()
     {
-        return $this->belongsToMany(Briefcase::class, 'files')->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
+        return $this->belongsTo(User::class, 'created_by');
     }
 
-    public static function firstOrCreate(array $attributes, array $values = [])
+    /*
+    public function briefcases()
     {
-        return static::query()->firstOrNew($attributes, $values)->fill($values);
+        return $this->belongsToMany(Briefcase::class, 'files','briefcase_id','document_id')
+            ->using(File::class)
+            ->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
     }
+    */
+
+    public function briefcases()
+    {
+        return $this->belongsToMany(Briefcase::class, 'files', 'document_id', 'briefcase_id')
+            ->using(File::class)
+            ->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
+    }
+
+    
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'document_id');
+    }
+    
+    
 }
+
+
+
+    /*
+    public function briefcases()
+    {
+        return $this->belongsToMany(Briefcase::class, 'files', 'document_id', 'briefcase_id');
+    }
+    */
+    /*
+
+    public function files()
+    {
+        return $this->belongsToMany(File::class);
+    }
+    */
