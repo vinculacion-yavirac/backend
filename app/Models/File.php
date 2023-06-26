@@ -36,27 +36,3 @@ class File extends Pivot
     }
     
 }
-
-
-
-
-    
-    /*
-    public function briefcases()
-    {
-        return $this->belongsTo(Briefcase::class,'briefcase_id');
-    }
-
-    public function documents()
-    {
-        return $this->belongsToMany(Document::class, 'files', 'briefcase_id', 'document_id')
-                    ->using(File::class)
-                    ->withPivot('files');
-    }
-
-    public function files()
-    {
-        return $this->hasMany(File::class);
-    }
-
-    */

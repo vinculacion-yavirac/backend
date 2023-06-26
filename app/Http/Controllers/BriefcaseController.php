@@ -42,7 +42,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id','file','file.document')
+            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id','files','documents')
             ->first();
 
         if (!$briefcases) {
@@ -265,60 +265,63 @@ class BriefcaseController extends Controller
     {
         try {
             DB::beginTransaction();
-
+    
             // Obtener los datos del formulario
             $requestData = $request->all();
-
+    
             // Crear el portafolio
             $briefcase = Briefcase::create($requestData['briefcases']);
-
+    
             // Verificar si se creó correctamente el portafolio
             if (!$briefcase) {
                 throw new \Exception("No se pudo crear el portafolio.");
             }
-
+    
             // Crear los documentos
             $documents = $requestData['documents'];
-
+    
             foreach ($documents as $documentData) {
                 // Crear el documento
                 $document = Documents::create($documentData);
-
+    
                 // Verificar si se creó correctamente el documento
                 if (!$document) {
                     throw new \Exception("No se pudo crear el documento.");
                 }
-
+    
                 // Obtener los archivos relacionados con el documento
                 $files = $documentData['files'];
-
+    
                 foreach ($files as $fileData) {
                     // Crear el archivo
                     $file = new File();
-
+    
                     // Asignar los datos del archivo
                     $file->fill($fileData);
-
+    
                     // Verificar si se asignaron correctamente los datos del archivo
                     if (!$file->save()) {
                         throw new \Exception("No se pudo crear el archivo.");
                     }
-
-                    // Establecer la relación entre el archivo y el documento
-                    //$document->files()->attach($file->id);
-                    $file->briefcases()->associate($briefcase);
-                    $file->documents()->associate($document);
+    
+                    // Asignar los IDs del portafolio y el documento al archivo
+                    $file->briefcase_id = $briefcase->id;
+                    $file->document_id = $document->id;
+                    $file->save();
                 }
+    
+                // Establecer la relación entre el documento y el portafolio
+               // $document->briefcases()->attach($briefcase->id);
             }
-
+    
             DB::commit();
-
+    
             return response()->json([
                 'message' => 'La relación entre el portafolio y los documentos se ha creado exitosamente.'
             ], 200);
         } catch (\Exception $e) {
             DB::rollback();
-
+    
             return response()->json([
                 'error' => $e->getMessage()
             ], 400);

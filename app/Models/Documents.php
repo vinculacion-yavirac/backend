@@ -56,22 +56,4 @@ class Documents extends Model
     {
         return $this->hasMany(File::class, 'document_id');
     }
-    
-    
 }
-
-
-
-    /*
-    public function briefcases()
-    {
-        return $this->belongsToMany(Briefcase::class, 'files', 'document_id', 'briefcase_id');
-    }
-    */
-    /*
-
-    public function files()
-    {
-        return $this->belongsToMany(File::class);
-    }
-    */

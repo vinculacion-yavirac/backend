@@ -37,15 +37,6 @@ class Briefcase extends Model
         return $this->belongsTo(User::class, 'archived_by');
     }
     
-    /*
-    public function documents()
-    {
-        return $this->belongsToMany(Documents::class, 'files', 'briefcase_id','document_id')
-            ->using(File::class)
-            ->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
-    }
-
-    */
 
     public function documents()
     {
@@ -59,11 +50,3 @@ class Briefcase extends Model
         return $this->hasMany(File::class, 'briefcase_id');
     }
 }
-
-
-    /*
-    public function documents()
-    {
-        return $this->belongsToMany(Documents::class, 'files', 'briefcase_id', 'document_id');
-    }
-    */
