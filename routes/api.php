@@ -166,6 +166,10 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:RESTAURAR_DOCUMENTO')->group(function () {
          //   Route::put('/restore/{id}', [DocumentController::class, 'restoreProject']);
         });
+
+        Route::middleware('permission:CREAR_DOCUMENTO')->group(function () {
+            Route::post('/create', [DocumentController::class, 'createDocuments']);
+        });
     });
 
     //SOLICITUD
