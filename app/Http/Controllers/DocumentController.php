@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Documents;
+use App\Models\Briefcase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentController extends Controller
 {
@@ -23,46 +25,47 @@ class DocumentController extends Controller
 
 
     
-
-    /*
-    public function createDocument(Request $request)
+    
+    public function createDocuments(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'template' => 'required|string',,
-            'state' => 'required|boolean',
-            'order'=> 'required|integer',
+            '*.name' => 'required|string',
+            '*.template' => 'required|string',
+            '*.state' => 'required|boolean',
+            '*.order' => 'required|integer',
+            '*.responsible_id' => 'integer'
         ]);
 
         try {
-            // Crear registro del documento oficial
-            $document = Documents::create(array_merge(
-                $request->except('files', 'comments'),
-                ['created_by' => auth()->user()->id]
-            ));
+            $documentsData = $request->all();
+            $userId = Auth::id();
 
-            // Guardar comentario
-            if ($request->comment) {
-                Comment::create([
-                    'comment' => $request->comment,
-                    'official_document' => $officialDocument->id,
-                    'created_by' => auth()->user()->id
-                ]);
+            foreach ($documentsData as $documentData) {
+                $documentData['created_by'] = $userId;
+                $document = Documents::create($documentData);
+
+                if (!$document) {
+                    throw new \Exception("No se pudo crear el documento.");
+                }
+
+                // Establecer la relación con el portafolio si es necesario
+                if (isset($documentData['briefcase_id'])) {
+                    $briefcase = Briefcase::find($documentData['briefcase_id']);
+
+                    if ($briefcase) {
+                        $document->briefcases()->attach($briefcase->id);
+                    }
+                }
             }
 
-
             return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'official_document' => $officialDocument
-                ],
-                'message' => 'Oficio creado con éxito'
-            ]);
+                'message' => 'Documentos creados exitosamente.'
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error al crear el oficio: ' . $e->getMessage()
-            ]);
+                'error' => $e->getMessage()
+            ], 400);
         }
     }
-    */
+    
 }
