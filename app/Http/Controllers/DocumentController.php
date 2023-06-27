@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Documents;
+use App\Models\Briefcase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentController extends Controller
 {
@@ -36,8 +38,10 @@ class DocumentController extends Controller
 
         try {
             $documentsData = $request->all();
+            $userId = Auth::id();
 
             foreach ($documentsData as $documentData) {
+                $documentData['created_by'] = $userId;
                 $document = Documents::create($documentData);
 
                 if (!$document) {
