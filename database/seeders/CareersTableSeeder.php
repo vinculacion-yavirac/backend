@@ -19,6 +19,7 @@ class CareersTableSeeder extends Seeder
             ['name' => 'Carrera 1', 'code' => 'C1'],
             ['name' => 'Carrera 2', 'code' => 'C2'],
             ['name' => 'Carrera 3', 'code' => 'C3'],
+            ['name' => 'TECNOLOGÍA EN DESARROLLO DE SOFTWARE', 'code' => 'C4'],
             // Agrega más registros de carreras aquí si es necesario
         ];
 
