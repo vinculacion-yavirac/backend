@@ -146,7 +146,7 @@ Route::middleware('authentication')->group(function () {
             Route::put('/update/{id}', [$controller, 'updateBriefcase']);
         });
         Route::middleware('permission:CREAR_PORTAFOLIO')->group(function () use ($controller) {
-            Route::post('/create', [BriefcaseController::class, 'createBriefcase']);
+            Route::post('/create', [BriefcaseController::class, 'createBriefcaseWithFiles']);
         });
     });
 
@@ -162,7 +162,7 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
          //   Route::put('/archive/{id}', [DocumentController::class, 'archiveProject']);
         });
-    
+
         Route::middleware('permission:RESTAURAR_DOCUMENTO')->group(function () {
          //   Route::put('/restore/{id}', [DocumentController::class, 'restoreProject']);
         });
