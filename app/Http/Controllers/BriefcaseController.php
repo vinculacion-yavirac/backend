@@ -8,7 +8,8 @@ use App\Models\File;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class BriefcaseController extends Controller
@@ -416,12 +417,7 @@ class BriefcaseController extends Controller
 
 public function create(Request $request)
 {
-    // $data = $request->all();
-    $request->validate([
-        '*.observations' => 'required|string',
-        '*.state' => 'required|string',
-        '*.document_id_id' => 'integer'
-    ]);
+    $data = $request->all();
 
     // if (!isset($data['observations'])) {
     //     $data['observations'] = '';
@@ -431,10 +427,14 @@ public function create(Request $request)
     try {
         DB::beginTransaction();
 
+        $user = Auth::user(); // Obtén el usuario autenticado actualmente
+        $now = Carbon::now(); // Obtén la fecha y hora actual
+
         $briefcase = Briefcase::create([
-            'observations' => $request['observations'],
-            'state' => $request['state'] ? 1 : 0,
-            
+            'observations' => $data['observations'],
+            'state' => $data['state'] ? 1 : 0,
+            'created_by' => $user->id, // Asigna el ID del usuario autenticado a 'created_by'
+            'created' => $now, // Asigna la fecha y hora actual a 'created'
         ]);
 
         $createdFiles = [];
@@ -449,8 +449,7 @@ public function create(Request $request)
                     $fileSize = $uploadedFile->getSize();
                     $observation = ''; // Agrega aquí el valor para el campo 'observation'
                     $state = 0; // Agrega aquí el valor para el campo 'state'
-                    $documentId = $request['document_id']; // Obtén el valor del ID del documento desde el front-end
-
+                    $documentId = $data['document_id']; // Obtén el valor del ID del documento desde el front-end
 
                     $newFile = File::create([
                         'name' => $fileName,
@@ -459,8 +458,9 @@ public function create(Request $request)
                         'size' => $fileSize,
                         'observation' => $observation,
                         'state' => $state,
-                        'document_id' => $documentId, // rempazar
-                        'briefcase_id' => $briefcase->id // Cambia el campo 'document_id' por el campo correspondiente en tu modelo 'File'
+                        'document_id' => $documentId, // reemplazar
+                        'briefcase_id' => $briefcase->id, // Cambia el campo 'document_id' por el campo correspondiente en tu modelo 'File'
+                        'created' => $now, // Asigna la fecha y hora actual a 'created'
                     ]);
 
                     $createdFiles[] = $newFile;
@@ -489,8 +489,5 @@ public function create(Request $request)
         ], 500);
     }
 }
-
-   
-
 
 }
