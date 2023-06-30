@@ -404,6 +404,92 @@ class BriefcaseController extends Controller
         }
     }
 
+
+
+
+
+
+
+// prueba aaaaaaaaaaaaaaaaaaaa
+
+
+
+public function create(Request $request)
+{
+    // $data = $request->all();
+    $request->validate([
+        '*.observations' => 'required|string',
+        '*.state' => 'required|string',
+        '*.document_id_id' => 'integer'
+    ]);
+
+    // if (!isset($data['observations'])) {
+    //     $data['observations'] = '';
+    //     $data['state'] = false;
+    // }
+
+    try {
+        DB::beginTransaction();
+
+        $briefcase = Briefcase::create([
+            'observations' => $request['observations'],
+            'state' => $request['state'] ? 1 : 0,
+            
+        ]);
+
+        $createdFiles = [];
+
+        if ($request->hasFile('files')) {
+            $uploadedFiles = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
+
+            foreach ($uploadedFiles as $index => $uploadedFile) {
+                if ($uploadedFile->isValid()) {
+                    $fileName = $uploadedFile->getClientOriginalName();
+                    $fileContent = base64_encode(file_get_contents($uploadedFile));
+                    $fileSize = $uploadedFile->getSize();
+                    $observation = ''; // Agrega aquí el valor para el campo 'observation'
+                    $state = 0; // Agrega aquí el valor para el campo 'state'
+                    $documentId = $request['document_id']; // Obtén el valor del ID del documento desde el front-end
+
+
+                    $newFile = File::create([
+                        'name' => $fileName,
+                        'type' => $uploadedFile->getClientOriginalExtension(),
+                        'content' => $fileContent,
+                        'size' => $fileSize,
+                        'observation' => $observation,
+                        'state' => $state,
+                        'document_id' => $documentId, // rempazar
+                        'briefcase_id' => $briefcase->id // Cambia el campo 'document_id' por el campo correspondiente en tu modelo 'File'
+                    ]);
+
+                    $createdFiles[] = $newFile;
+                } else {
+                    DB::rollback();
+                    return response()->json([
+                        'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
+                        'error' => 'Uno o más archivos no son válidos.',
+                    ], 500);
+                }
+            }
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Portafolio creado exitosamente',
+            'briefcase' => $briefcase,
+            'files' => $createdFiles,
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
    
 
 
