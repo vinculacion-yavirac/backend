@@ -414,79 +414,56 @@ class BriefcaseController extends Controller
 // prueba aaaaaaaaaaaaaaaaaaaa
 
 
-    public function create(Request $request)
-    {
-        $data = $request->all();
 
-        // if (!isset($data['observations'])) {
-        //     $data['observations'] = '';
-        //     $data['state'] = false;
-        // }
+public function create(Request $request)
+{
+    try {
+        DB::beginTransaction();
 
-        try {
-            DB::beginTransaction();
+        $user = Auth::user();
+        $now = Carbon::now();
 
-            $user = Auth::user(); // Obtén el usuario autenticado actualmente
-            $now = Carbon::now(); // Obtén la fecha y hora actual
+        $briefcase = Briefcase::create([
+            'observation' => $request->input('observations', ''),
+            'state' => $request->input('state', false) ? 1 : 0,
+            'created_by' => $user->id,
+            'created_at' => $now,
+            'project_participant_id' => $request->input('project_participant_id'),
+        ]);
 
-            $briefcase = Briefcase::create([
-                'observations' => $data['observations'],
-                'state' => $data['state'] ? 1 : 0,
-                'created_by' => $user->id, // Asigna el ID del usuario autenticado a 'created_by'
-                'created_at' => $now, // No es necesario establecer manualmente el campo 'created_at'
-            ]);
+        $createdFiles = [];
 
-            $createdFiles = [];
+        foreach ($request->input('files') as $fileData) {
+            $file = new File();
+            $file->name = $fileData['name'];
+            $file->type = $fileData['type'];
+            $file->content = base64_encode(file_get_contents($fileData['content']));
+            $file->size = $fileData['size'];
+            $file->observation = $fileData['observation'] ?? '';
+            $file->state = $fileData['state'] ? 1 : 0;
+            $file->briefcase_id = $briefcase->id;
+            $file->document_id = $fileData['document_id'];
+            $file->save();
 
-            if ($request->hasFile('files')) {
-                $uploadedFiles = is_array($request->file('files')) ? $request->file('files') : [$request->file('files')];
-
-                foreach ($uploadedFiles as $index => $uploadedFile) {
-                    if ($uploadedFile->isValid()) {
-                        $fileName = $uploadedFile->getClientOriginalName();
-                        $fileContent = base64_encode(file_get_contents($uploadedFile));
-                        $fileSize = $uploadedFile->getSize();
-                        $observation = $data['observation']; // Obtén el valor de la observación desde el front-end
-                        $state = $data['state'] ? 1 : 0;
-                        $documentId = $data['document_id'];
-
-                        $newFile = File::create([
-                            'name' => $fileName,
-                            'type' => $uploadedFile->getClientOriginalExtension(),
-                            'content' => $fileContent,
-                            'size' => $fileSize,
-                            'observation' => $observation,
-                            'state' => $state,
-                            'document_id' => $documentId,
-                            'briefcase_id' => $briefcase->id,
-                        ]);
-
-                        $createdFiles[] = $newFile;
-                    } else {
-                        DB::rollback();
-                        return response()->json([
-                            'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
-                            'error' => 'Uno o más archivos no son válidos.',
-                        ], 500);
-                    }
-                }
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'message' => 'Portafolio creado exitosamente',
-                'briefcase' => $briefcase,
-                'files' => $createdFiles,
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
-                'error' => $e->getMessage(),
-            ], 500);
+            $createdFiles[] = $file;
         }
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Portafolio creado exitosamente',
+            'briefcase' => $briefcase,
+            'files' => $createdFiles,
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
 
 }
