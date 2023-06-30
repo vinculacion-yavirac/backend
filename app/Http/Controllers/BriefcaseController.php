@@ -424,8 +424,8 @@ public function create(Request $request)
         $now = Carbon::now();
 
         $briefcase = Briefcase::create([
-            'observation' => $request->input('observations', ''),
-            'state' => $request->input('state', false) ? 1 : 0,
+            'observations' => $request->input('observations'),
+            'state' => $request->input('state', false) ,
             'created_by' => $user->id,
             'created_at' => $now,
             'project_participant_id' => $request->input('project_participant_id'),
