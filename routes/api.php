@@ -162,7 +162,7 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
          //   Route::put('/archive/{id}', [DocumentController::class, 'archiveProject']);
         });
-    
+
         Route::middleware('permission:RESTAURAR_DOCUMENTO')->group(function () {
          //   Route::put('/restore/{id}', [DocumentController::class, 'restoreProject']);
         });
