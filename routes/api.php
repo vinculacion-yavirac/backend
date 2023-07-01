@@ -146,7 +146,7 @@ Route::middleware('authentication')->group(function () {
             Route::put('/update/{id}', [$controller, 'updateBriefcase']);
         });
         Route::middleware('permission:CREAR_PORTAFOLIO')->group(function () use ($controller) {
-            Route::post('/create', [BriefcaseController::class, 'createBriefcaseWithFiles']);
+            Route::post('/create', [BriefcaseController::class, 'create']);
         });
     });
 

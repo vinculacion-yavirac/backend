@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class BriefcaseController extends Controller
@@ -378,6 +379,64 @@ class BriefcaseController extends Controller
         }
     }
 
+
+
+
+
+
+
+// prueba aaaaaaaaaaaaaaaaaaaa
+
+
+
+public function create(Request $request)
+{
+    try {
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        $now = Carbon::now();
+
+        $briefcase = Briefcase::create([
+            'observations' => $request->input('observations'),
+            'state' => $request->input('state', false) ,
+            'created_by' => $user->id,
+            'created_at' => $now,
+            'project_participant_id' => $request->input('project_participant_id'),
+        ]);
+
+        $createdFiles = [];
+
+        foreach ($request->input('files') as $fileData) {
+            $file = new File();
+            $file->name = $fileData['name'];
+            $file->type = $fileData['type'];
+            $file->content = base64_encode(file_get_contents($fileData['content']));
+            $file->size = $fileData['size'];
+            $file->observation = $fileData['observation'] ?? '';
+            $file->state = $fileData['state'] ? 1 : 0;
+            $file->briefcase_id = $briefcase->id;
+            $file->document_id = $fileData['document_id'];
+            $file->save();
+
+            $createdFiles[] = $file;
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Portafolio creado exitosamente',
+            'briefcase' => $briefcase,
+            'files' => $createdFiles,
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
 
 
 

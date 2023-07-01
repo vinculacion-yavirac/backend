@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name',100);
             $table->string('type',200);
-            $table->text('content',100);
+            $table->longText('content');
             $table->string('observation',200);
             $table->boolean('state');
             $table->integer('size');
