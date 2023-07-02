@@ -155,7 +155,6 @@ class FilesController extends Controller
 
 // prueba combinar 
 
-
 public function uploadFiles(Request $request, $idBriefcase)
 {
     $response = [
@@ -171,22 +170,26 @@ public function uploadFiles(Request $request, $idBriefcase)
     }
 
     $files = $request->file('files');
+    $names = $request->input('names');
+    $types = $request->input('types');
+    $documentIds = $request->input('document_ids');
+
     $newFiles = [];
 
-    foreach ($files as $file) {
+    foreach ($files as $index => $file) {
         if ($file->isValid()) {
-            $fileName = $file->getClientOriginalName();
-            $combinedValue = $fileName;
-            $fileNameParts = explode(';', $combinedValue);
+            $fileName = $names[$index];
             $fileContent = base64_encode(file_get_contents($file));
             $fileSize = $file->getSize();
             $observation = ''; // Agrega aquí el valor para el campo 'observation'
             $state = 0; // Agrega aquí el valor para el campo 'state'
-            $document_id = $fileNameParts[1];
+            $document_id = $documentIds[$index];
+            $name = $fileName;
+            $fileType = $types[$index];
 
             $newFile = File::create([
-                'name' => $fileNameParts[0],
-                'type' => $file->getClientOriginalExtension(),
+                'name' => $name,
+                'type' => $fileType,
                 'content' => $fileContent,
                 'size' => $fileSize,
                 'observation' => $observation,
@@ -209,6 +212,8 @@ public function uploadFiles(Request $request, $idBriefcase)
 
     return response()->json($response, 200);
 }
+
+
 
 
 
