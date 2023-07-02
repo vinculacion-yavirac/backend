@@ -16,7 +16,7 @@ class BeneficiaryInstitutionsController extends Controller
      */
     public function getBeneficiaryInstitution(){
         $beneficiaryInstitutions = BeneficiaryInstitution::all();
-        $beneficiaryInstitutions->load(['parish_id.father_code']);
+        $beneficiaryInstitutions->load(['addresses_id.father_code']);
         return new JsonResponse([
             'status' => 'success',
             'data' => [

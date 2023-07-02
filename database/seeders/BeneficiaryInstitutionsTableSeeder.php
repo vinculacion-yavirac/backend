@@ -23,7 +23,13 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
             'state' => true,
             'place_location' => 'Lugar 1',
             'postal_code' => '12345',
-            'parish_id' => 1,
+            'addresses_id' => 1,
+            'management_nature' => 'publica',
+            'economic_activity' => 'Actividad Ecónomica',
+            'phone' => '098887131',
+            'email' => 'correo@gmail.com',
+            'parish_main_id' => 1,
+            'parish_branch_id' => 2
         ],
         [
             'ruc' => '0987654321',
@@ -32,7 +38,13 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
             'state' => false,
             'place_location' => 'Lugar 2',
             'postal_code' => '54321',
-            'parish_id' => 2,
+            'addresses_id' => 2,
+            'management_nature' => 'privada',
+            'economic_activity' => 'Actividad Ecónomica',
+            'phone' => '098887131',
+            'email' => 'correo@gmail.com',
+            'parish_main_id' => 3,
+            'parish_branch_id' => 4
         ],
         // Agrega más registros de instituciones beneficiarias si es necesario
     ];

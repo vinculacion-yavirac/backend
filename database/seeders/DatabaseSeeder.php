@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             SchoolPeriodSeeder::class,
             ConventionSeeder::class,
             AddressSeeder::class,
+            ParishSeeder::class,
+            InstituteSeeder::class,
             BeneficiaryInstitutionsTableSeeder::class,
             CareersTableSeeder::class,
             ResearchLinesTableSeeder::class,

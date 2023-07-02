@@ -16,7 +16,11 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\CareerController;
+use App\Http\Controllers\InstituteController;
 use App\Http\Controllers\ProjectParticipantController;
+use App\Http\Controllers\SchoolPeriodController;
+use App\Http\Controllers\ResponsibleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -194,9 +198,28 @@ Route::middleware('authentication')->group(function () {
 
     Route::prefix('project')->group(function () {
         //ruta para obtener todos los comentarios de un oficio por id
-        Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PRTOYECTO');
+        Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PROYECTO');
         Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
         Route::get('/{id}', [ProjectController::class, 'getProjectById']);
+        Route::post('/create', [ProjectController::class, 'createProject'])->middleware('permission:CREAR_PROYECTO');
+        Route::put('/update/{id}', [ProjectController::class, 'updateProject'])->middleware('permission:ACTUALIZAR_PROYECTO');
+    });
+
+    Route::prefix('career')->group(function () {
+        Route::get('/', [CareerController::class, 'getCareer']);
+    });
+
+    Route::prefix('responsible')->group(function () {
+        Route::get('/', [ResponsibleController::class, 'getResponsible']);
+    });
+
+
+    Route::prefix('institute')->group(function () {
+        Route::get('/', [InstituteController::class, 'getInstitute']);
+    });
+
+    Route::prefix('school-period')->group(function () {
+        Route::get('/', [SchoolPeriodController::class, 'getSchoolPeriod']);
     });
 
 

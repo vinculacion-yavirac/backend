@@ -15,14 +15,22 @@ return new class extends Migration
     {
         Schema::create('beneficiary_institutions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('ruc',15);
-            $table->string('name',100);
-            $table->string('logo',20);
-            $table->boolean('state');
-            $table->string('place_location',200);
-            $table->string('postal_code',20);
-            $table->unsignedBigInteger('parish_id')->nullable();
-            $table->foreign('parish_id')->references('id')->on('addresses');
+            $table->string('ruc',15)->nullable();
+            $table->string('name',100)->nullable();
+            $table->string('logo',20)->nullable();
+            $table->boolean('state')->nullable();
+            $table->string('place_location',200)->nullable();
+            $table->string('postal_code',20)->nullable();
+            $table->string('phone',20)->nullable();
+            $table->string('email',30)->nullable();
+            $table->string('management_nature',25)->nullable();
+            $table->string('economic_activity',25)->nullable();
+            $table->unsignedBigInteger('addresses_id')->nullable();
+            $table->foreign('addresses_id')->references('id')->on('addresses');
+            $table->integer('parish_main_id')->nullable();
+            $table->foreign('parish_main_id')->references('id')->on('parish');
+            $table->integer('parish_branch_id')->nullable();
+            $table->foreign('parish_branch_id')->references('id')->on('parish');
             $table->timestamps();
         });
     }

@@ -14,15 +14,31 @@ class BeneficiaryInstitution extends Model
         protected $fillable = [
             'ruc',
             'name',
+            'management_nature',
+            'economic_activity',
             'logo',
             'state',
             'place_location',
+            'phone',
+            'email',
             'postal_code',
-            'parish_id',
+            'addresses_id',
+            'parish_main_id',
+            'parish_branch_id'
         ];
 
-        public function parish_id()
+        public function addresses_id()
         {
-            return $this->belongsTo(Address::class, 'parish_id');
+            return $this->belongsTo(Address::class, 'addresses_id');
+        }
+
+        public function parish_main_id()
+        {
+            return $this->belongsTo(Parish::class, 'parish_main_id');
+        }
+
+        public function parish_branch_id()
+        {
+            return $this->belongsTo(Parish::class, 'parish_branch_id');
         }
 }
