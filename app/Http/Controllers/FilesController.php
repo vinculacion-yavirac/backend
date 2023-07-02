@@ -66,87 +66,156 @@ class FilesController extends Controller
 
 
 
-    public function uploadFiles(Request $request, $idBriefcase, $idDocumnt )
-    {
-        $response = [
-            'status' => '',
-            'message' => '',
-            'files' => []
-        ];
+    // public function uploadFiles(Request $request,$idBriefcase)
+    // {
+    //     $response = [
+    //         'status' => '',
+    //         'message' => '',
+    //         'files' => []
+    //     ];
+
+    //     $documentId = $request->input('document_id');
+
+    //     if (!$request->hasFile('files')) {
+    //         $response['status'] = 'error';
+    //         $response['message'] = 'No se encontraron archivos en la solicitud';
+    //         return response()->json($response, 400);
+    //     }
     
-        if (!$request->hasFile('files')) {
-            $response['status'] = 'error';
-            $response['message'] = 'No se encontraron archivos en la solicitud';
-            return response()->json($response, 400);
-        }
+    //     $files = $request->file('files');
+    //     $newFiles = [];
     
-        $files = $request->file('files');
-        $newFiles = [];
+    //     if (is_array($files)) {
+    //         foreach ($files as $file) {
+    //             if ($file->isValid()) {
+    //                 $fileName = $file->getClientOriginalName();
+    //                 $fileContent = base64_encode(file_get_contents($file));
+    //                 $fileSize = $file->getSize();
+    //                 $observation = ''; // Agrega aquí el valor para el campo 'observation'
+    //                 $state = 0; // Agrega aquí el valor para el campo 'state'
+    //                 $document_id = $documentId;
     
-        if (is_array($files)) {
-            foreach ($files as $file) {
-                if ($file->isValid()) {
-                    $fileName = $file->getClientOriginalName();
-                    $fileContent = base64_encode(file_get_contents($file));
-                    $fileSize = $file->getSize();
-                    $observation = ''; // Agrega aquí el valor para el campo 'observation'
-                    $state = 0; // Agrega aquí el valor para el campo 'state'
+    //                 $newFile = File::create([
+    //                     'name' => $fileName,
+    //                     'type' => $file->getClientOriginalExtension(),
+    //                     'content' => $fileContent,
+    //                     'size' => $fileSize,
+    //                     'observation' => $observation,
+    //                     'state' => $state,
+    //                     'briefcase_id' => $idBriefcase,
+    //                     'document_id' => $document_id,
+    //                 ]);
     
-                    $newFile = File::create([
-                        'name' => $fileName,
-                        'type' => $file->getClientOriginalExtension(),
-                        'content' => $fileContent,
-                        'size' => $fileSize,
-                        'observation' => $observation,
-                        'state' => $state,
-                        'briefcase_id' => $idBriefcase,
-                        'document_id' => $idDocumnt
-                    ]);
+    //                 $newFiles[] = $newFile;
+    //             } else {
+    //                 $response['status'] = 'error';
+    //                 $response['message'] = 'Uno o más archivos no son válidos';
+    //                 return response()->json($response, 400);
+    //             }
+    //         }
+    //     } elseif ($files instanceof \Illuminate\Http\UploadedFile) {
+    //         if ($files->isValid()) {
+    //             $fileName = $files->getClientOriginalName();
+    //             $fileContent = base64_encode(file_get_contents($files));
+    //             $fileSize = $files->getSize();
+    //             $observation = ''; // Agrega aquí el valor para el campo 'observation'
+    //             $state = 0; // Agrega aquí el valor para el campo 'state'
+    //             $document_id = $documentId;
     
-                    $newFiles[] = $newFile;
-                } else {
-                    $response['status'] = 'error';
-                    $response['message'] = 'Uno o más archivos no son válidos';
-                    return response()->json($response, 400);
-                }
-            }
-        } elseif ($files instanceof \Illuminate\Http\UploadedFile) {
-            if ($files->isValid()) {
-                $fileName = $files->getClientOriginalName();
-                $fileContent = base64_encode(file_get_contents($files));
-                $fileSize = $files->getSize();
-                $observation = ''; // Agrega aquí el valor para el campo 'observation'
-                $state = 0; // Agrega aquí el valor para el campo 'state'
+    //             $newFile = File::create([
+    //                 'name' => $fileName,
+    //                 'type' => $files->getClientOriginalExtension(),
+    //                 'content' => $fileContent,
+    //                 'size' => $fileSize,
+    //                 'observation' => $observation,
+    //                 'state' => $state,
+    //                 'briefcase_id' => $idBriefcase,
+    //                 'document_id' => $document_id,
+    //             ]);
     
-                $newFile = File::create([
-                    'name' => $fileName,
-                    'type' => $files->getClientOriginalExtension(),
-                    'content' => $fileContent,
-                    'size' => $fileSize,
-                    'observation' => $observation,
-                    'state' => $state,
-                    'briefcase_id' => $idBriefcase,
-                    'document_id' => $idDocumnt
-                ]);
+    //             $newFiles[] = $newFile;
+    //         } else {
+    //             $response['status'] = 'error';
+    //             $response['message'] = 'El archivo no es válido';
+    //             return response()->json($response, 400);
+    //         }
+    //     } else {
+    //         $response['status'] = 'error';
+    //         $response['message'] = 'El formato de archivos no es válido';
+    //         return response()->json($response, 400);
+    //     }
     
-                $newFiles[] = $newFile;
-            } else {
-                $response['status'] = 'error';
-                $response['message'] = 'El archivo no es válido';
-                return response()->json($response, 400);
-            }
+    //     $response['status'] = 'success';
+    //     $response['message'] = 'Los archivos se subieron correctamente';
+    //     $response['files'] = $newFiles;
+    
+    //     return response()->json($response, 200);
+    // }
+
+
+// prueba combinar 
+
+
+public function uploadFiles(Request $request, $idBriefcase)
+{
+    $response = [
+        'status' => '',
+        'message' => '',
+        'files' => []
+    ];
+
+    if (!$request->hasFile('files')) {
+        $response['status'] = 'error';
+        $response['message'] = 'No se encontraron archivos en la solicitud';
+        return response()->json($response, 400);
+    }
+
+    $files = $request->file('files');
+    $newFiles = [];
+
+    foreach ($files as $file) {
+        if ($file->isValid()) {
+            $fileName = $file->getClientOriginalName();
+            $combinedValue = $fileName;
+            $fileNameParts = explode(';', $combinedValue);
+            $fileContent = base64_encode(file_get_contents($file));
+            $fileSize = $file->getSize();
+            $observation = ''; // Agrega aquí el valor para el campo 'observation'
+            $state = 0; // Agrega aquí el valor para el campo 'state'
+            $document_id = $fileNameParts[1];
+
+            $newFile = File::create([
+                'name' => $fileNameParts[0],
+                'type' => $file->getClientOriginalExtension(),
+                'content' => $fileContent,
+                'size' => $fileSize,
+                'observation' => $observation,
+                'state' => $state,
+                'briefcase_id' => $idBriefcase,
+                'document_id' => $document_id,
+            ]);
+
+            $newFiles[] = $newFile;
         } else {
             $response['status'] = 'error';
-            $response['message'] = 'El formato de archivos no es válido';
+            $response['message'] = 'Uno o más archivos no son válidos';
             return response()->json($response, 400);
         }
-    
-        $response['status'] = 'success';
-        $response['message'] = 'Los archivos se subieron correctamente';
-        $response['files'] = $newFiles;
-    
-        return response()->json($response, 200);
     }
+
+    $response['status'] = 'success';
+    $response['message'] = 'Los archivos se subieron correctamente';
+    $response['files'] = $newFiles;
+
+    return response()->json($response, 200);
+}
+
+
+
+
+
+
+
 
 
     public function downloadFile($id)
