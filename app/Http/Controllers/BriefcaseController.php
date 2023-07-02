@@ -14,19 +14,17 @@ class BriefcaseController extends Controller
     * @return JsonResponse
     * Obtener todos los portafolios
     */
-   public function getBriefcase()
-     {
-        $briefcases =  Briefcase::where('id', '!=', 0)
-           ->where('archived', false)
-           ->with('project_participant_id.participant_id.person')
-           ->get();
+    public function getBriefcase()
+    {
+        $briefcases = Briefcase::where('id', '>', 0)
+            ->where('archived', false)
+            ->with('project_participant_id.participant_id.person')
+            ->get();
 
-        return new JsonResponse([
+        return response()->json([
             'status' => 'success',
             'data' => ['briefcases' => $briefcases],
-/*             'total' => count(
-                $briefcase) */
-        ], 200);
+        ]);
     }
 
     /**
@@ -37,91 +35,142 @@ class BriefcaseController extends Controller
      */
     public function getBriefcaseById($id)
     {
-      $briefcases = Briefcase::where('id', $id)
-          ->where('id', '!=', 0)
-          ->where('archived', false)
-          ->with('project_participant_id.participant_id.person')
-          ->first();
+        $briefcases = Briefcase::where('id', $id)
+            ->where('archived', false)
+            ->with('project_participant_id.participant_id.person')
+            ->first();
 
-      if (!$briefcases) {
-          return response()->json([
-              'message' => 'Portafolio no encontrada'
-          ]);
-      }
+        if (!$briefcases) {
+            return response()->json([
+                'message' => 'Portafolio no encontrado'
+            ]);
+        }
 
-      return response()->json([
-          'status' => 'success',
-          'data' => [
-              'briefcases' => $briefcases
-          ],
-      ]);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'briefcases' => $briefcases
+            ],
+        ]);
     }
 
     /**
-     * Summary of getArchivedBriefcase
+     * Summary of getArchivedPortafolio
      * @return \Illuminate\Http\JsonResponse
-     * Obtener todos los archivados
+     * Obtener todas las que sean true en archived
      */
     public function getArchivedBriefcase()
     {
-      $briefcases = Briefcase::where('id', '!=', 0)
-          ->where('archived', true)
-          ->with('created_by', 'created_by.person')
-          ->get();
+        $briefcases = Briefcase::where('archived', true)
+            ->with('project_participant_id.participant_id.person')
+            ->get();
 
-      return response()->json([
-          'status' => 'success',
-          'data' => [
-              'briefcases' => $briefcases,
-          ],
-      ]);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'briefcases' => $briefcases,
+            ],
+        ]);
     }
 
-
+    
     /**
-     * Summary of ArchiveBriefcase
+     * Summary of archiveBriefcase
      * @param mixed $id
-     * @return JsonResponse
-     * Archivar portafolio
+     * @return \Illuminate\Http\JsonResponse
+     * Archivar el protafolio por el id
      */
-    public function ArchiveBriefcase($id)
+    public function archiveBriefcase($id)
     {
-      $briefcases = Briefcase::findOrFail($id);
+        $briefcase = Briefcase::findOrFail($id);
 
-      $briefcases->archived = true;
-      $briefcases->archived_at = now();
-      $briefcases->archived_by = auth()->user()->id;
-      $briefcases->save();
+        $briefcase->update([
+            'archived' => true,
+            'archived_at' => now(),
+            'archived_by' => auth()->user()->id,
+        ]);
 
-      return new JsonResponse([
-          'status' => 'success',
-          'message' => 'Portafolio archivada correctamente',
-          'data' => [
-              'briefcases' => $briefcases,
-          ],
-      ], 200);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Portafolio archivado correctamente',
+            'data' => [
+                'briefcase' => $briefcase,
+            ],
+        ], 200);
+    }
+
+   
+    /**
+     * Summary of restoreBriefcase
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     * Restaurar por el id
+     */
+    public function restoreBriefcase($id)
+    {
+        $briefcase = Briefcase::findOrFail($id);
+
+        $briefcase->update([
+            'archived' => false,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Solicitud restaurada correctamente',
+            'data' => [
+                'briefcase' => $briefcase,
+            ],
+        ], 200);
+    }
+
+        /**
+     * Summary of searchBriefcaseByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse
+     * Buscador del portafolio
+     */
+    public function searchBriefcaseByTerm($term = '')
+    {
+        $lowerTerm = strtolower($term);
+
+        $briefcases = Briefcase::where('archived', false)
+            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($lowerTerm) {
+                $query->whereRaw('LOWER(names) like ? or LOWER(last_names) like ? or LOWER(identification) like ?', ['%' . $lowerTerm . '%', '%' . $lowerTerm . '%', '%' . $lowerTerm . '%']);
+            })
+            ->with('project_participant_id.participant_id.person')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'briefcases' => $briefcases
+            ],
+        ]);
     }
 
     /**
-     * Summary of restaureBriefcase
-     * @param mixed $id
-     * @return JsonResponse
-     * Restaurar un portafolio
+     * Summary of searchArchivedBriefcaseByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse
+     * Buscador de los archivados
      */
-    public function restaureBriefcase($id)
+    public function searchArchivedBriefcaseByTerm($term = '')
     {
-      $briefcases = Briefcase::findOrFail($id);
+        $briefcases = Briefcase::where('archived', true)
+            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+                $query->where('names', 'ILIKE', '%' . $term . '%')
+                    ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
+                    ->orWhere('identification', 'ILIKE', '%' . $term . '%');
+            })
+            ->with('project_participant_id.participant_id.person')
+            ->get();
 
-      $briefcases->archived = false;
-      $briefcases->save();
-
-      return new JsonResponse([
-          'status' => 'success',
-          'message' => 'Solicitud restaurada correctamente',
-          'data' => [
-              'briefcases' => $briefcases,
-          ],
-      ], 200);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'briefcases' => $briefcases
+            ],
+        ]);
     }
 
     /**
@@ -132,48 +181,19 @@ class BriefcaseController extends Controller
      */
     public function filterBriefcaseByStatus($state = '')
     {
-      $briefcases = Briefcase::where('id', '!=', 0)
-      ->where('archived', false)
-      ->where('state', $state)
-      ->with('project_participant_id.participant_id.person')
-      ->get();
+        $briefcases = Briefcase::where('archived', false)
+            ->where('state', $state)
+            ->with('project_participant_id.participant_id.person')
+            ->get();
 
-      return response()->json([
-          'status' => 'success',
-          'data' => [
-            'briefcases' => $briefcases
-          ],
-      ], 200);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'briefcases' => $briefcases
+            ],
+        ]);
     }
 
-
-    /**
-     * Summary of searchBriefcaseByTerm
-     * @param mixed $term
-     * @return \Illuminate\Http\JsonResponse
-     * Buscador del portafolio
-     */
-    public function searchBriefcaseByTerm($term = '')
-    {
-       $briefcases = Briefcase::where('id', '!=', 0)
-           ->where('archived', false)
-           ->where(function ($query) use ($term) {
-               $query->orWhereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
-                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
-                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
-                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
-               });
-           })
-           ->with('project_participant_id.participant_id.person')
-           ->get();
-
-       return response()->json([
-           'status' => 'success',
-           'data' => [
-               'briefcases' => $briefcases
-           ],
-       ]);
-    }
 
     /**
      * Summary of searchAprobadoByTerm
@@ -183,147 +203,47 @@ class BriefcaseController extends Controller
      */
     public function searchAprobadoByTerm($term = '')
     {
-       $briefcases = Briefcase::where('id', '!=', 0)
-           ->where('archived', false)
-           ->where('state', true)
-           ->with('project_participant_id.participant_id.person')
-           ->where(function ($query) use ($term) {
-               $query->orWhereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
-                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
-                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
-                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
-               });
-           })
-           ->with('project_participant_id.participant_id.person')
-           ->get();
-
-       return response()->json([
-           'status' => 'success',
-           'data' => [
-               'briefcases' => $briefcases
-           ],
-       ]);
-    }
-
-    public function searchPendienteByTerm($term = '')
-    {
-       $briefcases = Briefcase::where('id', '!=', 0)
-           ->where('archived', false)
-           ->where('state', false)
-           ->with('project_participant_id.participant_id.person')
-           ->where(function ($query) use ($term) {
-               $query->orWhereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
-                   $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
-                       ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
-                       ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
-               });
-           })
-           ->with('project_participant_id.participant_id.person')
-           ->get();
-
-       return response()->json([
-           'status' => 'success',
-           'data' => [
-               'briefcases' => $briefcases
-           ],
-       ]);
-    }
-
-
-
-
-    public function createBriefcase(Request $request)
-    {
-        $request->validate([
-            'subject' => 'required|string',
-            'description' => 'required|string',
-        ]);
-
-        try {
-            // Crear registro del documento oficial
-            $briefcases = Briefcase::create(array_merge(
-                $request->except('foundations','solicitudes','briefcases'),
-                ['created_by' => auth()->user()->id]
-            ));
-
-            // $briefcases = Briefcase::create(array_merge(
-            //     $request->except('foundations','solicitudes','briefcases'),
-            //     ['created_by' => auth()->user()->id]
-            // ));
-
-            // Guardar comentario
-            if ($request->comment){
-                Comment::create([
-                    'comment' => $request->comment,
-                    'briefcases' => $briefcases->id,
-                    'created_by' => auth()->user()->id
-                ]);
-            }
-
-
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'briefcases' => $briefcases
-                ],
-                'message' => 'Portafolio creado con éxito'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al crear el Portafolio: ' . $e->getMessage()
-            ]);
-        }
-    }
-
-
-    public function updateBriefcase(Request $request, $id)
-    {
-        $request->validate([
-            'asunto' => 'required|string',
-            'estado' => 'required|boolean'
-        ]);
-
-        $briefcases = Briefcase::find($id);
-        if (!$briefcases) {
-            return response()->json([
-                'message' => 'No se encontró el oficio especificado'
-            ], 404);
-        }
-
-        $briefcases->asunto = $request->asunto;
-        $briefcases->estado = $request->estado;
-
-        try {
-            $briefcases->save();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Portafolio actualizado con éxito'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al actualizar el Portafolio: ' . $e->getMessage()
-            ]);
-        }
-    }
-
-
-
-
-    public function deleteBriefcase($id)
-    {
-        $briefcases = Briefcase::find($id);
-
-        if (!$briefcases) {
-            return response()->json([
-                'message' => 'Portafolio no encontrado'
-            ]);
-        }
-
-        $briefcases->delete();
+        $briefcases = Briefcase::where('archived', false)
+            ->where('state', true)
+            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+                $query->where('names', 'ILIKE', '%' . $term . '%')
+                    ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
+                    ->orWhere('identification', 'ILIKE', '%' . $term . '%');
+            })
+            ->with('project_participant_id.participant_id.person')
+            ->get();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Portafolio eliminado correctamente'
+            'data' => [
+                'briefcases' => $briefcases
+            ],
+        ]);
+    }
+
+    /**
+     * Summary of searchPendienteByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse
+     * buscar por state en false
+     */
+    public function searchPendienteByTerm($term = '')
+    {
+        $briefcases = Briefcase::where('archived', false)
+            ->where('state', false)
+            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+                $query->where('names', 'ILIKE', '%' . $term . '%')
+                    ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
+                    ->orWhere('identification', 'ILIKE', '%' . $term . '%');
+            })
+            ->with('project_participant_id.participant_id.person')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'briefcases' => $briefcases
+            ],
         ]);
     }
 }

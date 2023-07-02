@@ -99,29 +99,29 @@ class Project extends Model
         return $this->belongsTo(Responsible::class, 'authorized_by');
     }
 
-    public function madeBy()
+    public function made_by()
     {
         return $this->belongsTo(Responsible::class, 'made_by');
     }
 
-    public function approvedBy()
+    public function approved_by()
     {
         return $this->belongsTo(Responsible::class, 'approved_by');
     }
 
     public function state()
     {
-        return $this->belongsTo(Catalog::class, 'state_id');
+        return $this->belongsTo(Catalogue::class, 'state_id');
     }
 
-    public function stateTwo()
+    public function stateTwo_id()
     {
-        return $this->belongsTo(Catalog::class, 'stateTwo_id');
+        return $this->belongsTo(Catalogue::class, 'stateTwo_id');
     }
 
     public function frequency()
     {
-        return $this->belongsTo(Catalog::class, 'frequency_id');
+        return $this->belongsTo(Catalogue::class, 'frequency_id');
     }
 
     public function created_by()

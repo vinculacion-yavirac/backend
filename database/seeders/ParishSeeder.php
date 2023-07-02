@@ -35,7 +35,7 @@ class ParishSeeder extends Seeder
          [
             'parish' => 'Calderón',
             'canton' => 'Quito',
-            'province' => 'Pichincha'
+            'province' => 'Calacalí'
          ]
      ];
 

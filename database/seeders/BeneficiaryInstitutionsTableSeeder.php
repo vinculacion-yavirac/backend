@@ -18,7 +18,7 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
     $beneficiaryInstitutions = [
         [
             'ruc' => '1234567890',
-            'name' => 'Institución Beneficiaria 1',
+            'name' => 'Alas de Colibri',
             'logo' => 'logo1.png',
             'state' => true,
             'place_location' => 'Lugar 1',
@@ -29,11 +29,15 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
             'phone' => '098887131',
             'email' => 'correo@gmail.com',
             'parish_main_id' => 1,
-            'parish_branch_id' => 2
+            'parish_branch_id' => 2,
+            'created_by' => 5,
+            'archived' => false,
+            'archived_at' => '2023-06-09 02:38:10',
+            'archived_by' => 1,
         ],
         [
             'ruc' => '0987654321',
-            'name' => 'Institución Beneficiaria 2',
+            'name' => 'Gad Guayabanba',
             'logo' => 'logo2.png',
             'state' => false,
             'place_location' => 'Lugar 2',
@@ -44,7 +48,11 @@ class BeneficiaryInstitutionsTableSeeder extends Seeder
             'phone' => '098887131',
             'email' => 'correo@gmail.com',
             'parish_main_id' => 3,
-            'parish_branch_id' => 4
+            'parish_branch_id' => 4,
+            'created_by' => 5,
+            'archived' => false,
+            'archived_at' => '2023-06-09 02:38:10',
+            'archived_by' => 1,
         ],
         // Agrega más registros de instituciones beneficiarias si es necesario
     ];
