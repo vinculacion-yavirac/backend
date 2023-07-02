@@ -47,6 +47,10 @@ class Project extends Model
         'archived',
         'archived_at',
         'archived_by',
+        'coverage',
+        'modality',
+        'financing',
+        'institute_id'
     ];
 
     protected $casts = [
@@ -72,12 +76,17 @@ class Project extends Model
 
     public function beneficiary_institution_id()
     {
-        return $this->belongsTo(BeneficiaryInstitution::class,'beneficiary_institution_id');
+        return $this->belongsTo(BeneficiaryInstitution::class, 'beneficiary_institution_id');
+    }
+
+    public function institute()
+    {
+        return $this->belongsTo(Institute::class, 'institute_id');
     }
 
     public function career()
     {
-        return $this->belongsTo(Career::class);
+        return $this->belongsTo(Career::class, 'career_id');
     }
 
     public function subLineInvestigation()
@@ -85,7 +94,7 @@ class Project extends Model
         return $this->belongsTo(SubLineInvestigation::class);
     }
 
-    public function authorized_by()
+    public function authorizedBy()
     {
         return $this->belongsTo(Responsible::class, 'authorized_by');
     }

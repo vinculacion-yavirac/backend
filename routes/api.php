@@ -16,7 +16,11 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\CareerController;
+use App\Http\Controllers\InstituteController;
 use App\Http\Controllers\ProjectParticipantController;
+use App\Http\Controllers\SchoolPeriodController;
+use App\Http\Controllers\ResponsibleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,7 +126,7 @@ Route::middleware('authentication')->group(function () {
     //Portafolio
     Route::prefix('briefcase')->group(function () {
         $controller = BriefcaseController::class;
-    
+
         Route::middleware('permission:LEER_PORTAFOLIO')->group(function () use ($controller) {
             Route::get('/', [$controller, 'getBriefcase']);
             Route::get('/{id}', [$controller, 'getBriefcaseById']);
@@ -133,7 +137,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/state/aprobado/{term?}', [$controller, 'searchAprobadoByTerm']);
             Route::get('/search/state/pendiente/{term?}', [$controller, 'searchPendienteByTerm']);
         });
-    
+
         Route::middleware('permission:ARCHIVAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::put('/archive/{id}', [$controller, 'archiveBriefcase']);
         });
@@ -143,10 +147,10 @@ Route::middleware('authentication')->group(function () {
         });
     });
 
-    
+
     //SOLICITUD
     Route::prefix('solicitud')->group(function () {
-    
+
         Route::middleware('permission:LEER_SOLICITUD')->group(function () {
             Route::get('/', [SolicitudeController::class, 'getSolicitudes']);
             Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
@@ -160,11 +164,11 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
             Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
         });
-    
+
         Route::middleware('permission:ARCHIVAR_SOLICITUD')->group(function () {
             Route::put('/archive/{id}', [SolicitudeController::class, 'archiveSolicitud']);
         });
-    
+
         Route::middleware('permission:RESTAURAR_SOLICITUD')->group(function () {
             Route::put('/restore/{id}', [SolicitudeController::class, 'restoreSolicitud']);
         });
@@ -187,7 +191,7 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:ARCHIVAR_PRTOYECTO')->group(function () {
             Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
         });
-    
+
         Route::middleware('permission:RESTAURAR_PRTOYECTO')->group(function () {
             Route::put('/restore/{id}', [ProjectController::class, 'restoreProject']);
         });
@@ -227,6 +231,32 @@ Route::middleware('authentication')->group(function () {
         Route::get('/search/state/inactivo/{term?}', [BeneficiaryInstitutionsController::class, 'searchInactivaByTerm']);
         Route::post('/create', [BeneficiaryInstitutionsController::class, 'createFoundation'])->middleware('permission:CREAR_FUNDACION');
         Route::get('/projects/{value}', [BeneficiaryInstitutionsController::class, 'getFoundationByProject']);
+    });
+
+    Route::prefix('project')->group(function () {
+        //ruta para obtener todos los comentarios de un oficio por id
+        Route::get('/', [ProjectController::class, 'getProject'])->middleware('permission:LEER_PROYECTO');
+        Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
+        Route::get('/{id}', [ProjectController::class, 'getProjectById']);
+        Route::post('/create', [ProjectController::class, 'createProject'])->middleware('permission:CREAR_PROYECTO');
+        Route::put('/update/{id}', [ProjectController::class, 'updateProject'])->middleware('permission:ACTUALIZAR_PROYECTO');
+    });
+
+    Route::prefix('career')->group(function () {
+        Route::get('/', [CareerController::class, 'getCareer']);
+    });
+
+    Route::prefix('responsible')->group(function () {
+        Route::get('/', [ResponsibleController::class, 'getResponsible']);
+    });
+
+
+    Route::prefix('institute')->group(function () {
+        Route::get('/', [InstituteController::class, 'getInstitute']);
+    });
+
+    Route::prefix('school-period')->group(function () {
+        Route::get('/', [SchoolPeriodController::class, 'getSchoolPeriod']);
     });
 
 

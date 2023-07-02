@@ -14,29 +14,35 @@ return new class extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->increments('id');  
-            $table->string('code',20);
-            $table->string('name',200);
-            $table->string('field',100);
-            $table->integer('term_execution');
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
-            $table->json('linking_activity');
-            $table->json('sectors_intervention');
-            $table->json('strategic_axes');
-            $table->string('description',500);
-            $table->string('situational_analysis',500);
-            $table->string('foundation',500);
-            $table->string('justification',500);
-            $table->json('direct_beneficiaries');
-            $table->json('indirect_beneficiaries');
-            $table->string('schedule',200);
-            $table->json('evaluation_monitoring_strategy');
-            $table->json('bibliographies');
-            $table->json('attached_project');
+            $table->increments('id');
+            $table->string('code',20)->nullable();
+            $table->string('name',200)->nullable();
+            $table->string('field',100)->nullable();
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
+            $table->json('linking_activity')->nullable();
+            $table->json('sectors_intervention')->nullable();
+            $table->json('strategic_axes')->nullable();
+            $table->string('term_execution',40)->nullable();
+            $table->string('financing',10)->nullable();
+            $table->string('coverage',50)->nullable();
+            $table->string('modality',30)->nullable();
+            $table->string('description',500)->nullable();
+            $table->string('situational_analysis',500)->nullable();
+            $table->string('foundation',500)->nullable();
+            $table->string('justification',500)->nullable();
+            $table->json('direct_beneficiaries')->nullable();
+            $table->json('indirect_beneficiaries')->nullable();
+            $table->string('schedule',200)->nullable();
+            $table->json('evaluation_monitoring_strategy')->nullable();
+            $table->json('bibliographies')->nullable();
+            $table->json('attached_project')->nullable();
 
             $table->unsignedBigInteger('convention_id')->nullable();
             $table->foreign('convention_id')->references('id')->on('conventions');
+
+            $table->unsignedBigInteger('institute_id')->nullable();
+            $table->foreign('institute_id')->references('id')->on('institute');
 
             $table->unsignedBigInteger('school_period_id')->nullable();
             $table->foreign('school_period_id')->references('id')->on('school_periods');

@@ -16,10 +16,10 @@ class Responsible extends Model
 
     public function user_id()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function charge()
+    public function charge_id()
     {
         return $this->belongsTo(Catalog::class, 'charge_id');
     }

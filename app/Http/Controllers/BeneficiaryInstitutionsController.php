@@ -18,7 +18,7 @@ class BeneficiaryInstitutionsController extends Controller
     {
         $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
         ->where('archived', false)
-        ->with(['parish_id.father_code'])
+        ->with(['addresses_id.father_code'])
         ->get();
         return new JsonResponse([
             'status' => 'success',
@@ -30,16 +30,16 @@ class BeneficiaryInstitutionsController extends Controller
 
     /**
       * Summary of getArchivedBeneficiaryInstitution
-      * @return JsonResponse 
+      * @return JsonResponse
       * Obtener todas las Institucion Beneficiaria archivadas
       */
     public function getArchivedBeneficiaryInstitution()
     {
         $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
             ->where('archived', true)
-            ->with('parish_id.father_code')
+            ->with('addresses_id.father_code')
             ->get();
-  
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -59,7 +59,7 @@ class BeneficiaryInstitutionsController extends Controller
        $beneficiaryInstitutions = BeneficiaryInstitution::where('id', $id)
            ->where('id', '!=', 0)
            ->where('archived', false)
-           ->with('parish_id.father_code')
+           ->with('addresses_id.father_code')
            ->first();
 
        if (!$beneficiaryInstitutions) {
@@ -130,7 +130,7 @@ class BeneficiaryInstitutionsController extends Controller
      * Summary of searchBeneficiaryInstitutionByTerm
      * @param mixed $term
      * @return JsonResponse
-     * Buscador 
+     * Buscador
      */
     public function searchBeneficiaryInstitutionByTerm($term = '')
     {
@@ -138,7 +138,7 @@ class BeneficiaryInstitutionsController extends Controller
             ->where(function ($query) use ($term) {
                 $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%']);
             })
-            ->with('parish_id.father_code')
+            ->with('addresses_id.father_code')
             ->get();
 
         return response()->json([
@@ -155,7 +155,7 @@ class BeneficiaryInstitutionsController extends Controller
       $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
       ->where('archived', false)
       ->where('state', $state)
-      ->with('parish_id.father_code')
+      ->with('addresses_id.father_code')
       ->get();
 
       return response()->json([
@@ -178,11 +178,11 @@ class BeneficiaryInstitutionsController extends Controller
        $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
            ->where('archived', false)
            ->where('state', true)
-           ->with('parish_id.father_code')
+           ->with('addresses_id.father_code')
            ->where(function ($query) use ($term) {
                 $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%']);
                 })
-        ->with('parish_id.father_code')
+        ->with('addresses_id.father_code')
         ->get();
 
        return response()->json([
@@ -199,11 +199,11 @@ class BeneficiaryInstitutionsController extends Controller
        $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
            ->where('archived', false)
            ->where('state', false)
-           ->with('parish_id.father_code')
+           ->with('addresses_id.father_code')
            ->where(function ($query) use ($term) {
                 $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%']);
                 })
-           ->with('parish_id.father_code')
+           ->with('addresses_id.father_code')
            ->get();
 
        return response()->json([
