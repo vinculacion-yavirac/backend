@@ -389,55 +389,154 @@ class BriefcaseController extends Controller
 
 
 
-public function create(Request $request)
-{
-    try {
-        DB::beginTransaction();
+    public function create(Request $request)
+    {
+        try {
+            DB::beginTransaction();
 
-        $user = Auth::user();
-        $now = Carbon::now();
+            $user = Auth::user();
+            $now = Carbon::now();
 
-        $briefcase = Briefcase::create([
-            'observations' => $request->input('observations'),
-            'state' => $request->input('state', false) ,
-            'created_by' => $user->id,
-            'created_at' => $now,
-            'project_participant_id' => $request->input('project_participant_id'),
-        ]);
+            $briefcase = Briefcase::create([
+                'observations' => $request->input('observations'),
+                'state' => $request->input('state', false),
+                'created_by' => $user->id,
+                'created_at' => $now,
+                'project_participant_id' => $request->input('project_participant_id'),
+            ]);
 
-        $createdFiles = [];
+            // $createdFiles = [];
 
-        foreach ($request->input('files') as $fileData) {
-            $file = new File();
-            $file->name = $fileData['name'];
-            $file->type = $fileData['type'];
-            $file->content = base64_encode(file_get_contents($fileData['content']));
-            $file->size = $fileData['size'];
-            $file->observation = $fileData['observation'] ?? '';
-            $file->state = $fileData['state'] ? 1 : 0;
-            $file->briefcase_id = $briefcase->id;
-            $file->document_id = $fileData['document_id'];
-            $file->save();
+            // foreach ($request->input('files') as $fileData) {
+            //     $file = new File();
+            //     $file->name = $fileData['name'];
+            //     $file->type = $fileData['type'];
+            //     $file->content = base64_decode($fileData['content']); // Decodificar el contenido base64
+            //     $file->size = $fileData['size'];
+            //     $file->observation = $fileData['observation'] ?? '';
+            //     $file->state = $fileData['state'] ? 1 : 0;
+            //     $file->briefcase_id = $briefcase->id;
+            //     $file->document_id = $fileData['document_id'];
+            //     $file->save();
 
-            $createdFiles[] = $file;
+            //     $createdFiles[] = $file;
+            // }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'briefcase' => $briefcase,
+                    //'files' => $createdFiles,
+                ],
+                'message' => 'Portafolio creado exitosamente',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        DB::commit();
-
-        return response()->json([
-            'message' => 'Portafolio creado exitosamente',
-            'briefcase' => $briefcase,
-            'files' => $createdFiles,
-        ]);
-    } catch (\Exception $e) {
-        DB::rollback();
-        return response()->json([
-            'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
-            'error' => $e->getMessage(),
-        ], 500);
     }
-}
 
+
+// public function create(Request $request)
+// {
+//     try {
+//         DB::beginTransaction();
+
+//         $user = Auth::user();
+//         $now = Carbon::now();
+
+//         $briefcase = Briefcase::create([
+//             'observations' => $request->input('observations'),
+//             'state' => $request->input('state', false),
+//             'created_by' => $user->id,
+//             'created_at' => $now,
+//             'project_participant_id' => $request->input('project_participant_id'),
+//         ]);
+
+//         $files = $request->file('files');
+//         $newFiles = [];
+    
+//         if (is_array($files)) {
+//             foreach ($files as $file) {
+//                 if ($file->isValid()) {
+//                     $fileName = $file->getClientOriginalName();
+//                     $fileContent = base64_encode(file_get_contents($file));
+//                     $fileSize = $file->getSize();
+//                     $observation = ''; // Agrega aquí el valor para el campo 'observation'
+//                     $state = 0; // Agrega aquí el valor para el campo 'state'
+    
+//                     $newFile = File::create([
+//                         'name' => $fileName,
+//                         'type' => $file->getClientOriginalExtension(),
+//                         'content' => $fileContent,
+//                         'size' => $fileSize,
+//                         'observation' => $observation,
+//                         'state' => $state,
+//                         'briefcase_id' => $briefcase->id,
+//                         'document_id' => 1
+//                     ]);
+    
+//                     $newFiles[] = $newFile;
+//                 } else {
+//                     $response['status'] = 'error';
+//                     $response['message'] = 'Uno o más archivos no son válidos';
+//                     return response()->json($response, 400);
+//                 }
+//             }
+//         } elseif ($files instanceof \Illuminate\Http\UploadedFile) {
+//             if ($files->isValid()) {
+//                 $fileName = $files->getClientOriginalName();
+//                 $fileContent = base64_encode(file_get_contents($files));
+//                 $fileSize = $files->getSize();
+//                 $observation = ''; // Agrega aquí el valor para el campo 'observation'
+//                 $state = 0; // Agrega aquí el valor para el campo 'state'
+    
+//                 $newFile = File::create([
+//                     'name' => $fileName,
+//                     'type' => $files->getClientOriginalExtension(),
+//                     'content' => $fileContent,
+//                     'size' => $fileSize,
+//                     'observation' => $observation,
+//                     'state' => $state,
+//                     'briefcase_id' => $briefcase->id,
+//                     'document_id' => 1
+//                 ]);
+    
+//                 $newFiles[] = $newFile;
+//             } else {
+//                 $response['status'] = 'error';
+//                 $response['message'] = 'El archivo no es válido';
+//                 return response()->json($response, 400);
+//             }
+//         } else {
+//             $response['status'] = 'error';
+//             $response['message'] = 'El formato de archivos no es válido';
+//             return response()->json($response, 400);
+//         }
+
+//         DB::commit();
+
+//         return response()->json([
+//             'status' => 'success',
+//             'data' => [
+//                 'briefcase' => $briefcase,
+//                  //'files' => $createdFiles,
+//             ],
+//             'message' => 'Portafolio creado exitosamente',
+//         ]);
+//     } catch (\Exception $e) {
+//         DB::rollback();
+//         return response()->json([
+//             'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
+//             'error' => $e->getMessage(),
+//         ], 500);
+//     }
+// }
 
 
 }
