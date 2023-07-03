@@ -229,7 +229,7 @@ Route::middleware('authentication')->group(function () {
         Route::get('/{id}', [FilesController::class, 'getFileById']);
         Route::delete('/delete/{id}', [FilesController::class, 'deleteFileById']);
         Route::post('/upload/{idBriefcase}', [FilesController::class, 'uploadFiles']);
-        Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
+        Route::get('download/{portafolioId}/{documentoId}/{fileId}', [FilesController::class, 'downloadFile']);
     });
 
 

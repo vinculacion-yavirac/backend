@@ -221,44 +221,65 @@ public function uploadFiles(Request $request, $idBriefcase)
 
 
 
-    public function downloadFile($id)
-    {
-        $file = File::find($id);
+    // public function downloadFile($id)
+    // {
+    //     $file = File::find($id);
 
-        if (!$file) {
-            return new JsonResponse([
-                'status' => 'error',
-                'message' => 'Error al descargar el archivo ',
-            ], 404);
-        }
+    //     if (!$file) {
+    //         return new JsonResponse([
+    //             'status' => 'error',
+    //             'message' => 'Error al descargar el archivo ',
+    //         ], 404);
+    //     }
 
-        $content = base64_decode($file->content);
-        $headers = [
-            'Content-Type' => $file->type,
-            'Content-Disposition' => 'attachment; filename=' . $file->name,
-        ];
+    //     $content = base64_decode($file->content);
+    //     $headers = [
+    //         'Content-Type' => $file->type,
+    //         'Content-Disposition' => 'attachment; filename=' . $file->name,
+    //     ];
 
-        return response($content, 200, $headers);
+    //     return response($content, 200, $headers);
+    // }
+
+
+
+
+//funciona con un solo documento
+    // public function download($fileId,$id)
+    // {
+    //     $file = File::find($fileId);
+
+    //     if (!$file) {
+    //         abort(404);
+    //     }
+
+    //     $fileContent = base64_decode($file->content);
+    //     $fileName = $file->name;
+
+    //     return Response::make($fileContent, 200, [
+    //         'Content-Type' => 'application/octet-stream',
+    //         'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+    //     ]);
+    // }
+
+
+
+    public function downloadFile($portafolioId, $documentoId, $fileId)
+{
+    $file = File::find($fileId);
+
+    if (!$file) {
+        abort(404);
     }
 
+    $fileContent = base64_decode($file->content);
+    $fileName = $file->name;
 
+    // Realiza las operaciones adicionales con los IDs de portafolio y documento si es necesario
 
-    
-
-    public function download($fileId)
-    {
-        $file = File::find($fileId);
-
-        if (!$file) {
-            abort(404);
-        }
-
-        $fileContent = base64_decode($file->content);
-        $fileName = $file->name;
-
-        return Response::make($fileContent, 200, [
-            'Content-Type' => 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-        ]);
-    }
+    return response($fileContent, 200, [
+        'Content-Type' => 'application/octet-stream',
+        'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+    ]);
+}
 }
