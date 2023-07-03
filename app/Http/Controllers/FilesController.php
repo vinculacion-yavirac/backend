@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Illuminate\Support\Facades\Response;
 class FilesController extends Controller
 {
 
@@ -241,5 +239,26 @@ public function uploadFiles(Request $request, $idBriefcase)
         ];
 
         return response($content, 200, $headers);
+    }
+
+
+
+    
+
+    public function download($fileId)
+    {
+        $file = File::find($fileId);
+
+        if (!$file) {
+            abort(404);
+        }
+
+        $fileContent = base64_decode($file->content);
+        $fileName = $file->name;
+
+        return Response::make($fileContent, 200, [
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 }
