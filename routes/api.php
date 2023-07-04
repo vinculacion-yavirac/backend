@@ -12,11 +12,11 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\EmailsController;
-use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticipantController;
+use App\Http\Controllers\DocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,7 +122,7 @@ Route::middleware('authentication')->group(function () {
     //Portafolio
     Route::prefix('briefcase')->group(function () {
         $controller = BriefcaseController::class;
-    
+
         Route::middleware('permission:LEER_PORTAFOLIO')->group(function () use ($controller) {
             Route::get('/', [$controller, 'getBriefcase']);
             Route::get('/{id}', [$controller, 'getBriefcaseById']);
@@ -133,7 +133,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/state/aprobado/{term?}', [$controller, 'searchAprobadoByTerm']);
             Route::get('/search/state/pendiente/{term?}', [$controller, 'searchPendienteByTerm']);
         });
-    
+
         Route::middleware('permission:ARCHIVAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::put('/archive/{id}', [$controller, 'archiveBriefcase']);
         });
@@ -141,12 +141,40 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:RESTAURAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::put('/restore/{id}', [$controller, 'restoreBriefcase']);
         });
+
+        Route::middleware('permission:ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::put('/update/{id}', [$controller, 'updateBriefcase']);
+        });
+        Route::middleware('permission:CREAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::post('/create', [BriefcaseController::class, 'create']);
+        });
     });
 
-    
+     //DOCUMENTO
+     Route::prefix('document')->group(function () {
+        Route::middleware('permission:LEER_DOCUMENTO')->group(function () {
+            Route::get('/', [DocumentController::class, 'getDocuments']);
+           // Route::get('/{id}', [DocumentController::class, 'getProjectById']);
+           // Route::get('/archived/list', [DocumentController::class, 'getArchivedProject']);
+           // Route::get('/search/term/{term?}', [DocumentController::class, 'searchProjectByTerm']);
+           // Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchArchivedProjectByTerm']);
+        });
+        Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
+         //   Route::put('/archive/{id}', [DocumentController::class, 'archiveProject']);
+        });
+
+        Route::middleware('permission:RESTAURAR_DOCUMENTO')->group(function () {
+         //   Route::put('/restore/{id}', [DocumentController::class, 'restoreProject']);
+        });
+
+        Route::middleware('permission:CREAR_DOCUMENTO')->group(function () {
+            Route::post('/create', [DocumentController::class, 'createDocuments']);
+        });
+    });
+
     //SOLICITUD
     Route::prefix('solicitud')->group(function () {
-    
+
         Route::middleware('permission:LEER_SOLICITUD')->group(function () {
             Route::get('/', [SolicitudeController::class, 'getSolicitudes']);
             Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
@@ -160,11 +188,11 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
             Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
         });
-    
+
         Route::middleware('permission:ARCHIVAR_SOLICITUD')->group(function () {
             Route::put('/archive/{id}', [SolicitudeController::class, 'archiveSolicitud']);
         });
-    
+
         Route::middleware('permission:RESTAURAR_SOLICITUD')->group(function () {
             Route::put('/restore/{id}', [SolicitudeController::class, 'restoreSolicitud']);
         });
@@ -187,7 +215,7 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:ARCHIVAR_PRTOYECTO')->group(function () {
             Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
         });
-    
+
         Route::middleware('permission:RESTAURAR_PRTOYECTO')->group(function () {
             Route::put('/restore/{id}', [ProjectController::class, 'restoreProject']);
         });
@@ -200,8 +228,8 @@ Route::middleware('authentication')->group(function () {
         Route::get('/', [FilesController::class, 'getFiles']);
         Route::get('/{id}', [FilesController::class, 'getFileById']);
         Route::delete('/delete/{id}', [FilesController::class, 'deleteFileById']);
-        Route::post('/upload/{id}', [FilesController::class, 'uploadFiles']);
-        Route::get('/download/{id}', [FilesController::class, 'downloadFile']);
+        Route::post('/upload/{idBriefcase}', [FilesController::class, 'uploadFiles']);
+        Route::get('download/{portafolioId}/{documentoId}/{fileId}', [FilesController::class, 'downloadFile']);
     });
 
 

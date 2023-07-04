@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('school_periods', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name',20);
+            $table->bigIncrements('id');
+            $table->string('name', 20);
             $table->boolean('state');
             $table->timestamps();
         });

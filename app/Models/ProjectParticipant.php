@@ -47,9 +47,9 @@ class ProjectParticipant extends Model
             return $this->belongsTo(Catalog::class, 'state_id');
         }
 
-        public function project()
+        public function project_id()
         {
-            return $this->belongsTo(Project::class);
+            return $this->belongsTo(Project::class,'project_id');
         }
 
         public function participant_id()

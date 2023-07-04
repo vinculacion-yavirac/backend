@@ -14,23 +14,23 @@ return new class extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->increments('id');  
-            $table->string('code',20);
-            $table->string('name',200);
-            $table->string('field',100);
+            $table->bigIncrements('id');
+            $table->string('code', 20);
+            $table->string('name', 200);
+            $table->string('field', 100);
             $table->integer('term_execution');
             $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('end_date')->nullable();
             $table->json('linking_activity');
             $table->json('sectors_intervention');
             $table->json('strategic_axes');
-            $table->string('description',500);
-            $table->string('situational_analysis',500);
-            $table->string('foundation',500);
-            $table->string('justification',500);
+            $table->string('description', 500);
+            $table->string('situational_analysis', 500);
+            $table->string('foundation', 500);
+            $table->string('justification', 500);
             $table->json('direct_beneficiaries');
             $table->json('indirect_beneficiaries');
-            $table->string('schedule',200);
+            $table->string('schedule', 200);
             $table->json('evaluation_monitoring_strategy');
             $table->json('bibliographies');
             $table->json('attached_project');

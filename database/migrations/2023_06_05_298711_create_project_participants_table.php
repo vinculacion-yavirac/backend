@@ -18,24 +18,23 @@ return new class extends Migration
             $table->json('functions');
             $table->timestamp('assignment_date');
 
-            $table->integer('level_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('level_id')->nullable();
             $table->foreign('level_id')->references('id')->on('catalogs');
 
-            $table->integer('catalogue_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('catalogue_id')->nullable();
             $table->foreign('catalogue_id')->references('id')->on('catalogs');
 
-            $table->integer('schedule_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('catalogs');
 
-            $table->integer('state_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('state_id')->nullable();
             $table->foreign('state_id')->references('id')->on('catalogs');
 
-            $table->integer('project_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
-
             $table->integer('participant_id')->unsigned()->nullable();
             $table->foreign('participant_id')->references('id')->on('users');
-            
+
             $table->timestamps();
         });
     }
