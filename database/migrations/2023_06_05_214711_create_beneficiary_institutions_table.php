@@ -28,7 +28,6 @@ return new class extends Migration
             $table->integer('archived_by')->unsigned()->nullable();
             $table->timestamps();
 
-            // Define foreign key constraints
             if (config('database.default') === 'pgsql') {
                 $table->foreign('parish_id')->references('id')->on('addresses')->onDelete('set null');
                 $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');

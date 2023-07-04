@@ -25,12 +25,8 @@ return new class extends Migration
 
             $table->unsignedBigInteger('project_id')->unsigned()->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
-           
-            // $table->integer('targets_types_id')->nullable();
-            // $table->foreign('targets_types_id')->references('id')->on('catalogs');
-
-            $table->unsignedBigInteger('targets_types_id')->nullable();
-            $table->foreign('targets_types_id')->references('id')->on('catalogs');
+            $table->unsignedBigInteger('target_type_id')->nullable();
+            $table->foreign('target_type_id')->references('id')->on('catalogs');
 
             $table->timestamps();
         });

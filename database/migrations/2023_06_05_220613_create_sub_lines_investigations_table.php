@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('research_line_id')->nullable();
             $table->timestamps();
 
-            // Define foreign key constraints
             if (config('database.default') === 'pgsql') {
                 $table->foreign('research_line_id')->references('id')->on('research_lines')->onDelete('set null');
             } else {

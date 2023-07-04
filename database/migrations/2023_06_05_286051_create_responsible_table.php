@@ -15,14 +15,11 @@ class CreateResponsibleTable extends Migration
     {
         Schema::create('responsibles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            //$table->unsignedBigInteger('users_id')->nullable();
-            //$table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
-            
-            $table->integer('users_id')->unsigned()->nullable();
-            $table->foreign('users_id')->references('id')->on('users');
-            
-            $table->unsignedBigInteger('charges_id')->nullable();
-            $table->foreign('charges_id')->references('id')->on('catalogs')->onDelete('cascade');
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->unsignedBigInteger('charge_id')->nullable();
+            $table->foreign('charge_id')->references('id')->on('catalogs')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -35,6 +32,6 @@ class CreateResponsibleTable extends Migration
     public function down()
     {
         Schema::dropIfExists('responsibles');
-        
+
     }
 }

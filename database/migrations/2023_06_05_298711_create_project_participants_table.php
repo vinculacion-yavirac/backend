@@ -32,13 +32,9 @@ return new class extends Migration
 
             $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
-
-            // $table->integer('participant_id')->nullable();
-            // $table->foreign('participant_id')->references('id')->on('users');
-
             $table->integer('participant_id')->unsigned()->nullable();
             $table->foreign('participant_id')->references('id')->on('users');
-            
+
             $table->timestamps();
         });
     }

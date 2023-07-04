@@ -17,23 +17,10 @@ return new class extends Migration
             $table->increments('id');
 
             $table->timestamp('approval_date');
-
-            // $table->unsignedInteger('solicitudes_status_id')->nullable();
-            // $table->foreign('solicitudes_status_id')->references('id')->on('catalogs');
-
-            
             $table->unsignedBigInteger('solicitudes_status_id')->nullable();
             $table->foreign('solicitudes_status_id')->references('id')->on('catalogs');
-
-            // $table->unsignedInteger('type_request_id')->nullable();
-            // $table->foreign('type_request_id')->references('id')->on('catalogs');
-
             $table->unsignedBigInteger('type_request_id')->nullable();
             $table->foreign('type_request_id')->references('id')->on('catalogs');
-
-            // $table->unsignedInteger('project_id')->nullable();
-            // $table->foreign('project_id')->references('id')->on('projects');
-
             $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
 

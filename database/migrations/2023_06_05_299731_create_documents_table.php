@@ -24,18 +24,11 @@ return new class extends Migration
             $table->unsignedBigInteger('responsible_id')->nullable()->comment('role responsible for filling out the document.');
             $table->foreign('responsible_id')->references('id')->on('roles');
 
-            // $table->unsignedInteger('created_by')->nullable();
-            // $table->foreign('created_by')->references('id')->on('users');
-
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
 
             $table->boolean('archived')->default(false);
             $table->timestamp('archived_at')->nullable();
-
-            // $table->unsignedInteger('archived_by')->nullable();
-            // $table->foreign('archived_by')->references('id')->on('users');
-
             $table->integer('archived_by')->unsigned()->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
 
