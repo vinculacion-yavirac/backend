@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateResearchLinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('research_lines', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name',20);
+            $table->bigIncrements('id');
+            $table->string('name', 20);
             $table->unsignedBigInteger('career_id')->nullable();
-            $table->foreign('career_id')->references('id')->on('careers');
+            $table->foreign('career_id')->references('id')->on('careers')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('research_lines');
     }
-};
+}

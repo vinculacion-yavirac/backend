@@ -18,22 +18,32 @@ return new class extends Migration
 
             $table->timestamp('approval_date');
 
-            $table->integer('solicitudes_status_id')->unsigned()->nullable();
+            // $table->unsignedInteger('solicitudes_status_id')->nullable();
+            // $table->foreign('solicitudes_status_id')->references('id')->on('catalogs');
+
+            
+            $table->unsignedBigInteger('solicitudes_status_id')->nullable();
             $table->foreign('solicitudes_status_id')->references('id')->on('catalogs');
 
-            $table->integer('type_request_id')->unsigned()->nullable();
+            // $table->unsignedInteger('type_request_id')->nullable();
+            // $table->foreign('type_request_id')->references('id')->on('catalogs');
+
+            $table->unsignedBigInteger('type_request_id')->nullable();
             $table->foreign('type_request_id')->references('id')->on('catalogs');
 
-            $table->integer('project_id')->unsigned()->nullable();
+            // $table->unsignedInteger('project_id')->nullable();
+            // $table->foreign('project_id')->references('id')->on('projects');
+
+            $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
 
-            $table->integer('created_by')->unsigned()->nullable();
+            $table->unsignedInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users');
 
             $table->boolean('archived')->default(false);
             $table->timestamp('archived_at')->nullable();
 
-            $table->integer('archived_by')->unsigned()->nullable();
+            $table->unsignedInteger('archived_by')->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
 
             $table->timestamps();

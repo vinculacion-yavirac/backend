@@ -14,16 +14,24 @@ return new class extends Migration
     public function up()
     {
         Schema::create('goals', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('target_name',500);
+            $table->bigIncrements('id');
+            $table->string('target_name', 500);
             $table->json('media_verification');
             $table->string('verifiable_indicators');
+
+
             $table->unsignedBigInteger('father_goals_id')->nullable();
             $table->foreign('father_goals_id')->references('id')->on('goals');
-            $table->integer('project_id')->unsigned()->nullable();
+
+            $table->unsignedBigInteger('project_id')->unsigned()->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
-            $table->integer('target_type_id')->unsigned()->nullable();
-            $table->foreign('target_type_id')->references('id')->on('catalogs');
+           
+            // $table->integer('targets_types_id')->nullable();
+            // $table->foreign('targets_types_id')->references('id')->on('catalogs');
+
+            $table->unsignedBigInteger('targets_types_id')->nullable();
+            $table->foreign('targets_types_id')->references('id')->on('catalogs');
+
             $table->timestamps();
         });
     }

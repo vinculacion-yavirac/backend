@@ -15,9 +15,15 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('activity_name',200);
-            $table->integer('goals_id')->unsigned()->nullable();
-            $table->foreign('goals_id')->references('id')->on('goals');
+            $table->string('activity_name', 200);
+            $table->unsignedBigInteger('goals_id')->nullable();
+
+            if (env('DB_CONNECTION') === 'mysql') {
+                $table->foreign('goals_id')->references('id')->on('goals')->onDelete('cascade');
+            } elseif (env('DB_CONNECTION') === 'pgsql') {
+                $table->foreign('goals_id')->references('id')->on('goals')->onDelete('cascade')->onUpdate('cascade');
+            }
+
             $table->timestamps();
         });
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateConventionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('conventions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamp('signature_date');
-            $table->timestamp('expiration_date');
+            $table->bigIncrements('id');
+            $table->timestamp('signature_date')->useCurrent();
+            $table->timestamp('expiration_date')->nullable();
             $table->timestamps();
         });
     }
@@ -30,4 +30,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('conventions');
     }
-};
+}

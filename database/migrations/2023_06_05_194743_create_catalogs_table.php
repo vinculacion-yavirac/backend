@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateCatalogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('catalogs', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('code',20);
-            $table->string('catalog_type',20);
-            $table->string('catalog_value',100);
+            $table->bigIncrements('id');
+            $table->string('code', 20);
+            $table->string('catalog_type', 20);
+            $table->string('catalog_value', 100);
             $table->timestamps();
         });
     }
@@ -31,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('catalogs');
     }
-};
+}

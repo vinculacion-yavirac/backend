@@ -18,16 +18,17 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
 
-            $table->integer('person')->unsigned()->unique();
+            $table->unsignedInteger('person')->unique();
             $table->foreign('person')
+                ->references('id')
+                ->on('people')
                 ->onUpdate('cascade')
-                ->onDelete('cascade')
-                ->references('id')->on('people');
+                ->onDelete('cascade');
 
             $table->boolean('active')->default(true);
             $table->boolean('archived')->default(false);
             $table->timestamp('archived_at')->nullable();
-            $table->integer('archived_by')->unsigned()->nullable();
+            $table->unsignedInteger('archived_by')->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
 
             $table->timestamps();

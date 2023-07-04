@@ -14,11 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sub_lines_investigations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('description',100);
+            $table->bigIncrements('id');
+            $table->string('description', 100);
             $table->unsignedBigInteger('research_line_id')->nullable();
-            $table->foreign('research_line_id')->references('id')->on('research_lines');
             $table->timestamps();
+
+            // Define foreign key constraints
+            if (config('database.default') === 'pgsql') {
+                $table->foreign('research_line_id')->references('id')->on('research_lines')->onDelete('set null');
+            } else {
+                $table->foreign('research_line_id')->references('id')->on('research_lines')->onDelete('set null');
+            }
         });
     }
 
