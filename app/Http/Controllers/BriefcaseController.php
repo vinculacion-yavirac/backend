@@ -23,7 +23,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', '>', 0)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person')
+            ->with('project_participant_id.participant_id.person','created_by.person')
             ->get();
 
         return response()->json([
@@ -43,7 +43,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id','files','documents')
+            ->with('project_participant_id.participant_id.person','created_by.person','project_participant_id.project_id.beneficiary_institution_id','files','documents')
             ->first();
 
         if (!$briefcases) {
@@ -68,7 +68,7 @@ class BriefcaseController extends Controller
     public function getArchivedBriefcase()
     {
         $briefcases = Briefcase::where('archived', true)
-            ->with('project_participant_id.participant_id.person')
+            ->with('project_participant_id.participant_id.person','created_by.person')
             ->get();
 
         return response()->json([
@@ -140,11 +140,13 @@ class BriefcaseController extends Controller
         $lowerTerm = strtolower($term);
 
         $briefcases = Briefcase::where('archived', false)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($lowerTerm) {
-                $query->whereRaw('LOWER(names) like ? or LOWER(last_names) like ? or LOWER(identification) like ?', ['%' . $lowerTerm . '%', '%' . $lowerTerm . '%', '%' . $lowerTerm . '%']);
-            })
-            ->with('project_participant_id.participant_id.person')
-            ->get();
+        ->whereHas('created_by.person', function ($query) use ($term) {
+            $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+        })
+        ->with('created_by.person')
+        ->get();
 
         return response()->json([
             'status' => 'success',
@@ -163,13 +165,13 @@ class BriefcaseController extends Controller
     public function searchArchivedBriefcaseByTerm($term = '')
     {
         $briefcases = Briefcase::where('archived', true)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
-                $query->where('names', 'ILIKE', '%' . $term . '%')
-                    ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
-                    ->orWhere('identification', 'ILIKE', '%' . $term . '%');
-            })
-            ->with('project_participant_id.participant_id.person')
-            ->get();
+        ->whereHas('created_by.person', function ($query) use ($term) {
+            $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+        })
+        ->with('created_by.person')
+        ->get();
 
         return response()->json([
             'status' => 'success',
@@ -189,7 +191,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', $state)
-            ->with('project_participant_id.participant_id.person')
+            ->with('created_by.person')
             ->get();
 
         return response()->json([
@@ -211,12 +213,12 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', true)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+            ->whereHas('created_by.person', function ($query) use ($term) {
                 $query->where('names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('identification', 'ILIKE', '%' . $term . '%');
             })
-            ->with('project_participant_id.participant_id.person')
+            ->with('created_by.person')
             ->get();
 
         return response()->json([
@@ -237,12 +239,12 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', false)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+            ->whereHas('created_by.person', function ($query) use ($term) {
                 $query->where('names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('identification', 'ILIKE', '%' . $term . '%');
             })
-            ->with('project_participant_id.participant_id.person')
+            ->with('created_by.person')
             ->get();
 
         return response()->json([
