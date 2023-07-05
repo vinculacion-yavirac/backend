@@ -27,6 +27,7 @@ class RoleSeeder extends Seeder
         $roleOne->givePermissionTo(Permission::findById(15));
         $roleOne->givePermissionTo(Permission::findById(16));
         $roleOne->givePermissionTo(Permission::findById(17));
+        $roleOne->givePermissionTo(Permission::findById(18));
         $roleOne->givePermissionTo(Permission::findById(19));
         $roleOne->givePermissionTo(Permission::findById(20));
         $roleOne->givePermissionTo(Permission::findById(21));
@@ -62,6 +63,14 @@ class RoleSeeder extends Seeder
         $roleOne->givePermissionTo(Permission::findById(51));
         $roleOne->givePermissionTo(Permission::findById(52));
         $roleOne->givePermissionTo(Permission::findById(53));
+        $roleOne->givePermissionTo(Permission::findById(54));
+        $roleOne->givePermissionTo(Permission::findById(55));
+        $roleOne->givePermissionTo(Permission::findById(56));
+        $roleOne->givePermissionTo(Permission::findById(57));
+        $roleOne->givePermissionTo(Permission::findById(58));
+        $roleOne->givePermissionTo(Permission::findById(59));
+        $roleOne->givePermissionTo(Permission::findById(60));
+        $roleOne->givePermissionTo(Permission::findById(61));
 
 
         $roleTwo = Role::create(['name' => 'Docente Tutor']);
