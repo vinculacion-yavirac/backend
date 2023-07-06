@@ -8,54 +8,98 @@ use App\Models\ProjectParticipant;
 
 class ProjectParticipantController extends Controller
 {
-         public function getProyectParticipant(){
-                $projectParticipants = ProjectParticipant::all();
-                $projectParticipants -> load(['project','participant_id','participant_id.person']);
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Relación actualizada correctamente',
-                    'data' => [
-                        'projectParticipants' => $projectParticipants,
-                    ],
-                ], 200);
-         }
 
-        public function getProjectByFoundation($project)
-        {
-            try {
-                // Obtener el proyecto por su nombre
-                 //$project = Project::where('id', $project)->orWhere('name', $project)->first();
+    public function create(Request $request)
+    {
+        // Validar los datos recibidos
+        $validatedData = $request->validate([
+            'project_id' => 'required|integer',
+            'participant_id' => 'required|integer',
+        ]);
 
-                if (is_numeric($project)) {
-                    // Buscar el proyecto por ID
-                    //$project = Project::find($project);
-                     // Buscar el proyecto por ID y cargar las fundaciones y sus campos
-                     $project = Project::with('foundations')->find($project);
-                } else {
-                    // Buscar el proyecto por nombre
-                    //$project = Project::where('name', $project)->first();
-                    // Buscar el proyecto por nombre y cargar las fundaciones y sus campos
-                    $project = Project::with('foundations')->where('name', $project)->first();
-                }
+        $projectId = $validatedData['project_id'];
+        $participantId = $validatedData['participant_id'];
 
-                if (!$project) {
-                    throw new \Exception('Project not found.');
-                }
+        // Verificar si el usuario ya está asignado a un proyecto
+        $existingParticipant = ProjectParticipant::where('participant_id', $participantId)->first();
 
-                // Obtener la fundación asociada al proyecto
-                $foundations = $project->foundations;
-
-                return response()->json([
-                    'status' => 'success',
-                    'data' => [
-                        'project' => $project
-                    ]
-                ]);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $e->getMessage()
-                ]);
-            }
+        if ($existingParticipant) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'El usuario ya está asignado a un proyecto.',
+            ], 400);
         }
+
+        // Crear una nueva instancia de ProjectParticipant
+        $projectParticipant = new ProjectParticipant();
+        $projectParticipant->project_id = $projectId;
+        $projectParticipant->participant_id = $participantId;
+        $projectParticipant->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Estuante asignado exitosamente',
+            'data' => [
+                'projectParticipant' => $projectParticipant,
+            ],
+        ], 200);
+    }
+
+
+public function getByParticipantId($participantId)
+{
+    $projectParticipant = ProjectParticipant::where('participant_id', $participantId)->first();
+
+    if (!$projectParticipant) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'ProjectParticipant no encontrado',
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'projectParticipant' => $projectParticipant,
+        ],
+    ], 200);
+}
+
+public function exist(Request $request)
+{
+    $participantId = $request->input('participant_id');
+
+    $exists = ProjectParticipant::where('participant_id', (string) $participantId)->exists();
+
+    return response()->json([
+        'exists' => $exists,
+    ], 200);
+}
+
+
+public function getProjectParticipantByProject($projectId)
+{
+    $projectParticipants = ProjectParticipant::with(['project', 'level_id', 'catalogue_id', 'schedule_id', 'state_id', 'participant_id'])->where('project_id', $projectId)->get();
+
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'projectParticipants' => $projectParticipants,
+        ],
+    ], 200);
+}
+
+public function getProjectParticipantByParticipant($participantId)
+{
+    $projectParticipants = ProjectParticipant::with(['project', 'level_id', 'catalogue_id', 'schedule_id', 'state_id', 'participant_id'])->where('participant_id', $participantId)->get();
+
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'projectParticipants' => $projectParticipants,
+        ],
+    ], 200);
+}
+    //--------------------------------------------------
+
 }

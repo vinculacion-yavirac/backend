@@ -259,9 +259,10 @@ Route::middleware('authentication')->group(function () {
 
 
     //Integrantes detalle de la tabla project y solicitude
-     Route::prefix('participant')->group(function () {
-         Route::get('/', [ProjectParticipantController::class, 'getProyectParticipant']);
-         Route::post('/create', [ProjectParticipantController::class, 'store']);
+    Route::prefix('project-participant')->group(function () {
+        Route::post('/create', [ProjectParticipantController::class, 'create']);
+        Route::get('/{participantId}', [ProjectParticipantController::class, 'getByParticipantId']);
+        Route::get('/exist', [ProjectParticipantController::class, 'exist']);
     });
 
 
