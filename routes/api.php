@@ -262,7 +262,11 @@ Route::middleware('authentication')->group(function () {
     Route::prefix('project-participant')->group(function () {
         Route::post('/create', [ProjectParticipantController::class, 'create']);
         Route::get('/{participantId}', [ProjectParticipantController::class, 'getByParticipantId']);
+        Route::get('by/{id}', [ProjectParticipantController::class, 'getById']);
         Route::get('/exist', [ProjectParticipantController::class, 'exist']);
+        Route::get('/', [ProjectParticipantController::class, 'getAllProjectParticipants']);
+        Route::put('/{id}', [ProjectParticipantController::class, 'update']);
+        Route::delete('/delete/{id}', [ProjectParticipantController::class, 'destroy']);
     });
 
 

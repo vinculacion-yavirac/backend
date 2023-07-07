@@ -46,9 +46,31 @@ class ProjectParticipantController extends Controller
     }
 
 
-public function getByParticipantId($participantId)
+    public function getAllProjectParticipants()
+    {
+        $projectParticipants = ProjectParticipant::with('project_id', 'participant_id.person')
+        ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projectParticipants' => $projectParticipants,
+            ],
+        ], 200);
+    }
+
+    public function update(Request $request, $id)
 {
-    $projectParticipant = ProjectParticipant::where('participant_id', $participantId)->first();
+
+    $validatedData = $request->validate([
+        'project_id' => 'required|integer',
+        'participant_id' => 'required|integer',
+    ]);
+
+    $projectId = $validatedData['project_id'];
+    $participantId = $validatedData['participant_id'];
+
+    $projectParticipant = ProjectParticipant::find($id);
 
     if (!$projectParticipant) {
         return response()->json([
@@ -57,49 +79,110 @@ public function getByParticipantId($participantId)
         ], 404);
     }
 
+    $projectParticipant->project_id = $projectId;
+    $projectParticipant->participant_id = $participantId;
+    $projectParticipant->save();
+
     return response()->json([
         'status' => 'success',
+        'message' => 'Asignación actualizada Correctamente',
         'data' => [
             'projectParticipant' => $projectParticipant,
         ],
     ], 200);
 }
 
-public function exist(Request $request)
-{
-    $participantId = $request->input('participant_id');
 
-    $exists = ProjectParticipant::where('participant_id', (string) $participantId)->exists();
+    public function getByParticipantId($participantId)
+    {
+        $projectParticipant = ProjectParticipant::where('participant_id', $participantId)->first();
 
-    return response()->json([
-        'exists' => $exists,
-    ], 200);
-}
+        if (!$projectParticipant) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No encontrado',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projectParticipant' => $projectParticipant,
+            ],
+        ], 200);
+    }
+
+    public function getById($id)
+    {
+        $projectParticipant = ProjectParticipant::find($id);
+
+        if (!$projectParticipant) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ProjectParticipant not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projectParticipant' => $projectParticipant,
+            ],
+        ], 200);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $projectParticipant = ProjectParticipant::findOrFail($id);
+            $projectParticipant->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Asignación restablecida con exitosamente',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se pudo restablecida',
+            ], 500);
+        }
+    }
+
+    public function exist(Request $request)
+    {
+        $participantId = $request->input('participant_id');
+
+        $exists = ProjectParticipant::where('participant_id', (string) $participantId)->exists();
+
+        return response()->json([
+            'exists' => $exists,
+        ], 200);
+    }
 
 
-public function getProjectParticipantByProject($projectId)
-{
-    $projectParticipants = ProjectParticipant::with(['project', 'level_id', 'catalogue_id', 'schedule_id', 'state_id', 'participant_id'])->where('project_id', $projectId)->get();
+    public function getProjectParticipantByProject($projectId)
+    {
+        $projectParticipants = ProjectParticipant::with(['project', 'level_id', 'catalogue_id', 'schedule_id', 'state_id', 'participant_id'])->where('project_id', $projectId)->get();
 
-    return response()->json([
-        'status' => 'success',
-        'data' => [
-            'projectParticipants' => $projectParticipants,
-        ],
-    ], 200);
-}
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projectParticipants' => $projectParticipants,
+            ],
+        ], 200);
+    }
 
-public function getProjectParticipantByParticipant($participantId)
-{
-    $projectParticipants = ProjectParticipant::with(['project', 'level_id', 'catalogue_id', 'schedule_id', 'state_id', 'participant_id'])->where('participant_id', $participantId)->get();
+    public function getProjectParticipantByParticipant($participantId)
+    {
+        $projectParticipants = ProjectParticipant::with(['project', 'level_id', 'catalogue_id', 'schedule_id', 'state_id', 'participant_id'])->where('participant_id', $participantId)->get();
 
-    return response()->json([
-        'status' => 'success',
-        'data' => [
-            'projectParticipants' => $projectParticipants,
-        ],
-    ], 200);
-}
-    //--------------------------------------------------
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projectParticipants' => $projectParticipants,
+            ],
+        ], 200);
+    }
 
 }
