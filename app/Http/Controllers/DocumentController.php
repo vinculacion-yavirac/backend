@@ -26,8 +26,7 @@ class DocumentController extends Controller
 
     public function getDocumentsById($id)
     {
-        $documents = Documents::with('responsible_id')
-            ->where('id', $id)
+        $documents = Documents::where('id', $id)
             ->where('archived', false)
             ->first();
 
@@ -37,6 +36,27 @@ class DocumentController extends Controller
             ]);
         }
 
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'documents' => $documents
+            ],
+        ]);
+    }
+
+    public function searchDocumentsByTerm($term = '')
+    {
+        $documents = Documents::where('archived', false)
+            ->where(function ($query) use ($term) {
+                $lowerTerm = strtolower($term);
+                $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%'])
+                    ->orWhereHas('responsible_id', function ($query) use ($lowerTerm) {
+                        $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%']);
+                    });
+            })
+            ->with('responsible_id')
+            ->get();
+    
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -103,7 +123,7 @@ class DocumentController extends Controller
             'template' => 'string',
             'state' => 'boolean',
             'order' => 'integer',
-            'responsible_id' => 'integer',
+            '*.responsible_id' => 'integer',
             'briefcase_id' => 'integer'
         ]);
 

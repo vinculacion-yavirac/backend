@@ -156,7 +156,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/', [DocumentController::class, 'getDocuments']);
             Route::get('/{id}', [DocumentController::class, 'getDocumentsById']);
            // Route::get('/archived/list', [DocumentController::class, 'getArchivedProject']);
-           // Route::get('/search/term/{term?}', [DocumentController::class, 'searchProjectByTerm']);
+            Route::get('/search/term/{term?}', [DocumentController::class, 'searchDocumentsByTerm']);
            // Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchArchivedProjectByTerm']);
         });
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
