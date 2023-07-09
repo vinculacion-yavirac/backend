@@ -155,16 +155,16 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:LEER_DOCUMENTO')->group(function () {
             Route::get('/', [DocumentController::class, 'getDocuments']);
             Route::get('/{id}', [DocumentController::class, 'getDocumentsById']);
-           // Route::get('/archived/list', [DocumentController::class, 'getArchivedProject']);
+            Route::get('/archived/list', [DocumentController::class, 'getArchivedDocument']);
             Route::get('/search/term/{term?}', [DocumentController::class, 'searchDocumentsByTerm']);
-           // Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchArchivedProjectByTerm']);
+            Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchDocumentsArchivedByTerm']);
         });
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
-         //   Route::put('/archive/{id}', [DocumentController::class, 'archiveProject']);
+            Route::put('/archive/{id}', [DocumentController::class, 'archiveDocument']);
         });
 
         Route::middleware('permission:RESTAURAR_DOCUMENTO')->group(function () {
-         //   Route::put('/restore/{id}', [DocumentController::class, 'restoreProject']);
+            Route::put('/restore/{id}', [DocumentController::class, 'restoreDocument']);
         });
 
         Route::middleware('permission:CREAR_DOCUMENTO')->group(function () {

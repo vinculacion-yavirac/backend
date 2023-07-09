@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class DocumentController extends Controller
 {
+    /**
+     * Summary of getDocuments
+     * @return \Illuminate\Http\JsonResponse|mixed
+     * Lista de documentos
+     */
     public function getDocuments()
     {
 
@@ -23,7 +28,32 @@ class DocumentController extends Controller
         ], 200);
     }
 
+    /**
+     * Summary of getArchivedDocument
+     * @return \Illuminate\Http\JsonResponse|mixed
+     * lista de archivados
+     */
+    public function getArchivedDocument()
+    {
+        $documents = Documents::with('responsible_id')
+        ->where('archived', true)
+        ->get();
 
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'documents' => $documents,
+            ],
+        ]);
+    }
+
+
+    /**
+     * Summary of getDocumentsById
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse|mixed
+     * Obtener los documentos por el id
+     */
     public function getDocumentsById($id)
     {
         $documents = Documents::where('id', $id)
@@ -44,6 +74,90 @@ class DocumentController extends Controller
         ]);
     }
 
+
+    /**
+     * Summary of archiveDocument
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse|mixed
+     * Archivar documentos
+     */
+    public function archiveDocument($id)
+    {
+        $documents = Documents::findOrFail($id);
+
+        $documents->update([
+            'archived' => true,
+            'archived_at' => now(),
+            'archived_by' => auth()->user()->id,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Documento archivada correctamente',
+            'data' => [
+                'documents' => $documents,
+            ],
+        ], 200);
+    }
+
+    /**
+     * Summary of restoreSolicitud
+     * @param mixed $id
+     * @return JsonResponse
+     * Restaura documento por id
+     */
+    public function restoreDocument($id)
+    {
+        $documents = Documents::findOrFail($id);
+
+        $documents->update([
+            'archived' => false,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Documento restaurado correctamente',
+            'data' => [
+                'documents' => $documents,
+            ],
+        ], 200);
+    }
+
+
+    /**
+     * Summary of searchDocumentsArchivedByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse|mixed
+     * Buscador de lista de archivados
+     */
+    public function searchDocumentsArchivedByTerm($term = '')
+    {
+        $documents = Documents::where('archived', true)
+            ->where(function ($query) use ($term) {
+                $lowerTerm = strtolower($term);
+                $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%'])
+                    ->orWhereHas('responsible_id', function ($query) use ($lowerTerm) {
+                        $query->whereRaw('LOWER(name) like ?', ['%' . $lowerTerm . '%']);
+                    });
+            })
+            ->with('responsible_id')
+            ->get();
+    
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'documents' => $documents
+            ],
+        ]);
+    }
+
+
+    /**
+     * Summary of searchDocumentsByTerm
+     * @param mixed $term
+     * @return \Illuminate\Http\JsonResponse|mixed
+     * Buscador de lista
+     */
     public function searchDocumentsByTerm($term = '')
     {
         $documents = Documents::where('archived', false)
