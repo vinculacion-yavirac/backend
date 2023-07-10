@@ -100,5 +100,37 @@ class RoleSeeder extends Seeder
         $roleTwo->givePermissionTo(Permission::findById(51));
         $roleTwo->givePermissionTo(Permission::findById(52));
         $roleTwo->givePermissionTo(Permission::findById(53));
+
+
+
+        $roleTwo = Role::create(['name' => 'Coordinador Carrera']);
+        $roleOne->givePermissionTo(Permission::findById(20));
+        $roleOne->givePermissionTo(Permission::findById(21));
+        $roleOne->givePermissionTo(Permission::findById(22));
+        $roleOne->givePermissionTo(Permission::findById(23));
+        $roleOne->givePermissionTo(Permission::findById(24));
+        $roleOne->givePermissionTo(Permission::findById(25));
+        $roleOne->givePermissionTo(Permission::findById(27));
+        $roleOne->givePermissionTo(Permission::findById(28));
+        $roleOne->givePermissionTo(Permission::findById(29));
+        $roleOne->givePermissionTo(Permission::findById(30));
+        $roleOne->givePermissionTo(Permission::findById(31));
+        $roleOne->givePermissionTo(Permission::findById(32));
+        $roleOne->givePermissionTo(Permission::findById(33));
+        $roleOne->givePermissionTo(Permission::findById(35));
+        $roleOne->givePermissionTo(Permission::findById(44));
+        $roleOne->givePermissionTo(Permission::findById(53));
+        $roleOne->givePermissionTo(Permission::findById(63));
+        $roleOne->givePermissionTo(Permission::findById(72));
+        $roleOne->givePermissionTo(Permission::findById(81));
+
+
+
+
+
+
+
+
+
     }
 }
