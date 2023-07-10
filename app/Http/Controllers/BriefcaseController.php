@@ -356,16 +356,6 @@ public function create(Request $request)
             'project_participant_id' => $request->input('project_participant_id'),
         ]);
 
-        // Obtener los archivos subidos
-        $uploadedFiles = $this->uploadFiles($request, $briefcase->id);
-
-        if ($uploadedFiles['status'] === 'error') {
-            DB::rollback();
-            return response()->json([
-                'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
-                'error' => $uploadedFiles['message'],
-            ], 500);
-        }
 
         DB::commit();
 
