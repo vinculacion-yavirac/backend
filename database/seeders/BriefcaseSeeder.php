@@ -24,7 +24,7 @@ class BriefcaseSeeder extends Seeder
             'archived_at' => null,
             'created_by' => 9,
             'archived_by' => null,
-            'project_participant_id' => 3,
+
         ],
         [
             'observations' => '',
@@ -33,7 +33,7 @@ class BriefcaseSeeder extends Seeder
             'archived_at' => null,
             'created_by' => 9,
             'archived_by' => null,
-            'project_participant_id' => 4,
+
         ],
         [
             'observations' => '',
@@ -42,7 +42,7 @@ class BriefcaseSeeder extends Seeder
             'archived_at' => null,
             'created_by' => 9,
             'archived_by' => null,
-            'project_participant_id' => 5,
+
         ],
         [
             'observations' => '',
@@ -51,7 +51,7 @@ class BriefcaseSeeder extends Seeder
             'archived_at' => null,
             'created_by' => 9,
             'archived_by' => null,
-            'project_participant_id' => 6,
+
         ],
         [
             'observations' => '',
@@ -60,7 +60,7 @@ class BriefcaseSeeder extends Seeder
             'archived_at' => null,
             'created_by' => 9,
             'archived_by' => null,
-            'project_participant_id' => 7,
+
         ],
         [
             'observations' => '',
@@ -69,7 +69,7 @@ class BriefcaseSeeder extends Seeder
             'archived_at' => null,
             'created_by' => 9,
             'archived_by' => null,
-            'project_participant_id' => 8,
+
         ],
         [
             'observations' => '',
@@ -78,7 +78,7 @@ class BriefcaseSeeder extends Seeder
             'archived_at' => null,
             'created_by' => 9,
             'archived_by' => null,
-            'project_participant_id' => 9,
+            
         ],
         // Agrega más registros si es necesario
     ];
