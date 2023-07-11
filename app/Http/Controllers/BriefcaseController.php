@@ -363,7 +363,7 @@ public function create(Request $request)
             'status' => 'success',
             'data' => [
                 'briefcase' => $briefcase,
-                'files' => $uploadedFiles['files'],
+                //'files' => $uploadedFiles['files'],
             ],
             'message' => 'Portafolio creado exitosamente',
         ]);
