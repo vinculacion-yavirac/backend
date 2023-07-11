@@ -35,7 +35,7 @@ class FilesController extends Controller
     }
 
 
-// prueba combinar 
+// prueba combinar
 
 public function uploadFiles(Request $request, $idBriefcase)
 {
