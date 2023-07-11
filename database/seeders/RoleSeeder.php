@@ -103,26 +103,26 @@ class RoleSeeder extends Seeder
 
 
 
-        $roleTwo = Role::create(['name' => 'Coordinador Carrera']);
-        $roleOne->givePermissionTo(Permission::findById(20));
-        $roleOne->givePermissionTo(Permission::findById(21));
-        $roleOne->givePermissionTo(Permission::findById(22));
-        $roleOne->givePermissionTo(Permission::findById(23));
-        $roleOne->givePermissionTo(Permission::findById(24));
-        $roleOne->givePermissionTo(Permission::findById(25));
-        $roleOne->givePermissionTo(Permission::findById(27));
-        $roleOne->givePermissionTo(Permission::findById(28));
-        $roleOne->givePermissionTo(Permission::findById(29));
-        $roleOne->givePermissionTo(Permission::findById(30));
-        $roleOne->givePermissionTo(Permission::findById(31));
-        $roleOne->givePermissionTo(Permission::findById(32));
-        $roleOne->givePermissionTo(Permission::findById(33));
-        $roleOne->givePermissionTo(Permission::findById(35));
-        $roleOne->givePermissionTo(Permission::findById(44));
-        $roleOne->givePermissionTo(Permission::findById(53));
-        $roleOne->givePermissionTo(Permission::findById(63));
-        $roleOne->givePermissionTo(Permission::findById(72));
-        $roleOne->givePermissionTo(Permission::findById(81));
+        $roleThree = Role::create(['name' => 'Coordinador Carrera']);
+        $roleThree->givePermissionTo(Permission::findById(20));
+        $roleThree->givePermissionTo(Permission::findById(21));
+        $roleThree->givePermissionTo(Permission::findById(22));
+        $roleThree->givePermissionTo(Permission::findById(23));
+        $roleThree->givePermissionTo(Permission::findById(24));
+        $roleThree->givePermissionTo(Permission::findById(25));
+        $roleThree->givePermissionTo(Permission::findById(27));
+        $roleThree->givePermissionTo(Permission::findById(28));
+        $roleThree->givePermissionTo(Permission::findById(29));
+        $roleThree->givePermissionTo(Permission::findById(30));
+        $roleThree->givePermissionTo(Permission::findById(31));
+        $roleThree>givePermissionTo(Permission::findById(32));
+        $roleThree->givePermissionTo(Permission::findById(33));
+        $roleThree->givePermissionTo(Permission::findById(35));
+        $roleThree->givePermissionTo(Permission::findById(44));
+        $roleThree->givePermissionTo(Permission::findById(53));
+        $roleThree->givePermissionTo(Permission::findById(63));
+        $roleThree->givePermissionTo(Permission::findById(72));
+        $roleThree->givePermissionTo(Permission::findById(81));
 
 
 
