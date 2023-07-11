@@ -48,7 +48,7 @@ class ProjectParticipantController extends Controller
 
     public function getAllProjectParticipants()
     {
-        $projectParticipants = ProjectParticipant::with('project_id', 'participant_id.person')
+        $projectParticipants = ProjectParticipant::with('project_id.beneficiary_institution_id', 'participant_id.person')
         ->get();
 
         return response()->json([

@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('project_participants', function (Blueprint $table) {
             $table->increments('id');
-            $table->json('functions');
-            $table->timestamp('assignment_date');
-
+            $table->json('functions')->nullable();
+            $table->timestamp('assignment_date')->nullable();
+            
             $table->unsignedBigInteger('level_id')->nullable();
             $table->foreign('level_id')->references('id')->on('catalogs');
 
