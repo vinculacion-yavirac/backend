@@ -51,7 +51,7 @@ Route::middleware('authentication')->group(function () {
     //Users
     Route::prefix('users')->group(function () {
         //ruta para obtener todos los usuarios
-        Route::get('/', [UsersController::class, 'getUsers'])->middleware('permission:LEER_USUARIOS');
+        Route::get('/', [UsersController::class, 'getUsers'])->middleware('permission:LEER_USUARIOS|LEER_DOCUMENTO');
         //ruta para obtener usuario por id
         Route::get('/{id}', [UsersController::class, 'getUserById'])->middleware('permission:LEER_USUARIOS');
         //ruta para obtener usuarios por termino de búsqueda
@@ -87,7 +87,7 @@ Route::middleware('authentication')->group(function () {
     //Roles
     Route::prefix('roles')->group(function () {
         //ruta para obtener todos los roles
-        Route::get('/', [RolesController::class, 'getRoles'])->middleware('permission:LEER_ROLES');
+        Route::get('/', [RolesController::class, 'getRoles'])->middleware('permission:LEER_ROLES|LEER_DOCUMENTO');
         //ruta para obtener rol por id
         Route::get('/{id}', [RolesController::class, 'getRoleById'])->middleware('permission:LEER_ROLES');
         //ruta para obtener roles por termino de búsqueda
@@ -205,18 +205,18 @@ Route::middleware('authentication')->group(function () {
 
     //PROYECTO
     Route::prefix('project')->group(function () {
-        Route::middleware('permission:LEER_PRTOYECTO')->group(function () {
+        Route::middleware('permission:LEER_PROYECTO')->group(function () {
             Route::get('/', [ProjectController::class, 'getProject']);
             Route::get('/{id}', [ProjectController::class, 'getProjectById']);
             Route::get('/archived/list', [ProjectController::class, 'getArchivedProject']);
             Route::get('/search/term/{term?}', [ProjectController::class, 'searchProjectByTerm']);
             Route::get('/search/archived/term/{term?}', [ProjectController::class, 'searchArchivedProjectByTerm']);
         });
-        Route::middleware('permission:ARCHIVAR_PRTOYECTO')->group(function () {
+        Route::middleware('permission:ARCHIVAR_PROYECTO')->group(function () {
             Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
         });
 
-        Route::middleware('permission:RESTAURAR_PRTOYECTO')->group(function () {
+        Route::middleware('permission:RESTAURAR_PROYECTO')->group(function () {
             Route::put('/restore/{id}', [ProjectController::class, 'restoreProject']);
         });
         Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);

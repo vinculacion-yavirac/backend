@@ -27,6 +27,7 @@ class RoleSeeder extends Seeder
         $roleOne->givePermissionTo(Permission::findById(15));
         $roleOne->givePermissionTo(Permission::findById(16));
         $roleOne->givePermissionTo(Permission::findById(17));
+        $roleOne->givePermissionTo(Permission::findById(18));
         $roleOne->givePermissionTo(Permission::findById(19));
         $roleOne->givePermissionTo(Permission::findById(20));
         $roleOne->givePermissionTo(Permission::findById(21));
@@ -62,6 +63,14 @@ class RoleSeeder extends Seeder
         $roleOne->givePermissionTo(Permission::findById(51));
         $roleOne->givePermissionTo(Permission::findById(52));
         $roleOne->givePermissionTo(Permission::findById(53));
+        $roleOne->givePermissionTo(Permission::findById(54));
+        $roleOne->givePermissionTo(Permission::findById(55));
+        $roleOne->givePermissionTo(Permission::findById(56));
+        $roleOne->givePermissionTo(Permission::findById(57));
+        $roleOne->givePermissionTo(Permission::findById(58));
+        $roleOne->givePermissionTo(Permission::findById(59));
+        $roleOne->givePermissionTo(Permission::findById(60));
+        $roleOne->givePermissionTo(Permission::findById(61));
 
 
         $roleTwo = Role::create(['name' => 'Docente Tutor']);
@@ -91,5 +100,37 @@ class RoleSeeder extends Seeder
         $roleTwo->givePermissionTo(Permission::findById(51));
         $roleTwo->givePermissionTo(Permission::findById(52));
         $roleTwo->givePermissionTo(Permission::findById(53));
+
+
+
+        $roleThree = Role::create(['name' => 'Coordinador Carrera']);
+        $roleThree->givePermissionTo(Permission::findById(1));
+        $roleThree->givePermissionTo(Permission::findById(2));
+        $roleThree->givePermissionTo(Permission::findById(3));
+        $roleThree->givePermissionTo(Permission::findById(4));
+        $roleThree->givePermissionTo(Permission::findById(5));
+        $roleThree->givePermissionTo(Permission::findById(6));
+        $roleThree->givePermissionTo(Permission::findById(7));
+        $roleThree->givePermissionTo(Permission::findById(8));
+        $roleThree->givePermissionTo(Permission::findById(9));
+        $roleThree->givePermissionTo(Permission::findById(10));
+        $roleThree->givePermissionTo(Permission::findById(11));
+        $roleThree->givePermissionTo(Permission::findById(12));
+        $roleThree->givePermissionTo(Permission::findById(13));
+        $roleThree->givePermissionTo(Permission::findById(14));
+        $roleThree->givePermissionTo(Permission::findById(22));
+        $roleThree->givePermissionTo(Permission::findById(30));
+        $roleThree->givePermissionTo(Permission::findById(38));
+        $roleThree->givePermissionTo(Permission::findById(46));
+        $roleThree->givePermissionTo(Permission::findById(54));
+
+
+
+
+
+
+
+
+
     }
 }

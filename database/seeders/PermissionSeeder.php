@@ -60,14 +60,14 @@ class PermissionSeeder extends Seeder
             'IMPORTAR_FUNDACION',
 
 
-            'LEER_PRTOYECTO',
-            'CREAR_PRTOYECTO',
-            'ACTUALIZAR_PRTOYECTO',
-            'ARCHIVAR_PRTOYECTO',
-            'RESTAURAR_PRTOYECTO',
-            'ELIMINAR_PRTOYECTO',
-            'EXPORTAR_PRTOYECTO',
-            'IMPORTAR_PRTOYECTO',
+            'LEER_PROYECTO',
+            'CREAR_PROYECTO',
+            'ACTUALIZAR_PROYECTO',
+            'ARCHIVAR_PROYECTO',
+            'RESTAURAR_PROYECTO',
+            'ELIMINAR_PROYECTO',
+            'EXPORTAR_PROYECTO',
+            'IMPORTAR_PROYECTO',
 
             'LEER_ESTUDIANTE',
             'CREAR_ESTUDIANTE',

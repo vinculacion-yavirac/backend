@@ -23,7 +23,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', '>', 0)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person')
+            ->with('project_participant_id.participant_id.person','created_by.person')
             ->get();
 
         return response()->json([
@@ -43,7 +43,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person','project_participant_id.project_id.beneficiary_institution_id','files','documents')
+            ->with('project_participant_id.participant_id.person','created_by.person','project_participant_id.project_id.beneficiary_institution_id','files','documents')
             ->first();
 
         if (!$briefcases) {
@@ -68,7 +68,7 @@ class BriefcaseController extends Controller
     public function getArchivedBriefcase()
     {
         $briefcases = Briefcase::where('archived', true)
-            ->with('project_participant_id.participant_id.person')
+            ->with('project_participant_id.participant_id.person','created_by.person')
             ->get();
 
         return response()->json([
@@ -140,11 +140,13 @@ class BriefcaseController extends Controller
         $lowerTerm = strtolower($term);
 
         $briefcases = Briefcase::where('archived', false)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($lowerTerm) {
-                $query->whereRaw('LOWER(names) like ? or LOWER(last_names) like ? or LOWER(identification) like ?', ['%' . $lowerTerm . '%', '%' . $lowerTerm . '%', '%' . $lowerTerm . '%']);
-            })
-            ->with('project_participant_id.participant_id.person')
-            ->get();
+        ->whereHas('created_by.person', function ($query) use ($term) {
+            $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+        })
+        ->with('created_by.person')
+        ->get();
 
         return response()->json([
             'status' => 'success',
@@ -163,13 +165,13 @@ class BriefcaseController extends Controller
     public function searchArchivedBriefcaseByTerm($term = '')
     {
         $briefcases = Briefcase::where('archived', true)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
-                $query->where('names', 'ILIKE', '%' . $term . '%')
-                    ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
-                    ->orWhere('identification', 'ILIKE', '%' . $term . '%');
-            })
-            ->with('project_participant_id.participant_id.person')
-            ->get();
+        ->whereHas('created_by.person', function ($query) use ($term) {
+            $query->whereRaw('LOWER(names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(last_names) like ?', ['%' . $term . '%'])
+                ->orWhereRaw('LOWER(identification) like ?', ['%' . $term . '%']);
+        })
+        ->with('created_by.person')
+        ->get();
 
         return response()->json([
             'status' => 'success',
@@ -189,7 +191,7 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', $state)
-            ->with('project_participant_id.participant_id.person')
+            ->with('created_by.person')
             ->get();
 
         return response()->json([
@@ -211,12 +213,12 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', true)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+            ->whereHas('created_by.person', function ($query) use ($term) {
                 $query->where('names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('identification', 'ILIKE', '%' . $term . '%');
             })
-            ->with('project_participant_id.participant_id.person')
+            ->with('created_by.person')
             ->get();
 
         return response()->json([
@@ -237,12 +239,12 @@ class BriefcaseController extends Controller
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', false)
-            ->whereHas('project_participant_id.participant_id.person', function ($query) use ($term) {
+            ->whereHas('created_by.person', function ($query) use ($term) {
                 $query->where('names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('last_names', 'ILIKE', '%' . $term . '%')
                     ->orWhere('identification', 'ILIKE', '%' . $term . '%');
             })
-            ->with('project_participant_id.participant_id.person')
+            ->with('created_by.person')
             ->get();
 
         return response()->json([
@@ -252,55 +254,6 @@ class BriefcaseController extends Controller
             ],
         ]);
     }
-
-//----------------------------------------------------------------------------------
-
-    /**
-     * Summary of createBriefcase
-     * @param \Illuminate\Http\Request $request
-     * @throws \Exception
-     * @return \Illuminate\Http\JsonResponse
-     * crear transaccion de documentos archivos y portafolio
-     */
-    public function createBriefcaseWithFiles(Request $request)
-{
-    $request->validate([
-        'observations' => 'required|string',
-        'state' => 'required|boolean',
-        'files' => 'required|array',
-        'files.*.name' => 'required|string',
-        'files.*.observation' => 'required|string',
-        'files.*.state' => 'required|boolean',
-        'files.*.document_id' => 'required|integer',
-    ]);
-
-    try {
-        // Crear el briefcase
-        $briefcaseData = $request->only(['observations', 'state']);
-        $briefcaseData['created_by'] = Auth::id();
-        $briefcase = Briefcase::create($briefcaseData);
-
-        if (!$briefcase) {
-            throw new \Exception("No se pudo crear el briefcase.");
-        }
-
-        // Crear los archivos y asociarlos al briefcase
-        $filesData = $request->input('files');
-        foreach ($filesData as $fileData) {
-            $fileData['briefcase_id'] = $briefcase->id;
-            File::create($fileData);
-        }
-
-        return response()->json([
-            'message' => 'Briefcase y archivos creados exitosamente.',
-            'briefcase' => $briefcase
-        ], 200);
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage()
-        ], 400);
-    }
-}
 
 
 
@@ -387,156 +340,40 @@ class BriefcaseController extends Controller
 
 // prueba aaaaaaaaaaaaaaaaaaaa
 
+public function create(Request $request)
+{
+    try {
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        $now = Carbon::now();
+
+        $briefcase = Briefcase::create([
+            'observations' => $request->input('observations'),
+            'state' => $request->input('state', false),
+            'created_by' => $user->id,
+            'created_at' => $now,
+            'project_participant_id' => $request->input('project_participant_id'),
+        ]);
 
 
-    public function create(Request $request)
-    {
-        try {
-            DB::beginTransaction();
+        DB::commit();
 
-            $user = Auth::user();
-            $now = Carbon::now();
-
-            $briefcase = Briefcase::create([
-                'observations' => $request->input('observations'),
-                'state' => $request->input('state', false),
-                'created_by' => $user->id,
-                'created_at' => $now,
-                'project_participant_id' => $request->input('project_participant_id'),
-            ]);
-
-            // $createdFiles = [];
-
-            // foreach ($request->input('files') as $fileData) {
-            //     $file = new File();
-            //     $file->name = $fileData['name'];
-            //     $file->type = $fileData['type'];
-            //     $file->content = base64_decode($fileData['content']); // Decodificar el contenido base64
-            //     $file->size = $fileData['size'];
-            //     $file->observation = $fileData['observation'] ?? '';
-            //     $file->state = $fileData['state'] ? 1 : 0;
-            //     $file->briefcase_id = $briefcase->id;
-            //     $file->document_id = $fileData['document_id'];
-            //     $file->save();
-
-            //     $createdFiles[] = $file;
-            // }
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'briefcase' => $briefcase,
-                    //'files' => $createdFiles,
-                ],
-                'message' => 'Portafolio creado exitosamente',
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'briefcase' => $briefcase,
+                //'files' => $uploadedFiles['files'],
+            ],
+            'message' => 'Portafolio creado exitosamente',
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
+            'error' => $e->getMessage(),
+        ], 500);
     }
-
-
-// public function create(Request $request)
-// {
-//     try {
-//         DB::beginTransaction();
-
-//         $user = Auth::user();
-//         $now = Carbon::now();
-
-//         $briefcase = Briefcase::create([
-//             'observations' => $request->input('observations'),
-//             'state' => $request->input('state', false),
-//             'created_by' => $user->id,
-//             'created_at' => $now,
-//             'project_participant_id' => $request->input('project_participant_id'),
-//         ]);
-
-//         $files = $request->file('files');
-//         $newFiles = [];
-    
-//         if (is_array($files)) {
-//             foreach ($files as $file) {
-//                 if ($file->isValid()) {
-//                     $fileName = $file->getClientOriginalName();
-//                     $fileContent = base64_encode(file_get_contents($file));
-//                     $fileSize = $file->getSize();
-//                     $observation = ''; // Agrega aquí el valor para el campo 'observation'
-//                     $state = 0; // Agrega aquí el valor para el campo 'state'
-    
-//                     $newFile = File::create([
-//                         'name' => $fileName,
-//                         'type' => $file->getClientOriginalExtension(),
-//                         'content' => $fileContent,
-//                         'size' => $fileSize,
-//                         'observation' => $observation,
-//                         'state' => $state,
-//                         'briefcase_id' => $briefcase->id,
-//                         'document_id' => 1
-//                     ]);
-    
-//                     $newFiles[] = $newFile;
-//                 } else {
-//                     $response['status'] = 'error';
-//                     $response['message'] = 'Uno o más archivos no son válidos';
-//                     return response()->json($response, 400);
-//                 }
-//             }
-//         } elseif ($files instanceof \Illuminate\Http\UploadedFile) {
-//             if ($files->isValid()) {
-//                 $fileName = $files->getClientOriginalName();
-//                 $fileContent = base64_encode(file_get_contents($files));
-//                 $fileSize = $files->getSize();
-//                 $observation = ''; // Agrega aquí el valor para el campo 'observation'
-//                 $state = 0; // Agrega aquí el valor para el campo 'state'
-    
-//                 $newFile = File::create([
-//                     'name' => $fileName,
-//                     'type' => $files->getClientOriginalExtension(),
-//                     'content' => $fileContent,
-//                     'size' => $fileSize,
-//                     'observation' => $observation,
-//                     'state' => $state,
-//                     'briefcase_id' => $briefcase->id,
-//                     'document_id' => 1
-//                 ]);
-    
-//                 $newFiles[] = $newFile;
-//             } else {
-//                 $response['status'] = 'error';
-//                 $response['message'] = 'El archivo no es válido';
-//                 return response()->json($response, 400);
-//             }
-//         } else {
-//             $response['status'] = 'error';
-//             $response['message'] = 'El formato de archivos no es válido';
-//             return response()->json($response, 400);
-//         }
-
-//         DB::commit();
-
-//         return response()->json([
-//             'status' => 'success',
-//             'data' => [
-//                 'briefcase' => $briefcase,
-//                  //'files' => $createdFiles,
-//             ],
-//             'message' => 'Portafolio creado exitosamente',
-//         ]);
-//     } catch (\Exception $e) {
-//         DB::rollback();
-//         return response()->json([
-//             'message' => 'Ocurrió un error al crear el portafolio y guardar los archivos.',
-//             'error' => $e->getMessage(),
-//         ], 500);
-//     }
-// }
-
+}
 
 }
