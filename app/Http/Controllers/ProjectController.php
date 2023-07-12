@@ -17,7 +17,7 @@ class ProjectController extends Controller
     public function getProject()
     {
         $projects = Project::where('archived', false)
-            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
+            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person','career_id')
             ->get();
 
         return response()->json([
@@ -36,7 +36,7 @@ class ProjectController extends Controller
     {
         $projects = Project::where('id', $id)
             ->where('archived', false)
-            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person')
+            ->with('created_by.person', 'beneficiary_institution_id', 'stateTwo_id', 'authorized_by.user_id.person','career_id')
             ->first();
 
         if (!$projects) {
