@@ -31,7 +31,6 @@ class DatabaseSeeder extends Seeder
             ProjectsTableSeeder::class,
             GoalSeeder::class,
             ActivitySeeder::class,
-            ProjectParticipantsSeeder::class,
             SolicitudSeeder::class,
             DocumentSeeder::class,
             BriefcaseSeeder::class,

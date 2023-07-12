@@ -14,8 +14,9 @@ class Activity extends Model
         'goals_id',
     ];
 
-    public function goal()
+    public function goals_id()
     {
         return $this->belongsTo(Goal::class, 'goals_id');
     }
+    
 }

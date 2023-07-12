@@ -75,9 +75,9 @@ class Project extends Model
         return $this->belongsTo(BeneficiaryInstitution::class,'beneficiary_institution_id');
     }
 
-    public function career()
+    public function career_id()
     {
-        return $this->belongsTo(Career::class);
+        return $this->belongsTo(Career::class,'career_id');
     }
 
     public function subLineInvestigation()

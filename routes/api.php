@@ -1,7 +1,7 @@
 <?php
 use App\Http\Controllers\AvanzeController;
 use App\Http\Controllers\ActividadesController;
-
+use App\Http\Controllers\ActivitiesController;
 use App\Http\Controllers\BriefcaseController;
 use App\Http\Controllers\BeneficiaryInstitutionsController;
 use App\Http\Controllers\SolicitudeController;
@@ -154,21 +154,25 @@ Route::middleware('authentication')->group(function () {
      Route::prefix('document')->group(function () {
         Route::middleware('permission:LEER_DOCUMENTO')->group(function () {
             Route::get('/', [DocumentController::class, 'getDocuments']);
-           // Route::get('/{id}', [DocumentController::class, 'getProjectById']);
-           // Route::get('/archived/list', [DocumentController::class, 'getArchivedProject']);
-           // Route::get('/search/term/{term?}', [DocumentController::class, 'searchProjectByTerm']);
-           // Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchArchivedProjectByTerm']);
+            Route::get('/{id}', [DocumentController::class, 'getDocumentsById']);
+            Route::get('/archived/list', [DocumentController::class, 'getArchivedDocument']);
+            Route::get('/search/term/{term?}', [DocumentController::class, 'searchDocumentsByTerm']);
+            Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchDocumentsArchivedByTerm']);
         });
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
-         //   Route::put('/archive/{id}', [DocumentController::class, 'archiveProject']);
+            Route::put('/archive/{id}', [DocumentController::class, 'archiveDocument']);
         });
 
         Route::middleware('permission:RESTAURAR_DOCUMENTO')->group(function () {
-         //   Route::put('/restore/{id}', [DocumentController::class, 'restoreProject']);
+            Route::put('/restore/{id}', [DocumentController::class, 'restoreDocument']);
         });
 
         Route::middleware('permission:CREAR_DOCUMENTO')->group(function () {
             Route::post('/create', [DocumentController::class, 'createDocuments']);
+        });
+
+        Route::middleware('permission:ACTUALIZAR_DOCUMENTO')->group(function () {
+            Route::put('/update/{id}', [DocumentController::class, 'updateDocument']);
         });
     });
 
@@ -259,9 +263,14 @@ Route::middleware('authentication')->group(function () {
 
 
     //Integrantes detalle de la tabla project y solicitude
-     Route::prefix('participant')->group(function () {
-         Route::get('/', [ProjectParticipantController::class, 'getProyectParticipant']);
-         Route::post('/create', [ProjectParticipantController::class, 'store']);
+    Route::prefix('project-participant')->group(function () {
+        Route::post('/create', [ProjectParticipantController::class, 'create']);
+        Route::get('/{participantId}', [ProjectParticipantController::class, 'getByParticipantId']);
+        Route::get('by/{id}', [ProjectParticipantController::class, 'getById']);
+        Route::get('/exist', [ProjectParticipantController::class, 'exist']);
+        Route::get('/', [ProjectParticipantController::class, 'getAllProjectParticipants']);
+        Route::put('/{id}', [ProjectParticipantController::class, 'update']);
+        Route::delete('/delete/{id}', [ProjectParticipantController::class, 'destroy']);
     });
 
 
@@ -279,6 +288,13 @@ Route::middleware('authentication')->group(function () {
         Route::post('/create', [ActividadesController::class, 'createActividades']);
         Route::put('/update/{id}', [ActividadesController::class, 'updateActividades']);
         Route::delete('/delete/{id}', [ActividadesController::class, 'deleteActividadesById']);
+    });
+    Route::prefix('activities')->group(function () {
+        Route::get('/', [ActivitiesController::class, 'getAllActividades']);
+        Route::get('/{id}', [ActivitiesController::class, 'getAllActividadesById']);
+        Route::post('/create', [ActivitiesController::class, 'createActividades']);
+        Route::put('/update/{id}', [ActivitiesController::class, 'updateActividades']);
+        Route::delete('/delete/{id}', [ActivitiesController::class, 'deleteActividadesById']);
     });
 });
 
