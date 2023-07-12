@@ -1,7 +1,7 @@
 <?php
 use App\Http\Controllers\AvanzeController;
 use App\Http\Controllers\ActividadesController;
-
+use App\Http\Controllers\ActivitiesController;
 use App\Http\Controllers\BriefcaseController;
 use App\Http\Controllers\BeneficiaryInstitutionsController;
 use App\Http\Controllers\SolicitudeController;
@@ -288,6 +288,13 @@ Route::middleware('authentication')->group(function () {
         Route::post('/create', [ActividadesController::class, 'createActividades']);
         Route::put('/update/{id}', [ActividadesController::class, 'updateActividades']);
         Route::delete('/delete/{id}', [ActividadesController::class, 'deleteActividadesById']);
+    });
+    Route::prefix('activities')->group(function () {
+        Route::get('/', [ActivitiesController::class, 'getAllActividades']);
+        Route::get('/{id}', [ActivitiesController::class, 'getAllActividadesById']);
+        Route::post('/create', [ActivitiesController::class, 'createActividades']);
+        Route::put('/update/{id}', [ActivitiesController::class, 'updateActividades']);
+        Route::delete('/delete/{id}', [ActivitiesController::class, 'deleteActividadesById']);
     });
 });
 
