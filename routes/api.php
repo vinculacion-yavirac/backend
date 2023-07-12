@@ -177,7 +177,7 @@ Route::middleware('authentication')->group(function () {
 
     //PROYECTO
     Route::prefix('project')->group(function () {
-        Route::middleware('permission:LEER_PRTOYECTO')->group(function () {
+        Route::middleware('permission:LEER_PROYECTO')->group(function () {
             Route::get('/', [ProjectController::class, 'getProject']);
             Route::get('/{id}', [ProjectController::class, 'getProjectById']);
             Route::get('/archived/list', [ProjectController::class, 'getArchivedProject']);
