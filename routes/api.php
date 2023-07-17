@@ -264,13 +264,26 @@ Route::middleware('authentication')->group(function () {
 
     //Integrantes detalle de la tabla project y solicitude
     Route::prefix('project-participant')->group(function () {
-        Route::post('/create', [ProjectParticipantController::class, 'create']);
-        Route::get('/{participantId}', [ProjectParticipantController::class, 'getByParticipantId']);
-        Route::get('by/{id}', [ProjectParticipantController::class, 'getById']);
-        Route::get('/exist', [ProjectParticipantController::class, 'exist']);
-        Route::get('/', [ProjectParticipantController::class, 'getAllProjectParticipants']);
-        Route::put('/{id}', [ProjectParticipantController::class, 'update']);
-        Route::delete('/delete/{id}', [ProjectParticipantController::class, 'destroy']);
+
+
+        Route::middleware('permission:LEER_PROYECTO')->group(function () {
+            Route::get('/', [ProjectParticipantController::class, 'getAllProjectParticipants']);
+            Route::get('/lista', [ProjectParticipantController::class, 'getAllProjectParticipantsTutor']);
+            Route::get('/{participantId}', [ProjectParticipantController::class, 'getByParticipantId']);
+            Route::get('by/{id}', [ProjectParticipantController::class, 'getById']);
+            Route::get('/exist', [ProjectParticipantController::class, 'exist']);
+        });
+        Route::middleware('permission:CREAR_PROYECTO')->group(function () {
+            Route::post('/create', [ProjectParticipantController::class, 'create']);
+        });
+
+        Route::middleware('permission:ACTUALIZAR_PROYECTO')->group(function () {
+            Route::put('/{id}', [ProjectParticipantController::class, 'update']);
+        });
+
+        Route::middleware('permission:ELIMINAR_PROYECTO')->group(function () {
+            Route::delete('/delete/{id}', [ProjectParticipantController::class, 'destroy']);
+        });
     });
 
 
