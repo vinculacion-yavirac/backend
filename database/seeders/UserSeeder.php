@@ -211,10 +211,10 @@ class UserSeeder extends Seeder
 
         $userSeventeen = User::create([
             'email' => 'chipantasi@gmail.com',
-            'password' => Hash::make('0508023'),
+            'password' => Hash::make('yavirac1810'),
             'person' => $personSeventeen->id,
         ]);
-        $userSeventeen->assignRole('Coordinador General');
+        $userSeventeen->assignRole('Coordinador General');
 
     }
 }
