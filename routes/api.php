@@ -142,10 +142,10 @@ Route::middleware('authentication')->group(function () {
             Route::put('/restore/{id}', [$controller, 'restoreBriefcase']);
         });
 
-        Route::middleware('permission:ACTUALIZAR_PORTAFOLIO, ACTULIZAR_PORTAFOLIO_ESTUDIANTE')->group(function () use ($controller) {
+        Route::middleware('permission:ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::put('/update/{id}', [$controller, 'updateBriefcase']);
         });
-        Route::middleware('permission:CREAR_PORTAFOLIO_ESTUDIANTE')->group(function () use ($controller) {
+        Route::middleware('permission:CREAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::post('/create', [BriefcaseController::class, 'create']);
         });
     });
