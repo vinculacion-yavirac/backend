@@ -171,5 +171,35 @@ class UserSeeder extends Seeder
         ]);
         $userNine->assignRole('Coordinador Carrera');
 
+
+        $personTen = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '1203269954',
+            'names' => 'Geovanny',
+            'last_names' => 'Murillo',
+        ]);
+
+        $userTen = User::create([
+            'email' => 'murillo@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personTen->id,
+        ]);
+        $userTen->assignRole('Docente Tutor');
+
+
+        $personEleven = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '1203269894',
+            'names' => 'Luis',
+            'last_names' => 'Cunalata',
+        ]);
+
+        $userEleven = User::create([
+            'email' => 'luis@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personEleven->id,
+        ]);
+        $userEleven->assignRole('Docente Tutor');
+
     }
 }

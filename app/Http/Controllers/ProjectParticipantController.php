@@ -20,16 +20,6 @@ class ProjectParticipantController extends Controller
         $projectId = $validatedData['project_id'];
         $participantId = $validatedData['participant_id'];
 
-        // Verificar si el usuario ya está asignado a un proyecto
-        $existingParticipant = ProjectParticipant::where('participant_id', $participantId)->first();
-
-        if ($existingParticipant) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'El usuario ya está asignado a un proyecto.',
-            ], 400);
-        }
-
         // Crear una nueva instancia de ProjectParticipant
         $projectParticipant = new ProjectParticipant();
         $projectParticipant->project_id = $projectId;
@@ -38,12 +28,13 @@ class ProjectParticipantController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Estuante asignado exitosamente',
+            'message' => 'Usuario asignado exitosamente',
             'data' => [
                 'projectParticipant' => $projectParticipant,
             ],
         ], 200);
     }
+
 
 
     public function getAllProjectParticipants()
@@ -61,7 +52,7 @@ class ProjectParticipantController extends Controller
 
     public function update(Request $request, $id)
 {
-
+    // Validar los datos recibidos
     $validatedData = $request->validate([
         'project_id' => 'required|integer',
         'participant_id' => 'required|integer',
@@ -70,27 +61,33 @@ class ProjectParticipantController extends Controller
     $projectId = $validatedData['project_id'];
     $participantId = $validatedData['participant_id'];
 
-    $projectParticipant = ProjectParticipant::find($id);
+    // Verificar si el usuario ya está asignado a otro proyecto
+    $existingParticipant = ProjectParticipant::where('participant_id', $participantId)
+        ->where('id', '!=', $id) // Excluir la asignación que se está actualizando
+        ->first();
 
-    if (!$projectParticipant) {
+    if ($existingParticipant) {
         return response()->json([
             'status' => 'error',
-            'message' => 'ProjectParticipant no encontrado',
-        ], 404);
+            'message' => 'El usuario ya está asignado a otro proyecto.',
+        ], 200);
     }
 
+    // Obtener la asignación existente y actualizarla
+    $projectParticipant = ProjectParticipant::findOrFail($id);
     $projectParticipant->project_id = $projectId;
     $projectParticipant->participant_id = $participantId;
     $projectParticipant->save();
 
     return response()->json([
         'status' => 'success',
-        'message' => 'Asignación actualizada Correctamente',
+        'message' => 'Asignación actualizada exitosamente',
         'data' => [
             'projectParticipant' => $projectParticipant,
         ],
     ], 200);
 }
+
 
 
     public function getByParticipantId($participantId)
@@ -100,7 +97,7 @@ class ProjectParticipantController extends Controller
         if (!$projectParticipant) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'No encontrado',
+                'message' => 'El estudiante no esta asignado a una fundación',
             ], 404);
         }
 
