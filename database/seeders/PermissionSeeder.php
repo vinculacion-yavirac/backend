@@ -87,6 +87,12 @@ class PermissionSeeder extends Seeder
             'EXPORTAR_DOCUMENTO',
             'IMPORTAR_DOCUMENTO',
 
+            'LEER_SOLICITUD_ESTUDIANTE',
+            'CREAR_SOLICITUD_ESTUDIANTE',
+            'EXPORTAR_SOLICITUD_ESTUDIANTE',
+            'CREAR_PORTAFOLIO_ESTUDIANTE',
+            'ACTULIZAR_PORTAFOLIO_ESTUDIANTE'
+
 
         ];
 

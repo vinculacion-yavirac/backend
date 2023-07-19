@@ -142,10 +142,10 @@ Route::middleware('authentication')->group(function () {
             Route::put('/restore/{id}', [$controller, 'restoreBriefcase']);
         });
 
-        Route::middleware('permission:ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
+        Route::middleware('permission:ACTUALIZAR_PORTAFOLIO, ACTULIZAR_PORTAFOLIO_ESTUDIANTE')->group(function () use ($controller) {
             Route::put('/update/{id}', [$controller, 'updateBriefcase']);
         });
-        Route::middleware('permission:CREAR_PORTAFOLIO')->group(function () use ($controller) {
+        Route::middleware('permission:CREAR_PORTAFOLIO_ESTUDIANTE')->group(function () use ($controller) {
             Route::post('/create', [BriefcaseController::class, 'create']);
         });
     });
@@ -191,6 +191,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
             Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
             Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
+            Route::get('/catalogo', [SolicitudeController::class, 'getAllCatalogues']);
         });
 
         Route::middleware('permission:ARCHIVAR_SOLICITUD')->group(function () {
@@ -203,6 +204,7 @@ Route::middleware('authentication')->group(function () {
 
         Route::middleware('permission:ACTUALIZAR_SOLICITUD')->group(function () {
             Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
+            Route::post('/', [SolicitudeController::class, 'createSolicitude']); // Nueva ruta para crear una solicitud
         });
     });
 
