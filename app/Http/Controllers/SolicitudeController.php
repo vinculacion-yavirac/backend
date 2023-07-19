@@ -7,6 +7,7 @@ use App\Models\Person;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Models\Solicitude;
+use App\Models\Catalogue;
 use Illuminate\Support\Facades\DB;
 
 class SolicitudeController extends Controller
@@ -398,6 +399,63 @@ class SolicitudeController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error al actualizar la relación: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /* 
+    * Summary of createSolicitude
+    * @param \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\JsonResponse
+    * Crear una nueva solicitud
+    */
+   public function createSolicitude(Request $request)
+   {
+       $request->validate([
+           'approval_date' => 'nullable|date',
+           'solicitudes_status_id' => 'required',
+           'type_request_id' => 'required',
+           'created_by' => 'required',
+       ]);
+
+       try {
+           $solicitud = Solicitude::create([
+               'approval_date' => $request->approval_date,
+               'solicitudes_status_id' => $request->solicitudes_status_id,
+               'type_request_id' => $request->type_request_id,
+               'created_by' => $request->created_by,
+               'archived' => false,
+           ]);
+
+           return response()->json([
+               'status' => 'success',
+               'message' => 'Solicitud creada correctamente',
+               'data' => [
+                   'solicitud' => $solicitud,
+               ],
+           ], 201);
+       } catch (\Exception $e) {
+           return response()->json([
+               'status' => 'error',
+               'message' => 'Error al crear la solicitud: ' . $e->getMessage(),
+           ], 500);
+       }
+   }
+   public function getAllCatalogues()
+    {
+        try {
+            $catalogues = Catalogue::all();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'catalogues' => $catalogues,
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al obtener los catálogos: ' . $e->getMessage(),
             ], 500);
         }
     }
