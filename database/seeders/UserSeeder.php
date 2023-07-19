@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
 
 
         $userOne = User::create([
-            'email' => 'zh311505@gmail.com',
+            'email' => 'hector@gmail.com',
             'password' => Hash::make('yavirac1810'),
             'person' => $personOne->id,
         ]);
@@ -70,13 +70,13 @@ class UserSeeder extends Seeder
         $personTre = Person::create([
             'identification_type' => 'Cédula',
             'identification' => '175516806',
-            'names' => 'Alejandra',
-            'last_names' => 'Molina',
+            'names' => 'Steven',
+            'last_names' => 'Guerra',
         ]);
 
 
         $userTre = User::create([
-            'email' => 'alejandra@gmail.com',
+            'email' => 'steven@gmail.com',
             'password' => Hash::make('yavirac1810'),
             'person' => $personTre->id,
         ]);
@@ -165,8 +165,8 @@ class UserSeeder extends Seeder
         ]);
 
         $userNine = User::create([
-            'email' => 'brayan-ganan@hotmail.com',
-            'password' => Hash::make('2682697'),
+            'email' => 'brayan@gmail.com',
+            'password' => Hash::make('yavirac1810'),
             'person' => $personNine->id,
         ]);
         $userNine->assignRole('Coordinador Carrera');
