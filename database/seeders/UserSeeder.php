@@ -201,5 +201,20 @@ class UserSeeder extends Seeder
         ]);
         $userEleven->assignRole('Docente Tutor');
 
+
+        $personSeventeen = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '1729081636',
+            'names' => 'Andres',
+            'last_names' => 'Chipantasi',
+        ]);
+
+        $userSeventeen = User::create([
+            'email' => 'chipantasi@gmail.com',
+            'password' => Hash::make('0508023'),
+            'person' => $personSeventeen->id,
+        ]);
+        $userSeventeen->assignRole('Coordinador General');
+
     }
 }
