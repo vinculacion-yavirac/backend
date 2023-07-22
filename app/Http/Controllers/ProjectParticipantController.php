@@ -182,4 +182,24 @@ class ProjectParticipantController extends Controller
         ], 200);
     }
 
+
+    public function getAllProjectParticipantsTutor()
+    {
+        $userId = auth()->user()->id;
+    
+        $projectIds = ProjectParticipant::where('participant_id', $userId)
+            ->pluck('project_id');
+    
+        $projectParticipants = ProjectParticipant::whereIn('project_id', $projectIds)
+            ->with('project_id.beneficiary_institution_id', 'participant_id.person')
+            ->get();
+    
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'projectParticipants' => $projectParticipants,
+            ],
+        ], 200);
+    }
+
 }
