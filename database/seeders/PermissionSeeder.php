@@ -94,6 +94,7 @@ class PermissionSeeder extends Seeder
 
             'EXPORTAR_USUARIOS',
             'IMPORTAR_USUARIOS',
+            'LEER_FUNDACION_TUTOR',
 
         ];
 
