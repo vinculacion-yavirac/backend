@@ -77,6 +77,7 @@ class RoleSeeder extends Seeder
         $roleTwo->givePermissionTo(Permission::findById(38));
         $roleTwo->givePermissionTo(Permission::findById(54));
         $roleTwo->givePermissionTo(Permission::findById(68));
+        $roleTwo->givePermissionTo(Permission::findById(69));
 
         $roleThree = Role::create(['name' => 'Coordinador Carrera']);
         $roleThree->givePermissionTo(Permission::findById(1));

@@ -38,7 +38,7 @@ class SolicitudSeeder extends Seeder
         ],
          [
              'approval_date' => '2023-06-09 02:38:10',
-             'solicitudes_status_id' => 4,
+             'solicitudes_status_id' => 3,
              'type_request_id' => 2,
              'project_id' => null,
              'created_by' => 8,
@@ -118,7 +118,7 @@ class SolicitudSeeder extends Seeder
         ],
          [
              'approval_date' => '2023-06-09 02:38:10',
-             'solicitudes_status_id' => 4,
+             'solicitudes_status_id' => 3,
              'type_request_id' => 1,
              'project_id' => null,
              'created_by' => 4,
