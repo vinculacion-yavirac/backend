@@ -9,8 +9,57 @@ use App\Models\Person;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     title="User",
+ *     description="User model",
+ *     @OA\Property(property="id", type="integer", format="int64"),
+ *     @OA\Property(property="email", type="string"),
+ *     @OA\Property(property="password", type="string"),
+ *     @OA\Property(property="person", type="fk_person"),
+ *     @OA\Property(property="active", type="boolean", default=true),
+ *     @OA\Property(property="archived", type="boolean", default=false),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="archived_by", type="fk_users"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ * \OpenApi\Annotations\SecurityScheme
+ */
 class UsersController extends Controller
 {
+
+        /**
+     * @OA\Get(
+     *     path="/api/users",
+     *     summary="Obtener usuarios",
+     *     tags={"Users"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de usuarios",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="users", type="array", @OA\Items(ref="#/components/schemas/User"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function getUsers()
     {
         $users = User::where('id', '!=', auth()->user()->id)
@@ -31,6 +80,84 @@ class UsersController extends Controller
         ]);
     }
 
+        /**
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     summary="Obtener información de un usuario por su ID",
+     *     tags={"Users"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del usuario a obtener",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64",
+     *             example=123
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al obtener información del usuario",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", type="object",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="active", type="boolean"),
+     *                     @OA\Property(property="person", type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="name", type="string"),
+     *                         @OA\Property(property="last_name", type="string"),
+     *                         @OA\Property(property="email", type="string"),
+     *                         @OA\Property(property="phone", type="string"),
+     *                         @OA\Property(property="birth_date", type="string", format="date"),
+     *                         @OA\Property(property="identification", type="string"),
+     *                         @OA\Property(property="identification_type", type="string")
+     *                     ),
+     *                     @OA\Property(property="role", type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="name", type="string")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuario no encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Usuario no encontrado")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function getUserById($id)
     {
         $user = User::where('id', $id)
@@ -56,6 +183,75 @@ class UsersController extends Controller
         ]);
     }
 
+        /**
+     * @OA\Get(
+     *     path="/api/users/search/term/{term?}",
+     *     summary="Buscar usuarios por término",
+     *     tags={"Users"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="term",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al buscar usuarios",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="users", type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="email", type="string"),
+     *                         @OA\Property(property="active", type="boolean"),
+     *                         @OA\Property(property="person", type="object",
+     *                             @OA\Property(property="id", type="integer"),
+     *                             @OA\Property(property="names", type="string"),
+     *                             @OA\Property(property="last_names", type="string"),
+     *                             @OA\Property(property="email", type="string"),
+     *                             @OA\Property(property="phone", type="string"),
+     *                             @OA\Property(property="birth_date", type="string", format="date"),
+     *                             @OA\Property(property="identification", type="string"),
+     *                             @OA\Property(property="identification_type", type="string")
+     *                         ),
+     *                         @OA\Property(property="role", type="object",
+     *                             @OA\Property(property="id", type="integer"),
+     *                             @OA\Property(property="name", type="string")
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function searchUsuariosByTerm($term = '')
     {
         $users = User::where('id', '!=', auth()->user()->id)
@@ -90,39 +286,68 @@ class UsersController extends Controller
     }
 
 
-    //public function searchUsuariosByRoleTerm($roleId, $term = '')
-    //{
-       // $query = User::where('archived', false)
-      //      ->whereHas('roles', function ($query) use ($roleId) {
-      //          $query->where('id', $roleId);
-      //      });
-
-      //  if ($term) {
-      //      $query->where(function ($query) use ($term) {
-       //         $query->where('email', 'like', '%' . $term . '%')
-       //             ->orWhereHas('person', function ($query) use ($term) {
-       //                 $query->where('names', 'like', '%' . $term . '%')
-       //                     ->orWhere('last_names', 'like', '%' . $term . '%')
-       //                     ->orWhere('identification', 'like', '%' . $term . '%')
-        //                    ->orWhere('identification_type', 'like', '%' . $term . '%')
-        //                    ->orWhereRaw("concat(names, ' ', last_names) like ?", ['%' . $term . '%']);
-         //           });
-        //    });
-      // }
-
-       // $users = $query->get();
-
-      //  $users->load(['person']);
-
-      //  return response()->json([
-       //     'status' => 'success',
-       //     'data' => [
-       //         'users' => $users
-       //     ],
-      //  ]);
-   // }
-
-
+            /**
+     * @OA\Post(
+     *     path="/api/users/create",
+     *     summary="Crear un nuevo usuario",
+     *     tags={"Users"},
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Datos del nuevo usuario",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string"),
+     *             @OA\Property(property="active", type="boolean", default=true),
+     *             @OA\Property(property="person", type="object",
+     *                 @OA\Property(property="names", type="string"),
+     *                 @OA\Property(property="last_names", type="string"),
+     *                 @OA\Property(property="email", type="string"),
+     *                 @OA\Property(property="phone", type="string"),
+     *                 @OA\Property(property="birth_date", type="string", format="date"),
+     *                 @OA\Property(property="identification", type="string"),
+     *                 @OA\Property(property="identification_type", type="string")
+     *             ),
+     *             @OA\Property(property="role", type="string"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Respuesta exitosa al crear un nuevo usuario",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Usuario creado con éxito")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Error de validación de datos",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Error de conflicto",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Ya existe un usuario con ese correo")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Error al crear el usuario")
+     *         )
+     *     )
+     * )
+     */
     public function createUser(Request $request)
     {
         $request->validate([
