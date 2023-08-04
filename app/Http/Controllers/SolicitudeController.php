@@ -10,14 +10,59 @@ use App\Models\Solicitude;
 use App\Models\Catalogue;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Schema(
+ *     schema="Solicitude",
+ *     title="Solicitud",
+ *     description="Solicitud model",
+ *     @OA\Property(property="id", type="integer", format="int64"),
+ *     @OA\Property(property="approval_date", type="string", format="date-time"),
+ *     @OA\Property(property="solicitudes_status_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="type_request_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="project_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="created_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="archived", type="boolean", default=false),
+ *     @OA\Property(property="archived_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="archived_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ * \OpenApi\Annotations\SecurityScheme
+ */
 class SolicitudeController extends Controller
 {
 
 
     /**
-     * Summary of getSolicitudes
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener las solicitudes de vinculacion
+     * @OA\Get(
+     *     path="/api/solicitud/",
+     *     summary="Obtener Solicitudes",
+     *     tags={"Solicitude"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista Solicitudes",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="solicitudes", type="array", @OA\Items(ref="#/components/schemas/Solicitude"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function getSolicitudes()
     {
@@ -33,11 +78,54 @@ class SolicitudeController extends Controller
 
 
 
-     /**
-     * Summary of getSolicitudeById
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener las Solicitudes por su id
+    /**
+     * Get a specific Solicitud by ID.
+     *
+     * @OA\Get(
+     *     path="/api/solicitud/{id}",
+     *     summary="Obtener Solicitud por ID",
+     *     tags={"Solicitude"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the Solicitud",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="solicitudes", type="object", ref="#/components/schemas/Solicitude")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Solicitud not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Solicitud no encontrada"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function getSolicitudeById($id)
     {
@@ -403,7 +491,7 @@ class SolicitudeController extends Controller
         }
     }
 
-    /* 
+    /*
     * Summary of createSolicitude
     * @param \Illuminate\Http\Request $request
     * @return \Illuminate\Http\JsonResponse
