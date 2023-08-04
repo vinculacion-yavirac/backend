@@ -78,11 +78,54 @@ class SolicitudeController extends Controller
 
 
 
-     /**
-     * Summary of getSolicitudeById
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener las Solicitudes por su id
+    /**
+     * Get a specific Solicitud by ID.
+     *
+     * @OA\Get(
+     *     path="/api/solicitud/{id}",
+     *     summary="Obtener Solicitud por ID",
+     *     tags={"Solicitude"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the Solicitud",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="solicitudes", type="object", ref="#/components/schemas/Solicitude")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Solicitud not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Solicitud no encontrada"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function getSolicitudeById($id)
     {
