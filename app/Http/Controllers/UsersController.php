@@ -14,25 +14,25 @@ use Illuminate\Support\Facades\Hash;
  *     schema="User",
  *     title="User",
  *     description="User model",
- *     @OA\Property(property="id", type="integer", format="int64"),
- *     @OA\Property(property="email", type="string"),
+ *     @OA\Property(property="id", type="integer", format="int64", example=1),
+ *     @OA\Property(property="email", type="string", example="user@example.com"),
  *     @OA\Property(property="password", type="string"),
- *     @OA\Property(property="person", type="fk_person"),
- *     @OA\Property(property="active", type="boolean", default=true),
- *     @OA\Property(property="archived", type="boolean", default=false),
+ *     @OA\Property(property="person", type="fk_person", description="ID de la persona asociada"),
+ *     @OA\Property(property="active", type="boolean", default=true, example=true),
+ *     @OA\Property(property="archived", type="boolean", default=false, example=false),
  *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="archived_by", type="fk_users"),
+ *     @OA\Property(property="archived_by", type="fk_users", description="ID del usuario que lo archivó"),
  *     @OA\Property(property="updated_at", type="string", format="date-time"),
  * )
- * \OpenApi\Annotations\SecurityScheme
  */
 class UsersController extends Controller
 {
 
-        /**
+    /**
      * @OA\Get(
      *     path="/api/users",
      *     summary="Obtener usuarios",
+     *     operationId="getUsers",
      *     tags={"Users"},
      *     security={{"bearer":{}}},
      *     @OA\Response(
@@ -80,10 +80,11 @@ class UsersController extends Controller
         ]);
     }
 
-        /**
+    /**
      * @OA\Get(
      *     path="/api/users/{id}",
      *     summary="Obtener información de un usuario por su ID",
+     *     operationId="getUserById",
      *     tags={"Users"},
      *     security={{"bearer":{}}},
      *     @OA\Parameter(
@@ -183,10 +184,11 @@ class UsersController extends Controller
         ]);
     }
 
-        /**
+    /**
      * @OA\Get(
      *     path="/api/users/search/term/{term?}",
      *     summary="Buscar usuarios por término",
+     *     operationId="searchUsuariosByTerm",
      *     tags={"Users"},
      *     security={{"bearer":{}}},
      *     @OA\Parameter(
@@ -286,10 +288,11 @@ class UsersController extends Controller
     }
 
 
-            /**
+    /**
      * @OA\Post(
      *     path="/api/users/create",
      *     summary="Crear un nuevo usuario",
+     *     operationId="createUser",
      *     tags={"Users"},
      *     security={{"bearer":{}}},
      *     @OA\RequestBody(
@@ -388,6 +391,110 @@ class UsersController extends Controller
         }
     }
 
+
+ 
+    /**
+     * @OA\Put(
+     *     path="/api/users/update/{id}",
+     *     summary="Actualizar un usuario existente",
+     *     operationId="updateUser",
+     *     tags={"Users"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del usuario a actualizar",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Datos para actualizar el usuario",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="person", type="object",
+     *                 @OA\Property(property="names", type="string"),
+     *                 @OA\Property(property="last_names", type="string"),
+     *                 @OA\Property(property="email", type="string"),
+     *                 @OA\Property(property="phone", type="string"),
+     *                 @OA\Property(property="birth_date", type="string", format="date"),
+     *                 @OA\Property(property="identification", type="string"),
+     *                 @OA\Property(property="identification_type", type="string")
+     *             ),
+     *             @OA\Property(property="role", type="string"),
+     *             @OA\Property(property="active", type="boolean"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al actualizar el usuario",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Usuario actualizado correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", type="object",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="person", type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="names", type="string"),
+     *                         @OA\Property(property="last_names", type="string"),
+     *                         @OA\Property(property="email", type="string"),
+     *                         @OA\Property(property="phone", type="string"),
+     *                         @OA\Property(property="birth_date", type="string", format="date"),
+     *                         @OA\Property(property="identification", type="string"),
+     *                         @OA\Property(property="identification_type", type="string")
+     *                     ),
+     *                     @OA\Property(property="role", type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="name", type="string")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Error de validación de datos",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación de datos",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error al actualizar el usuario")
+     *         )
+     *     )
+     * )
+     */
     public function updateUser(Request $request, $id)
     {
         $request->validate([
@@ -452,6 +559,7 @@ class UsersController extends Controller
             ], 500);
         }
     }
+
 
     public function updatePassword(Request $request, $id)
     {
