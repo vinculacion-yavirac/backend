@@ -391,7 +391,6 @@ class UsersController extends Controller
         }
     }
 
-
  
     /**
      * @OA\Put(
@@ -561,6 +560,86 @@ class UsersController extends Controller
     }
 
 
+        /**
+     * @OA\Put(
+     *      path="/api/users/update-password/{id}",
+     *      operationId="updatePassword",
+     *      tags={"Users"},
+     *      security={{"bearer":{}}},
+     *      summary="Actualizar contraseña del usuario",
+     *      description="Actualiza la contraseña del usuario.",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="ID del usuario",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *         required=true,
+     *         description="Nueva contraseña",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="password", type="string"),
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Contraseña actualizada correctamente",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="status",
+     *                  type="string",
+     *                  example="success"
+     *              ),
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Contraseña actualizada correctamente"
+     *              ),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Usuario no encontrado",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="No existe el usuario"
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validación fallida",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Error al actualizar contraseña: datos inválidos"
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Error interno del servidor",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Error al actualizar contraseña: error interno del servidor"
+     *              )
+     *          )
+     *      )
+     * )
+     */
     public function updatePassword(Request $request, $id)
     {
         $request->validate([
