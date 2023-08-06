@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'Neuroniando',
+                'title' => 'Vinculación',
             ],
 
             'routes' => [
