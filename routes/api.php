@@ -5,7 +5,6 @@ use App\Http\Controllers\ActivitiesController;
 use App\Http\Controllers\BriefcaseController;
 use App\Http\Controllers\BeneficiaryInstitutionsController;
 use App\Http\Controllers\SolicitudeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsersController;
@@ -17,6 +16,7 @@ use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticipantController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\CatalogueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -185,13 +185,13 @@ Route::middleware('authentication')->group(function () {
             Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude']);
             Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
             Route::get('/search/archived/term/{term?}', [SolicitudeController::class, 'searchArchivedSolicitudeByTerm']);
-            Route::get('/filter/value/{status}', [SolicitudeController::class, 'filterSolicitudeByValue']);
+            Route::get('/filter/value/{value}', [SolicitudeController::class, 'filterSolicitudeByValue']);
             Route::get('/filter/status/{status}', [SolicitudeController::class, 'filterSolicitudeByStatus']);
             Route::get('/search/type/vinculacion/{term?}', [SolicitudeController::class, 'searchSolicitudeVinculacionByTerm']);
             Route::get('/search/type/certificado/{term?}', [SolicitudeController::class, 'searchCertificateByTerm']);
             Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
             Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
-            Route::get('/catalogo', [SolicitudeController::class, 'getAllCatalogues']);
+            Route::get('/catalogues', [SolicitudeController::class, 'getAllCatalogues']);
         });
 
         Route::middleware('permission:ARCHIVAR_SOLICITUD')->group(function () {
@@ -204,7 +204,7 @@ Route::middleware('authentication')->group(function () {
 
         Route::middleware('permission:ACTUALIZAR_SOLICITUD')->group(function () {
             Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
-            Route::post('/', [SolicitudeController::class, 'createSolicitude']); // Nueva ruta para crear una solicitud
+            Route::post('/create', [SolicitudeController::class, 'createSolicitude']); // Nueva ruta para crear una solicitud
         });
     });
 
@@ -310,6 +310,14 @@ Route::middleware('authentication')->group(function () {
         Route::post('/create', [ActivitiesController::class, 'createActividades']);
         Route::put('/update/{id}', [ActivitiesController::class, 'updateActividades']);
         Route::delete('/delete/{id}', [ActivitiesController::class, 'deleteActividadesById']);
+    });
+
+    //Catalogo
+    Route::prefix('catalogues')->group(function () {
+
+        Route::middleware('permission:LEER_SOLICITUD')->group(function () {
+            Route::get('/', [CatalogueController::class, 'getAllCatalogues']);
+        });
     });
 });
 
