@@ -14,9 +14,145 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Schema(
+ *     schema="Authorization",
+ *     title="Auth",
+ *     description="Auth model",
+ *     @OA\Property(property="email", type="string"),
+ *     @OA\Property(property="password", type="string"),
+ * )
+ */
 class AuthController extends Controller
 {
 
+    /**
+     * @OA\Get(
+     *     path="/api/auth/profile",
+     *     summary="Obtener el perfil del usuario autenticado",
+     *     operationId="getProfile",
+     *     tags={"Auth"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Token no encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Token no encontrado")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
+    public function getProfile()
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+
+        try {
+
+            $user->load(['person'])->only(['id', 'email', 'active', 'person.id', 'person.name', 'person.last_name', 'person.email', 'person.phone', 'person.birth_date', 'person.identification', 'person.identification_type']);
+
+            $user->role = $user->roles->first();
+            $user->role = $user->role->only(['id', 'name']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+        return new JsonResponse([
+            'status' => 'success',
+            'data' => [
+                'user' => $user
+            ],
+        ], 200);
+    }
+
+    /**
+     * @OA\POST(
+     *     path="/api/auth/login",
+     *     tags={"Auth"},
+     *     summary="Login",
+     *     description="Login to system.",
+     *     operationId="login",
+     *     @OA\RequestBody(
+     *         description="Pet object that needs to be added to the store",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *            @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="email",
+     *                     description="User Email",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="password",
+     *                     description="User password",
+     *                     type="string"
+     *                 ),
+     *                 required={"email", "password"}
+     *             )
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Inicio de sesión exitoso",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="accessToken", type="string", example="your_access_token"),
+     *                 @OA\Property(property="refreshToken", type="string", example="your_refresh_token")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de credenciales inválidas",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Credenciales inválidas")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function login(LoginRequest $request)
     {
         try {
@@ -58,6 +194,54 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/auth/refresh",
+     *     summary="Obtener un nuevo token de acceso mediante un token de refresco",
+     *     operationId="refresh",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Token de refresco actual",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="refresh_token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al obtener un nuevo token de acceso",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="accessToken", type="string", example="your_new_access_token"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de token de refresco inválido",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Token de refresco inválido")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function refresh(Request $request)
     {
         try {
@@ -95,31 +279,45 @@ class AuthController extends Controller
         }
     }
 
-    public function getProfile()
-    {
-        try {
-            $user = JWTAuth::parseToken()->authenticate();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
-
-        try {
-
-            $user->load(['person'])->only(['id', 'email', 'active', 'person.id', 'person.name', 'person.last_name', 'person.email', 'person.phone', 'person.birth_date', 'person.identification', 'person.identification_type']);
-
-            $user->role = $user->roles->first();
-            $user->role = $user->role->only(['id', 'name']);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-        return new JsonResponse([
-            'status' => 'success',
-            'data' => [
-                'user' => $user
-            ],
-        ], 200);
-    }
-
+    /**
+     * @OA\Delete(
+     *     path="/api/auth/logout",
+     *     summary="Cerrar sesión del usuario autenticado",
+     *     operationId="logout",
+     *     tags={"Auth"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sesión cerrada correctamente",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Sesión cerrada correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function logout(Request $request)
     {
         try {
