@@ -583,7 +583,7 @@ class SolicitudeController extends Controller
                     'status' => 'error',
                     'message' => 'No se encontraron solicitudes.',
                     'data' => [
-                        'solicitudes' => [],
+                        'solicitudes' => $solicitudes,
                     ],
                 ], 404);
             }
@@ -677,7 +677,7 @@ class SolicitudeController extends Controller
                     'status' => 'error',
                     'message' => 'No se encontraron solicitudes.',
                     'data' => [
-                        'solicitudes' => [],
+                        'solicitudes' => $solicitudes,
                     ],
                 ], 404);
             }
