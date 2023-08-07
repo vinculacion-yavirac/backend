@@ -218,6 +218,10 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/term/{term?}', [ProjectController::class, 'searchProjectByTerm']);
             Route::get('/search/archived/term/{term?}', [ProjectController::class, 'searchArchivedProjectByTerm']);
         });
+        Route::middleware('permission:CREAR_PROYECTO')->group(function () {
+            Route::post('/create', [ProjectController::class, 'createProyect']);
+       
+        });
         Route::middleware('permission:ARCHIVAR_PROYECTO')->group(function () {
             Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
         });

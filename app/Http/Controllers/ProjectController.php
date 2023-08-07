@@ -54,6 +54,32 @@ class ProjectController extends Controller
     }
 
 
+
+
+
+    public function createProyect(Request $request)
+    {
+        try {
+            // Crear registro del documento oficial
+            $proyect = Project::create(array_merge(
+                $request->except('files', 'comments'),
+                ['created_by' => auth()->user()->id]
+            ));
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'proyect' => $proyect
+                ],
+                'message' => 'Proyecto creado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al crear el proyecto: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+
     /**
      * Summary of getArchivedProject
      * @return \Illuminate\Http\JsonResponse
