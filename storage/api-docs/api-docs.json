@@ -591,6 +591,130 @@
                 }
             }
         },
+        "/api/permissions/role/{value}": {
+            "get": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Obtener permisos por rol",
+                "description": "Get permissions by role.",
+                "operationId": "99fc459f913247a23e423697046e3dae",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "path",
+                        "description": "Nombre del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "LEER_USUARIO"
+                                                            },
+                                                            "guard_name": {
+                                                                "type": "string",
+                                                                "example": "acces"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "timestamp without time zone",
+                                                                "example": "2023-07-23T00:24:18.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "timestamp without time zone",
+                                                                "example": "2023-07-23T00:24:18.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Role not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Role not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/solicitud": {
             "get": {
                 "tags": [
