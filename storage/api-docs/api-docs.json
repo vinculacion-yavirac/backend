@@ -498,6 +498,78 @@
                 ]
             }
         },
+        "/api/send-email": {
+            "post": {
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Enviar credenciales por correo electrónico",
+                "description": "Send user credentials via email.",
+                "operationId": "225fce22db8225c9359e764e3eb8f505",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "yavirac1810"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "email"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Credenciales enviadas correctamente al correo electrónico"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al enviar las credenciales al correo electrónico"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/solicitud": {
             "get": {
                 "tags": [
