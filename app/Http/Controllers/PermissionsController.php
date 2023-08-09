@@ -8,7 +8,47 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionsController extends Controller
 {
-    //funcion para obtener todos los permisos
+    /**
+     * Get all permissions.
+     *
+     * @OA\Get(
+     *     path="/api/permissions",
+     *     summary="Obtener todos los permisos",
+     *     tags={"Permissions"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="permissions", type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="LEER_USUARIO"),
+     *                         @OA\Property(property="guard_name", type="string", example="acces"),
+     *                         @OA\Property(property="created_at", type="timestamp without time zone", example="2023-07-22 19:24:17"),
+     *                         @OA\Property(property="updated_at", type="timestamp without time zone", example="2023-07-22 19:24:17")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function getPermissions()
     {
         //obtener permisos

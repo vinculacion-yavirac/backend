@@ -498,6 +498,99 @@
                 ]
             }
         },
+        "/api/permissions": {
+            "get": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Obtener todos los permisos",
+                "description": "Get all permissions.",
+                "operationId": "36b0983b8dcb954003ca5d8721ee6043",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "LEER_USUARIO"
+                                                            },
+                                                            "guard_name": {
+                                                                "type": "string",
+                                                                "example": "acces"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "timestamp without time zone",
+                                                                "example": "2023-07-22 19:24:17"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "timestamp without time zone",
+                                                                "example": "2023-07-22 19:24:17"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/solicitud": {
             "get": {
                 "tags": [
