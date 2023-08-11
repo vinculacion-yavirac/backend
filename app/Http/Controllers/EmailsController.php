@@ -12,6 +12,40 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EmailsController extends Controller
 {
+    /**
+     * Send user credentials via email.
+     *
+     * @OA\Post(
+     *     path="/api/send-email",
+     *     summary="Enviar credenciales por correo electrónico",
+     *     tags={"Email"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string", example="user@gmail.com"),
+     *             @OA\Property(property="password", type="string", example="yavirac1810")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="email"),
+     *             @OA\Property(property="message", type="string", example="Credenciales enviadas correctamente al correo electrónico")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error al enviar las credenciales al correo electrónico")
+     *         )
+     *     )
+     * )
+     */
     public function sendEmail(Request $request)
     {
         $user = User::where('email', $request->email)->first();
