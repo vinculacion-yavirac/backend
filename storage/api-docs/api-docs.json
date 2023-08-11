@@ -498,7 +498,78 @@
                 ]
             }
         },
-<<<<<<< HEAD
+        "/api/send-email": {
+            "post": {
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Enviar credenciales por correo electrónico",
+                "description": "Send user credentials via email.",
+                "operationId": "225fce22db8225c9359e764e3eb8f505",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "yavirac1810"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "email"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Credenciales enviadas correctamente al correo electrónico"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al enviar las credenciales al correo electrónico"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/roles": {
             "get": {
                 "tags": [
@@ -798,37 +869,10 @@
                                     },
                                     "type": "object"
                                 }
-=======
-        "/api/send-email": {
-            "post": {
-                "tags": [
-                    "Email"
-                ],
-                "summary": "Enviar credenciales por correo electrónico",
-                "description": "Send user credentials via email.",
-                "operationId": "225fce22db8225c9359e764e3eb8f505",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "example": "user@gmail.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "example": "yavirac1810"
-                                    }
-                                },
-                                "type": "object"
->>>>>>> email-swagger
                             }
                         }
                     }
                 },
-<<<<<<< HEAD
                 "security": [
                     {
                         "bearer": []
@@ -858,30 +902,17 @@
                 "responses": {
                     "200": {
                         "description": "Operación exitosa",
-=======
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
->>>>>>> email-swagger
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "status": {
                                             "type": "string",
-<<<<<<< HEAD
                                             "example": "success"
                                         },
                                         "message": {
                                             "type": "string",
                                             "example": "Role archivado correctamente"
-=======
-                                            "example": "email"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Credenciales enviadas correctamente al correo electrónico"
->>>>>>> email-swagger
                                         }
                                     },
                                     "type": "object"
@@ -890,7 +921,6 @@
                         }
                     },
                     "500": {
-<<<<<<< HEAD
                         "description": "Error interno del servidor",
                         "content": {
                             "application/json": {
@@ -936,16 +966,12 @@
                 "responses": {
                     "200": {
                         "description": "Operación exitosa",
-=======
-                        "description": "Internal server error",
->>>>>>> email-swagger
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "status": {
                                             "type": "string",
-<<<<<<< HEAD
                                             "example": "success"
                                         },
                                         "message": {
@@ -1170,13 +1196,6 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Error al eliminar un rol: error interno del servidor"
-=======
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Error al enviar las credenciales al correo electrónico"
->>>>>>> email-swagger
                                         }
                                     },
                                     "type": "object"
@@ -1184,16 +1203,12 @@
                             }
                         }
                     }
-<<<<<<< HEAD
                 },
                 "security": [
                     {
                         "bearer": []
                     }
                 ]
-=======
-                }
->>>>>>> email-swagger
             }
         },
         "/api/solicitud": {
