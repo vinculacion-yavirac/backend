@@ -19,6 +19,7 @@ class EmailsController extends Controller
      *     path="/api/send-email",
      *     summary="Enviar credenciales por correo electrónico",
      *     tags={"Email"},
+     *     security={{"bearer":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(

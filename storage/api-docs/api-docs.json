@@ -498,7 +498,6 @@
                 ]
             }
         },
-<<<<<<< HEAD
         "/api/send-email": {
             "post": {
                 "tags": [
@@ -527,16 +526,6 @@
                         }
                     }
                 },
-=======
-        "/api/permissions": {
-            "get": {
-                "tags": [
-                    "Permissions"
-                ],
-                "summary": "Obtener todos los permisos",
-                "description": "Get all permissions.",
-                "operationId": "36b0983b8dcb954003ca5d8721ee6043",
->>>>>>> permissions-swagger
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -546,13 +535,63 @@
                                     "properties": {
                                         "status": {
                                             "type": "string",
-<<<<<<< HEAD
                                             "example": "email"
                                         },
                                         "message": {
                                             "type": "string",
                                             "example": "Credenciales enviadas correctamente al correo electrónico"
-=======
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al enviar las credenciales al correo electrónico"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/permissions": {
+            "get": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Obtener todos los permisos",
+                "description": "Get all permissions.",
+                "operationId": "36b0983b8dcb954003ca5d8721ee6043",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
                                             "example": "success"
                                         },
                                         "data": {
@@ -587,7 +626,6 @@
                                                 }
                                             },
                                             "type": "object"
->>>>>>> permissions-swagger
                                         }
                                     },
                                     "type": "object"
@@ -607,9 +645,6 @@
                                         },
                                         "message": {
                                             "type": "string",
-<<<<<<< HEAD
-                                            "example": "Error al enviar las credenciales al correo electrónico"
-=======
                                             "example": "Error interno del servidor"
                                         },
                                         "file": {
@@ -623,7 +658,6 @@
                                             "items": {
                                                 "type": "string"
                                             }
->>>>>>> permissions-swagger
                                         }
                                     },
                                     "type": "object"
@@ -631,10 +665,143 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
-<<<<<<< HEAD
+        "/api/permissions/role/{value}": {
+            "get": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Obtener permisos por rol",
+                "description": "Get permissions by role.",
+                "operationId": "99fc459f913247a23e423697046e3dae",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "path",
+                        "description": "Nombre del rol",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "LEER_USUARIO"
+                                                            },
+                                                            "guard_name": {
+                                                                "type": "string",
+                                                                "example": "acces"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "timestamp without time zone",
+                                                                "example": "2023-07-23T00:24:18.000000Z"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "timestamp without time zone",
+                                                                "example": "2023-07-23T00:24:18.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Role not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Role not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/roles": {
             "get": {
                 "tags": [
@@ -788,30 +955,12 @@
                         "description": "Término de búsqueda",
                         "required": false,
                         "schema": {
-=======
-        "/api/permissions/role/{value}": {
-            "get": {
-                "tags": [
-                    "Permissions"
-                ],
-                "summary": "Obtener permisos por rol",
-                "description": "Get permissions by role.",
-                "operationId": "99fc459f913247a23e423697046e3dae",
-                "parameters": [
-                    {
-                        "name": "role",
-                        "in": "path",
-                        "description": "Nombre del rol",
-                        "required": true,
-                        "schema": {
->>>>>>> permissions-swagger
                             "type": "string"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-<<<<<<< HEAD
                         "description": "Operación exitosa",
                         "content": {
                             "application/json": {
@@ -985,9 +1134,6 @@
                 "responses": {
                     "200": {
                         "description": "Operación exitosa",
-=======
-                        "description": "Successful operation",
->>>>>>> permissions-swagger
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -996,44 +1142,9 @@
                                             "type": "string",
                                             "example": "success"
                                         },
-<<<<<<< HEAD
                                         "message": {
                                             "type": "string",
                                             "example": "Role archivado correctamente"
-=======
-                                        "data": {
-                                            "properties": {
-                                                "permissions": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            },
-                                                            "name": {
-                                                                "type": "string",
-                                                                "example": "LEER_USUARIO"
-                                                            },
-                                                            "guard_name": {
-                                                                "type": "string",
-                                                                "example": "acces"
-                                                            },
-                                                            "created_at": {
-                                                                "type": "timestamp without time zone",
-                                                                "example": "2023-07-23T00:24:18.000000Z"
-                                                            },
-                                                            "updated_at": {
-                                                                "type": "timestamp without time zone",
-                                                                "example": "2023-07-23T00:24:18.000000Z"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
->>>>>>> permissions-swagger
                                         }
                                     },
                                     "type": "object"
@@ -1041,7 +1152,6 @@
                             }
                         }
                     },
-<<<<<<< HEAD
                     "500": {
                         "description": "Error interno del servidor",
                         "content": {
@@ -1088,29 +1198,17 @@
                 "responses": {
                     "200": {
                         "description": "Operación exitosa",
-=======
-                    "404": {
-                        "description": "Role not found",
->>>>>>> permissions-swagger
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "status": {
                                             "type": "string",
-<<<<<<< HEAD
                                             "example": "success"
                                         },
                                         "message": {
                                             "type": "string",
                                             "example": "Roles restaurado correctamente"
-=======
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Role not found"
->>>>>>> permissions-swagger
                                         }
                                     },
                                     "type": "object"
@@ -1119,7 +1217,6 @@
                         }
                     },
                     "500": {
-<<<<<<< HEAD
                         "description": "Error interno del servidor",
                         "content": {
                             "application/json": {
@@ -1270,14 +1367,10 @@
                     },
                     "500": {
                         "description": "Error interno del servidor",
-=======
-                        "description": "Internal server error",
->>>>>>> permissions-swagger
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-<<<<<<< HEAD
                                         "message": {
                                             "type": "string",
                                             "example": "Error al archivar el usuario: error interno del servidor"
@@ -1335,27 +1428,6 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Error al eliminar un rol: error interno del servidor"
-=======
-                                        "status": {
-                                            "type": "string",
-                                            "example": "error"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Error interno del servidor"
-                                        },
-                                        "file": {
-                                            "type": "string"
-                                        },
-                                        "line": {
-                                            "type": "integer"
-                                        },
-                                        "errors": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
->>>>>>> permissions-swagger
                                         }
                                     },
                                     "type": "object"
@@ -1363,16 +1435,12 @@
                             }
                         }
                     }
-<<<<<<< HEAD
                 },
                 "security": [
                     {
                         "bearer": []
                     }
                 ]
-=======
-                }
->>>>>>> permissions-swagger
             }
         },
         "/api/solicitud": {

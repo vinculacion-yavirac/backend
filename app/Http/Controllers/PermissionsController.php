@@ -15,6 +15,7 @@ class PermissionsController extends Controller
      *     path="/api/permissions",
      *     summary="Obtener todos los permisos",
      *     tags={"Permissions"},
+     *     security={{"bearer":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -69,6 +70,7 @@ class PermissionsController extends Controller
      *     path="/api/permissions/role/{value}",
      *     summary="Obtener permisos por rol",
      *     tags={"Permissions"},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         name="role",
      *         in="path",
