@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Briefcase;
 use App\Models\Documents;
 use App\Models\File;
+use App\Models\ProjectParticipant;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -348,14 +349,23 @@ public function create(Request $request)
         $user = Auth::user();
         $now = Carbon::now();
 
+        $projectParticipant = ProjectParticipant::where('participant_id', $user->id)
+                            ->first();
+
+        if (!$projectParticipant) {
+            return response()->json([
+                'message' => 'Aun no eres asignado a un proyecto.',
+                'data' => $projectParticipant,
+            ], 400);
+        }
+
         $briefcase = Briefcase::create([
             'observations' => $request->input('observations'),
             'state' => $request->input('state', false),
             'created_by' => $user->id,
             'created_at' => $now,
-            'project_participant_id' => $request->input('project_participant_id'),
+            'project_participant_id' => $projectParticipant->id,
         ]);
-
 
         DB::commit();
 
@@ -363,7 +373,6 @@ public function create(Request $request)
             'status' => 'success',
             'data' => [
                 'briefcase' => $briefcase,
-                //'files' => $uploadedFiles['files'],
             ],
             'message' => 'Portafolio creado exitosamente',
         ]);
@@ -375,5 +384,6 @@ public function create(Request $request)
         ], 500);
     }
 }
+
 
 }
