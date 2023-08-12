@@ -780,6 +780,18 @@ public function create(Request $request)
             ], 400);
         }
 
+        // Check if the user already has an unarchived briefcase
+        $existingBriefcase = Briefcase::where('created_by', $user->id)
+            ->where('archived', false)
+            ->first();
+
+        if ($existingBriefcase) {
+            return response()->json([
+                'message' => 'Ya has creado un portafolio no archivado previamente.',
+                'data' => $existingBriefcase,
+            ], 400);
+        }
+
         $briefcase = Briefcase::create([
             'observations' => $request->input('observations'),
             'state' => $request->input('state', false),
@@ -805,6 +817,7 @@ public function create(Request $request)
         ], 500);
     }
 }
+
 
 
 }
