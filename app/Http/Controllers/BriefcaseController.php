@@ -12,14 +12,73 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+/**
+ * @OA\Schema(
+ *     schema="Portafolio",
+ *     title="Portafolio",
+ *     description="Portafolio model",
+ *     @OA\Property(property="id", type="integer", format="int64"),
+ *     @OA\Property(property="observations", type="string"),
+ *     @OA\Property(property="state", type="boolean", default=true),
+ *     @OA\Property(property="archived", type="boolean", default=false),
+ *     @OA\Property(property="archived_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="created_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="archived_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="project_participant_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ * \OpenApi\Annotations\SecurityScheme
+ */
 
 class BriefcaseController extends Controller
 {
-   /**
-    * Summary of getBriefcase
-    * @return JsonResponse
-    * Obtener todos los portafolios
-    */
+   
+
+    /**
+     * @OA\Get(
+     *     path="/api/briefcase",
+     *     summary="Obtener lista de todos los Portafolios",
+     *     operationId="getBriefcase",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcases", type="array", @OA\Items(ref="#/components/schemas/Portafolio"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
     public function getBriefcase()
     {
         $briefcases = Briefcase::where('id', '>', 0)
@@ -33,18 +92,63 @@ class BriefcaseController extends Controller
         ]);
     }
 
-    /**
-     * Summary of getBriefcaseById
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener por el id
-     */
 
+    /**
+     * @OA\Get(
+     *     path="/api/briefcase/{id}",
+     *     summary="Obtener Portafolio por su id",
+     *     operationId="getBriefcaseById",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la solicitud (briefcase)",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcase", ref="#/components/schemas/Portafolio")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
      public function getBriefcaseById($id)
     {
         $briefcases = Briefcase::where('id', $id)
             ->where('archived', false)
-            ->with('project_participant_id.participant_id.person','created_by.person','project_participant_id.project_id.beneficiary_institution_id','files','documents')
+            ->with('project_participant_id.participant_id.person','created_by.person','project_participant_id.project_id.beneficiary_institution_id','files','documents','project_participant_id.project_id.career_id')
             ->first();
 
         if (!$briefcases) {
@@ -62,9 +166,48 @@ class BriefcaseController extends Controller
     }
 
     /**
-     * Summary of getArchivedPortafolio
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener todas las que sean true en archived
+     * @OA\Get(
+     *     path="/api/briefcase/archived/list",
+     *     summary="Obtener lista de portafolios archivadas",
+     *     operationId="getArchivedBriefcase",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcases", type="array", @OA\Items(ref="#/components/schemas/Portafolio"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
     public function getArchivedBriefcase()
     {
@@ -82,59 +225,47 @@ class BriefcaseController extends Controller
 
 
     /**
-     * Summary of archiveBriefcase
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     * Archivar el protafolio por el id
-     */
-    public function archiveBriefcase($id)
-    {
-        $briefcase = Briefcase::findOrFail($id);
-
-        $briefcase->update([
-            'archived' => true,
-            'archived_at' => now(),
-            'archived_by' => auth()->user()->id,
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Portafolio archivado correctamente',
-            'data' => [
-                'briefcase' => $briefcase,
-            ],
-        ], 200);
-    }
-
-
-    /**
-     * Summary of restoreBriefcase
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     * Restaurar por el id
-     */
-    public function restoreBriefcase($id)
-    {
-        $briefcase = Briefcase::findOrFail($id);
-
-        $briefcase->update([
-            'archived' => false,
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Solicitud restaurada correctamente',
-            'data' => [
-                'briefcase' => $briefcase,
-            ],
-        ], 200);
-    }
-
-        /**
-     * Summary of searchBriefcaseByTerm
-     * @param mixed $term
-     * @return \Illuminate\Http\JsonResponse
-     * Buscador del portafolio
+     * @OA\Get(
+     *     path="/api/briefcase/search/term/{term?}",
+     *     summary="Buscar Portafolio por término",
+     *     operationId="searchBriefcaseByTerm",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="term?",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcases", type="array", @OA\Items(ref="#/components/schemas/Portafolio"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
     public function searchBriefcaseByTerm($term = '')
     {
@@ -157,11 +288,49 @@ class BriefcaseController extends Controller
         ]);
     }
 
+
     /**
-     * Summary of searchArchivedBriefcaseByTerm
-     * @param mixed $term
-     * @return \Illuminate\Http\JsonResponse
-     * Buscador de los archivados
+     * @OA\Get(
+     *     path="/api/briefcase/search/archived/term/{term?}",
+     *     summary="Buscar Portafolio archivado por término",
+     *     operationId="searchArchivedBriefcaseByTerm",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="term?",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcases", type="array", @OA\Items(ref="#/components/schemas/Portafolio"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
     public function searchArchivedBriefcaseByTerm($term = '')
     {
@@ -182,11 +351,49 @@ class BriefcaseController extends Controller
         ]);
     }
 
+
     /**
-     * Summary of filterBriefcaseByStatus
-     * @param mixed $state
-     * @return \Illuminate\Http\JsonResponse
-     * Filtro para obtener el state
+     * @OA\Get(
+     *     path="/api/briefcase/filter/state/{state}",
+     *     summary="Filtrar Portafolio por estado",
+     *     operationId="filterBriefcaseByStatus",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="state",
+     *         in="path",
+     *         required=false,
+     *         description="Estado del Portafolio por true o false",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcases", type="array", @OA\Items(ref="#/components/schemas/Portafolio"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
     public function filterBriefcaseByStatus($state = '')
     {
@@ -203,14 +410,50 @@ class BriefcaseController extends Controller
         ]);
     }
 
-
     /**
-     * Summary of searchAprobadoByTerm
-     * @param mixed $term
-     * @return \Illuminate\Http\JsonResponse
-     * Buscador para state tipo true
+     * @OA\Get(
+     *     path="/api/briefcase/search/state/aprobado/{term?}",
+     *     summary="Buscar Portafolio aprobado por término",
+     *     operationId="searchBriefcaseAprobadoByTerm",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="term?",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcases", type="array", @OA\Items(ref="#/components/schemas/Portafolio"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
-    public function searchAprobadoByTerm($term = '')
+    public function searchBriefcaseAprobadoByTerm($term = '')
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', true)
@@ -231,12 +474,49 @@ class BriefcaseController extends Controller
     }
 
     /**
-     * Summary of searchPendienteByTerm
-     * @param mixed $term
-     * @return \Illuminate\Http\JsonResponse
-     * buscar por state en false
+     * @OA\Get(
+     *     path="/api/briefcase/search/state/pendiente/{term?}",
+     *     summary="Buscar Portafolio pendiente por término",
+     *     operationId="searchBriefcasePendienteByTerm",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="term?",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcases", type="array", @OA\Items(ref="#/components/schemas/Portafolio"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
-    public function searchPendienteByTerm($term = '')
+    public function searchBriefcasePendienteByTerm($term = '')
     {
         $briefcases = Briefcase::where('archived', false)
             ->where('state', false)
@@ -254,6 +534,147 @@ class BriefcaseController extends Controller
                 'briefcases' => $briefcases
             ],
         ]);
+    }
+
+
+    /**
+     * @OA\Put(
+     *     path="/api/briefcase/archive/{id}",
+     *     summary="Archivar Portafolio",
+     *     operationId="archiveBriefcase",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del Portafolio a archivar",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Portafolio archivado correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcase", ref="#/components/schemas/Portafolio")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
+    public function archiveBriefcase($id)
+    {
+        $briefcase = Briefcase::findOrFail($id);
+
+        $briefcase->update([
+            'archived' => true,
+            'archived_at' => now(),
+            'archived_by' => auth()->user()->id,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Portafolio archivado correctamente',
+            'data' => [
+                'briefcase' => $briefcase,
+            ],
+        ], 200);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/briefcase/restore/{id}",
+     *     summary="Restaurar Portafolio",
+     *     operationId="restoreBriefcase",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del Portafolio a restaurar",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Portafolio restaurado correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="briefcase", ref="#/components/schemas/Portafolio")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
+    public function restoreBriefcase($id)
+    {
+        $briefcase = Briefcase::findOrFail($id);
+
+        $briefcase->update([
+            'archived' => false,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Solicitud restaurada correctamente',
+            'data' => [
+                'briefcase' => $briefcase,
+            ],
+        ], 200);
     }
 
 

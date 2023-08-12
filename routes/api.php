@@ -130,8 +130,8 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/term/{term?}', [$controller, 'searchBriefcaseByTerm']);
             Route::get('/search/archived/term/{term?}', [$controller, 'searchArchivedBriefcaseByTerm']);
             Route::get('/filter/state/{state}', [$controller, 'filterBriefcaseByStatus']);
-            Route::get('/search/state/aprobado/{term?}', [$controller, 'searchAprobadoByTerm']);
-            Route::get('/search/state/pendiente/{term?}', [$controller, 'searchPendienteByTerm']);
+            Route::get('/search/state/aprobado/{term?}', [$controller, 'searchBriefcaseAprobadoByTerm']);
+            Route::get('/search/state/pendiente/{term?}', [$controller, 'searchBriefcasePendienteByTerm']);
         });
 
         Route::middleware('permission:ARCHIVAR_PORTAFOLIO')->group(function () use ($controller) {
