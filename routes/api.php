@@ -160,6 +160,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/term/{term?}', [DocumentController::class, 'searchDocumentsByTerm']);
             Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchDocumentsArchivedByTerm']);
         });
+        
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
             Route::put('/archive/{id}', [DocumentController::class, 'archiveDocument']);
         });
@@ -168,12 +169,12 @@ Route::middleware('authentication')->group(function () {
             Route::put('/restore/{id}', [DocumentController::class, 'restoreDocument']);
         });
 
-        Route::middleware('permission:CREAR_DOCUMENTO')->group(function () {
-            Route::post('/create', [DocumentController::class, 'createDocuments']);
-        });
-
         Route::middleware('permission:ACTUALIZAR_DOCUMENTO')->group(function () {
             Route::put('/update/{id}', [DocumentController::class, 'updateDocument']);
+        });
+
+        Route::middleware('permission:CREAR_DOCUMENTO')->group(function () {
+            Route::post('/create', [DocumentController::class, 'createDocuments']);
         });
     });
 
