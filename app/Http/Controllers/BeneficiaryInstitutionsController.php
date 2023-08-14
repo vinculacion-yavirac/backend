@@ -81,10 +81,39 @@ class BeneficiaryInstitutionsController extends Controller
     }
 
     /**
-      * Summary of getArchivedBeneficiaryInstitution
-      * @return JsonResponse
-      * Obtener todas las Institucion Beneficiaria archivadas
-      */
+     * Obtener todas las Instituciones Beneficiarias archivadas.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institutions/archived",
+     *     summary="Obtener todas las Instituciones Beneficiarias archivadas",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function getArchivedBeneficiaryInstitution()
     {
         $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
