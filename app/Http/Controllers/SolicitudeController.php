@@ -1407,6 +1407,110 @@ class SolicitudeController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/solicitud/aprovate-certificado/{id}",
+     *     operationId="aprovateCertificado",
+     *     tags={"Solicitudes"},
+     *     security={{"bearer":{}}},
+     *     summary="Aprobar Certificado",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="ID de la solicitud"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Certificado Aprobado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al actualizar el registro",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
+    public function aprovateCertificado($id)
+    {
+        try {
+            // Obtén la solicitud por su ID
+            $solicitud = Solicitude::findOrFail($id);
+    
+            // Verifica si el type_request_id es diferente de 'Vinculacion' y archived es false
+            if ($solicitud->type_request_id !== 1 && !$solicitud->archived) {
+                $solicitud->update([
+                    'approval_date' => now(),
+                    'solicitudes_status_id' => 4,
+                ]);
+    
+                return response()->json(['message' => 'Certificado Aprobado']);
+            } else {
+                return response()->json(['error' => 'No se puede actualizar la solicitud'], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al actualizar el registro'], 500);
+        }
+    }
+    
+
+    /**
+     * @OA\Put(
+     *     path="/api/solicitud/disapprove-certificate/{id}",
+     *     operationId="disapproveCertificate",
+     *     tags={"Solicitudes"},
+     *     security={{"bearer":{}}},
+     *     summary="Desaprobar solicitud",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="ID de la solicitud"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Certificado desaprobado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error al actualizar el registro",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
+    public function disapproveCertificate($id)
+    {
+        try {
+            // Obtén la solicitud por su ID
+            $solicitud = Solicitude::findOrFail($id);
+    
+            // Verifica si el type_request_id es diferente de 'Vinculacion' y archived es false
+            if ($solicitud->type_request_id !== 1 && !$solicitud->archived) {
+                $solicitud->update([
+                    'approval_date' => now(),
+                    'solicitudes_status_id' => 3,
+                ]);
+    
+                return response()->json(['message' => 'Certificado Desaprobado']);
+            } else {
+                return response()->json(['error' => 'No se puede actualizar la solicitud'], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al actualizar el registro'], 500);
+        }
+    }
 
     /**
      * @OA\Post(
@@ -1490,6 +1594,4 @@ class SolicitudeController extends Controller
             ], 500);
         }
     }
-
-
 }

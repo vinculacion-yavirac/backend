@@ -206,6 +206,11 @@ Route::middleware('authentication')->group(function () {
 
         Route::middleware('permission:ACTUALIZAR_SOLICITUD')->group(function () {
             Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
+            Route::put('/aprovate-certificado/{id}', [SolicitudeController::class, 'aprovateCertificado']);
+            Route::put('/disapprove-certificate/{id}', [SolicitudeController::class, 'disapproveCertificate']);
+        });
+
+        Route::middleware('permission:CREAR_SOLICITUD')->group(function () {
             Route::post('/create', [SolicitudeController::class, 'createSolicitude']); // Nueva ruta para crear una solicitud
         });
     });
