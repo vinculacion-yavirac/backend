@@ -411,6 +411,77 @@
                 ]
             }
         },
+        "/api/beneficiary-institutions": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Obtener todas las Instituciones Beneficiarias",
+                "description": "Obtener todas las Instituciones Beneficiarias.",
+                "operationId": "1eb413f31150e737500718725398c26c",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/briefcase": {
             "get": {
                 "tags": [
@@ -5911,6 +5982,77 @@
                     },
                     "password": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Beneficiary Institutions": {
+                "title": "Beneficiary Institutions",
+                "description": "Beneficiary Institutions model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "ruc": {
+                        "type": "string",
+                        "format": "int15",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "format": "int100",
+                        "nullable": true
+                    },
+                    "logo": {
+                        "type": "string",
+                        "format": "int20",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "place_location": {
+                        "type": "string",
+                        "format": "int200",
+                        "nullable": true
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "format": "int20",
+                        "nullable": true
+                    },
+                    "parish_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "created_by": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "archived": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "archived_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "archived_by": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"

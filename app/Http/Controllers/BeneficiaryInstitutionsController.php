@@ -7,12 +7,64 @@ use App\Models\BeneficiaryInstitution;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Schema(
+ *     schema="Beneficiary Institutions",
+ *     title="Beneficiary Institutions",
+ *     description="Beneficiary Institutions model",
+ *     @OA\Property(property="id", type="integer", format="int64"),
+ *     @OA\Property(property="ruc", type="string", format="int15", nullable=true),
+ *     @OA\Property(property="name", type="string", format="int100", nullable=true),
+ *     @OA\Property(property="logo", type="string", format="int20", nullable=true),
+ *     @OA\Property(property="state", type="boolean", default=false),
+ *     @OA\Property(property="place_location", type="string", format="int200", nullable=true),
+ *     @OA\Property(property="postal_code", type="string", format="int20", nullable=true),
+ *     @OA\Property(property="parish_id", type="integer", format="int64"),
+ *     @OA\Property(property="created_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="archived", type="boolean", default=false),
+ *     @OA\Property(property="archived_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="archived_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ * \OpenApi\Annotations\SecurityScheme
+ */
+
 class BeneficiaryInstitutionsController extends Controller
 {
     /**
-     * Summary of getBeneficiaryInstitution
-     * @return JsonResponse
-     * Obtener todas las Instituciones Beneficiarias
+     * Obtener todas las Instituciones Beneficiarias.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institutions",
+     *     summary="Obtener todas las Instituciones Beneficiarias",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function getBeneficiaryInstitution()
     {
@@ -30,7 +82,7 @@ class BeneficiaryInstitutionsController extends Controller
 
     /**
       * Summary of getArchivedBeneficiaryInstitution
-      * @return JsonResponse 
+      * @return JsonResponse
       * Obtener todas las Institucion Beneficiaria archivadas
       */
     public function getArchivedBeneficiaryInstitution()
@@ -39,7 +91,7 @@ class BeneficiaryInstitutionsController extends Controller
             ->where('archived', true)
             ->with('parish_id.father_code')
             ->get();
-  
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -130,7 +182,7 @@ class BeneficiaryInstitutionsController extends Controller
      * Summary of searchBeneficiaryInstitutionByTerm
      * @param mixed $term
      * @return JsonResponse
-     * Buscador 
+     * Buscador
      */
     public function searchBeneficiaryInstitutionByTerm($term = '')
     {
