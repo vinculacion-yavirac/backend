@@ -354,7 +354,47 @@ class BeneficiaryInstitutionsController extends Controller
         ]);
     }
 
-
+    /**
+     * Filtrar Instituciones Beneficiarias por estado.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/filter/state/{state}",
+     *     summary="Filtrar Instituciones Beneficiarias por estado",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="state",
+     *         in="path",
+     *         required=true,
+     *         description="Estado de las Instituciones Beneficiarias (activo o inactivo)",
+     *         @OA\Schema(type="string", enum={"activo", "inactivo"})
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function filterBeneficiaryInstitutionByStatus($state = '')
     {
       $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
