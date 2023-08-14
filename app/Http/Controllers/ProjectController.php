@@ -55,7 +55,11 @@ class ProjectController extends Controller
 
 
 
-
+ /**
+     * Summary of createProyect
+     * @return \Illuminate\Http\JsonResponse
+     * Creacion de nuevo proyecto
+     */
 
     public function createProyect(Request $request)
     {
@@ -75,6 +79,36 @@ class ProjectController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al crear el proyecto: ' . $e->getMessage()
+            ]);
+        }
+    }
+ /**
+     * Summary of updateProyectBeneficiaryInstitution
+     * @return \Illuminate\Http\JsonResponse
+     * Actualizar  id de la entidad beneficiaria "empresa"
+     */
+    public function updateProyectBeneficiaryInstitution(Request $request, $id)
+    {
+
+
+        $proyect = Project::find($id);
+        if (!$proyect) {
+            return response()->json([
+                'message' => 'No se encontró el oficio especificado'
+            ], 404);
+        }
+
+        $proyect->beneficiary_institution_id = $request->beneficiary_institution_id;
+
+        try {
+            $proyect->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Portafolio actualizado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el Portafolio: ' . $e->getMessage()
             ]);
         }
     }

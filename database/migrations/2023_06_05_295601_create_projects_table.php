@@ -17,6 +17,10 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('code', 20);
             $table->string('name', 200);
+            $table->string('name_institute', 200);
+            $table->string('cicle', 50);
+            $table->string('address', 200);
+            $table->string('Modality', 50);
             $table->string('field', 100);
             $table->integer('term_execution');
             $table->timestamp('start_date');
