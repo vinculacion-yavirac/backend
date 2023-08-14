@@ -243,10 +243,40 @@ class BeneficiaryInstitutionsController extends Controller
 
 
     /**
-     * Summary of restaureBeneficiaryInstitution
-     * @param mixed $id
-     * @return JsonResponse
-     * Restaurar una Institucion Beneficiaria
+     * Restaurar una Institución Beneficiaria por ID.
+     *
+     * @OA\Put(
+     *     path="/api/beneficiary-institution/restore/{id}",
+     *     summary="Restaurar una Institución Beneficiaria por ID",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la Institución Beneficiaria",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria restaurada correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Institución Beneficiaria no encontrada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
+     *         )
+     *     )
+     * )
      */
     public function restaureBeneficiaryInstitution($id)
     {

@@ -411,14 +411,14 @@
                 ]
             }
         },
-        "/api/beneficiary-institutions": {
+        "/api/beneficiary-institution": {
             "get": {
                 "tags": [
                     "Instituciones Beneficiarias"
                 ],
                 "summary": "Obtener todas las Instituciones Beneficiarias",
                 "description": "Obtener todas las Instituciones Beneficiarias.",
-                "operationId": "1eb413f31150e737500718725398c26c",
+                "operationId": "30f991a1b5099932f1d3f6d76870a477",
                 "responses": {
                     "200": {
                         "description": "Operación exitosa",
@@ -482,14 +482,14 @@
                 }
             }
         },
-        "/api/beneficiary-institutions/archived": {
+        "/api/beneficiary-institution/archived": {
             "get": {
                 "tags": [
                     "Instituciones Beneficiarias"
                 ],
                 "summary": "Obtener todas las Instituciones Beneficiarias archivadas",
                 "description": "Obtener todas las Instituciones Beneficiarias archivadas.",
-                "operationId": "5b92a2a8a57ea850a55a36b7d3e53d71",
+                "operationId": "74ad723aafa09eb3524c6f1e8998091d",
                 "responses": {
                     "200": {
                         "description": "Operación exitosa",
@@ -649,6 +649,73 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Institución Beneficiaria archivada correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/restore/{id}": {
+            "put": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Restaurar una Institución Beneficiaria por ID",
+                "description": "Restaurar una Institución Beneficiaria por ID.",
+                "operationId": "504f2ca21c8d6cce6175c84da1bf9b2a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria restaurada correctamente"
                                         },
                                         "data": {
                                             "properties": {
