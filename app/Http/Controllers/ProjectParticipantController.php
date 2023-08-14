@@ -15,15 +15,18 @@ class ProjectParticipantController extends Controller
         $validatedData = $request->validate([
             'project_id' => 'required|integer',
             'participant_id' => 'required|integer',
+            'role' => 'required|string',
         ]);
 
         $projectId = $validatedData['project_id'];
         $participantId = $validatedData['participant_id'];
+        $role = $validatedData['role'];
 
         // Crear una nueva instancia de ProjectParticipant
         $projectParticipant = new ProjectParticipant();
         $projectParticipant->project_id = $projectId;
         $projectParticipant->participant_id = $participantId;
+        $projectParticipant->role = $role;
         $projectParticipant->save();
 
         return response()->json([
@@ -186,14 +189,14 @@ class ProjectParticipantController extends Controller
     public function getAllProjectParticipantsTutor()
     {
         $userId = auth()->user()->id;
-    
+
         $projectIds = ProjectParticipant::where('participant_id', $userId)
             ->pluck('project_id');
-    
+
         $projectParticipants = ProjectParticipant::whereIn('project_id', $projectIds)
             ->with('project_id.beneficiary_institution_id', 'participant_id.person')
             ->get();
-    
+
         return response()->json([
             'status' => 'success',
             'data' => [

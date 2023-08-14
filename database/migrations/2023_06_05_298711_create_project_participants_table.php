@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->json('functions')->nullable();
             $table->timestamp('assignment_date')->nullable();
-            
+
             $table->unsignedBigInteger('level_id')->nullable();
             $table->foreign('level_id')->references('id')->on('catalogs');
 
@@ -32,8 +32,11 @@ return new class extends Migration
 
             $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
+
             $table->integer('participant_id')->unsigned()->nullable();
             $table->foreign('participant_id')->references('id')->on('users');
+
+            $table->string('role')->nullable();
 
             $table->timestamps();
         });
