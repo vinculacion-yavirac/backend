@@ -553,14 +553,14 @@
                 }
             }
         },
-        "/api/beneficiary-institutions/{id}": {
+        "/api/beneficiary-institution/{id}": {
             "get": {
                 "tags": [
                     "Instituciones Beneficiarias"
                 ],
                 "summary": "Obtener una Institución Beneficiaria por ID",
                 "description": "Obtener una Institución Beneficiaria por ID.",
-                "operationId": "8c2c7ed29e5ca919ffbc50464e9814b0",
+                "operationId": "66041e7dd79b1845481cb50d7abdddb1",
                 "parameters": [
                     {
                         "name": "id",
@@ -582,6 +582,73 @@
                                         "status": {
                                             "type": "string",
                                             "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/archive/{id}": {
+            "put": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Archivar una Institución Beneficiaria por ID",
+                "description": "Archivar una Institución Beneficiaria por ID.",
+                "operationId": "4e38ddba23e3672a7bc2cd15ce063244",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria archivada correctamente"
                                         },
                                         "data": {
                                             "properties": {

@@ -36,7 +36,7 @@ class BeneficiaryInstitutionsController extends Controller
      * Obtener todas las Instituciones Beneficiarias.
      *
      * @OA\Get(
-     *     path="/api/beneficiary-institutions",
+     *     path="/api/beneficiary-institution",
      *     summary="Obtener todas las Instituciones Beneficiarias",
      *     tags={"Instituciones Beneficiarias"},
      *     @OA\Response(
@@ -84,7 +84,7 @@ class BeneficiaryInstitutionsController extends Controller
      * Obtener todas las Instituciones Beneficiarias archivadas.
      *
      * @OA\Get(
-     *     path="/api/beneficiary-institutions/archived",
+     *     path="/api/beneficiary-institution/archived",
      *     summary="Obtener todas las Instituciones Beneficiarias archivadas",
      *     tags={"Instituciones Beneficiarias"},
      *     @OA\Response(
@@ -133,7 +133,7 @@ class BeneficiaryInstitutionsController extends Controller
      * Obtener una Institución Beneficiaria por ID.
      *
      * @OA\Get(
-     *     path="/api/beneficiary-institutions/{id}",
+     *     path="/api/beneficiary-institution/{id}",
      *     summary="Obtener una Institución Beneficiaria por ID",
      *     tags={"Instituciones Beneficiarias"},
      *     @OA\Parameter(
@@ -188,10 +188,40 @@ class BeneficiaryInstitutionsController extends Controller
 
 
     /**
-     * Summary of ArchiveBeneficiaryInstitution
-     * @param mixed $id
-     * @return JsonResponse
-     * Archivar una Institucion Beneficiaria
+     * Archivar una Institución Beneficiaria por ID.
+     *
+     * @OA\Put(
+     *     path="/api/beneficiary-institution/archive/{id}",
+     *     summary="Archivar una Institución Beneficiaria por ID",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la Institución Beneficiaria",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria archivada correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Institución Beneficiaria no encontrada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
+     *         )
+     *     )
+     * )
      */
     public function archiveBeneficiaryInstitution($id)
     {
