@@ -553,6 +553,69 @@
                 }
             }
         },
+        "/api/beneficiary-institutions/{id}": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Obtener una Institución Beneficiaria por ID",
+                "description": "Obtener una Institución Beneficiaria por ID.",
+                "operationId": "8c2c7ed29e5ca919ffbc50464e9814b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/briefcase": {
             "get": {
                 "tags": [
