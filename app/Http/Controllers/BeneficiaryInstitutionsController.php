@@ -7,12 +7,64 @@ use App\Models\BeneficiaryInstitution;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Schema(
+ *     schema="Beneficiary Institutions",
+ *     title="Beneficiary Institutions",
+ *     description="Beneficiary Institutions model",
+ *     @OA\Property(property="id", type="integer", format="int64"),
+ *     @OA\Property(property="ruc", type="string", format="int15", nullable=true),
+ *     @OA\Property(property="name", type="string", format="int100", nullable=true),
+ *     @OA\Property(property="logo", type="string", format="int20", nullable=true),
+ *     @OA\Property(property="state", type="boolean", default=false),
+ *     @OA\Property(property="place_location", type="string", format="int200", nullable=true),
+ *     @OA\Property(property="postal_code", type="string", format="int20", nullable=true),
+ *     @OA\Property(property="parish_id", type="integer", format="int64"),
+ *     @OA\Property(property="created_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="archived", type="boolean", default=false),
+ *     @OA\Property(property="archived_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="archived_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ * \OpenApi\Annotations\SecurityScheme
+ */
+
 class BeneficiaryInstitutionsController extends Controller
 {
     /**
-     * Summary of getBeneficiaryInstitution
-     * @return JsonResponse
-     * Obtener todas las Instituciones Beneficiarias
+     * Obtener todas las Instituciones Beneficiarias.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution",
+     *     summary="Obtener todas las Instituciones Beneficiarias",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function getBeneficiaryInstitution()
     {
@@ -29,17 +81,46 @@ class BeneficiaryInstitutionsController extends Controller
     }
 
     /**
-      * Summary of getArchivedBeneficiaryInstitution
-      * @return JsonResponse 
-      * Obtener todas las Institucion Beneficiaria archivadas
-      */
+     * Obtener todas las Instituciones Beneficiarias archivadas.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/archived",
+     *     summary="Obtener todas las Instituciones Beneficiarias archivadas",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function getArchivedBeneficiaryInstitution()
     {
         $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
             ->where('archived', true)
             ->with('parish_id.father_code')
             ->get();
-  
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -49,10 +130,39 @@ class BeneficiaryInstitutionsController extends Controller
     }
 
     /**
-     * Summary of getBeneficiaryInstitutionById
-     * @param mixed $id
-     * @return JsonResponse
-     * Obtener por id una Institucion Beneficiaria
+     * Obtener una Institución Beneficiaria por ID.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/{id}",
+     *     summary="Obtener una Institución Beneficiaria por ID",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la Institución Beneficiaria",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Institución Beneficiaria no encontrada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
+     *         )
+     *     )
+     * )
      */
     public function getBeneficiaryInstitutionById($id)
     {
@@ -78,10 +188,40 @@ class BeneficiaryInstitutionsController extends Controller
 
 
     /**
-     * Summary of ArchiveBeneficiaryInstitution
-     * @param mixed $id
-     * @return JsonResponse
-     * Archivar una Institucion Beneficiaria
+     * Archivar una Institución Beneficiaria por ID.
+     *
+     * @OA\Put(
+     *     path="/api/beneficiary-institution/archive/{id}",
+     *     summary="Archivar una Institución Beneficiaria por ID",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la Institución Beneficiaria",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria archivada correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Institución Beneficiaria no encontrada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
+     *         )
+     *     )
+     * )
      */
     public function archiveBeneficiaryInstitution($id)
     {
@@ -103,10 +243,40 @@ class BeneficiaryInstitutionsController extends Controller
 
 
     /**
-     * Summary of restaureBeneficiaryInstitution
-     * @param mixed $id
-     * @return JsonResponse
-     * Restaurar una Institucion Beneficiaria
+     * Restaurar una Institución Beneficiaria por ID.
+     *
+     * @OA\Put(
+     *     path="/api/beneficiary-institution/restore/{id}",
+     *     summary="Restaurar una Institución Beneficiaria por ID",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la Institución Beneficiaria",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria restaurada correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Institución Beneficiaria no encontrada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
+     *         )
+     *     )
+     * )
      */
     public function restaureBeneficiaryInstitution($id)
     {
@@ -127,10 +297,45 @@ class BeneficiaryInstitutionsController extends Controller
 
 
     /**
-     * Summary of searchBeneficiaryInstitutionByTerm
-     * @param mixed $term
-     * @return JsonResponse
-     * Buscador 
+     * Buscar Instituciones Beneficiarias por término.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/search/term/{term?}",
+     *     summary="Buscar Instituciones Beneficiarias por término",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="term",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function searchBeneficiaryInstitutionByTerm($term = '')
     {
@@ -149,7 +354,47 @@ class BeneficiaryInstitutionsController extends Controller
         ]);
     }
 
-
+    /**
+     * Filtrar Instituciones Beneficiarias por estado.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/filter/state/{state}",
+     *     summary="Filtrar Instituciones Beneficiarias por estado",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="state",
+     *         in="path",
+     *         required=true,
+     *         description="Estado de las Instituciones Beneficiarias (activo o inactivo)",
+     *         @OA\Schema(type="string", enum={"activo", "inactivo"})
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function filterBeneficiaryInstitutionByStatus($state = '')
     {
       $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
@@ -168,10 +413,45 @@ class BeneficiaryInstitutionsController extends Controller
 
 
     /**
-     * Summary of searchActivasByTerm
-     * @param mixed $term
-     * @return JsonResponse
-     * Buscar totas las instituciones activas
+     * Buscar Instituciones Beneficiarias activas por término.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/search/state/activo/{term?}",
+     *     summary="Buscar Instituciones Beneficiarias activas por término",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="term",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function searchActivasByTerm($term = '')
     {
@@ -193,7 +473,47 @@ class BeneficiaryInstitutionsController extends Controller
        ]);
     }
 
-
+    /**
+     * Buscar Instituciones Beneficiarias inactivas por término.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/search/state/inactivo/{term?}",
+     *     summary="Buscar Instituciones Beneficiarias inactivas por término",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="term",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function searchInactivaByTerm($term = '')
     {
        $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)

@@ -227,7 +227,7 @@ Route::middleware('authentication')->group(function () {
         });
         Route::middleware('permission:CREAR_PROYECTO')->group(function () {
             Route::post('/create', [ProjectController::class, 'createProyect']);
-       
+
         });
         Route::middleware('permission:ARCHIVAR_PROYECTO')->group(function () {
             Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
@@ -278,7 +278,7 @@ Route::middleware('authentication')->group(function () {
     //Integrantes detalle de la tabla project y solicitude
     Route::prefix('project-participant')->group(function () {
 
-
+ 
         Route::middleware('permission:LEER_PROYECTO')->group(function () {
             Route::get('/', [ProjectParticipantController::class, 'getAllProjectParticipants']);
             Route::get('/lista', [ProjectParticipantController::class, 'getAllProjectParticipantsTutor']);

@@ -411,6 +411,677 @@
                 ]
             }
         },
+        "/api/beneficiary-institution": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Obtener todas las Instituciones Beneficiarias",
+                "description": "Obtener todas las Instituciones Beneficiarias.",
+                "operationId": "30f991a1b5099932f1d3f6d76870a477",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/archived": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Obtener todas las Instituciones Beneficiarias archivadas",
+                "description": "Obtener todas las Instituciones Beneficiarias archivadas.",
+                "operationId": "74ad723aafa09eb3524c6f1e8998091d",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/{id}": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Obtener una Institución Beneficiaria por ID",
+                "description": "Obtener una Institución Beneficiaria por ID.",
+                "operationId": "66041e7dd79b1845481cb50d7abdddb1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/archive/{id}": {
+            "put": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Archivar una Institución Beneficiaria por ID",
+                "description": "Archivar una Institución Beneficiaria por ID.",
+                "operationId": "4e38ddba23e3672a7bc2cd15ce063244",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria archivada correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/restore/{id}": {
+            "put": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Restaurar una Institución Beneficiaria por ID",
+                "description": "Restaurar una Institución Beneficiaria por ID.",
+                "operationId": "504f2ca21c8d6cce6175c84da1bf9b2a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria restaurada correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/search/term/{term?}": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Buscar Instituciones Beneficiarias por término",
+                "description": "Buscar Instituciones Beneficiarias por término.",
+                "operationId": "5f374389e0a3696cecf44c6c125d3ede",
+                "parameters": [
+                    {
+                        "name": "term",
+                        "in": "path",
+                        "description": "Término de búsqueda",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/filter/state/{state}": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Filtrar Instituciones Beneficiarias por estado",
+                "description": "Filtrar Instituciones Beneficiarias por estado.",
+                "operationId": "3fbad1befd6d7a82dfe9e3a47da4e67a",
+                "parameters": [
+                    {
+                        "name": "state",
+                        "in": "path",
+                        "description": "Estado de las Instituciones Beneficiarias (activo o inactivo)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "activo",
+                                "inactivo"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/search/state/activo/{term?}": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Buscar Instituciones Beneficiarias activas por término",
+                "description": "Buscar Instituciones Beneficiarias activas por término.",
+                "operationId": "373529dedcf975636e51966646bb8b76",
+                "parameters": [
+                    {
+                        "name": "term",
+                        "in": "path",
+                        "description": "Término de búsqueda",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/search/state/inactivo/{term?}": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Buscar Instituciones Beneficiarias inactivas por término",
+                "description": "Buscar Instituciones Beneficiarias inactivas por término.",
+                "operationId": "2024fc71f90989722cb910c92f0cff3f",
+                "parameters": [
+                    {
+                        "name": "term",
+                        "in": "path",
+                        "description": "Término de búsqueda",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/briefcase": {
             "get": {
                 "tags": [
@@ -6955,6 +7626,77 @@
                     },
                     "password": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Beneficiary Institutions": {
+                "title": "Beneficiary Institutions",
+                "description": "Beneficiary Institutions model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "ruc": {
+                        "type": "string",
+                        "format": "int15",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "format": "int100",
+                        "nullable": true
+                    },
+                    "logo": {
+                        "type": "string",
+                        "format": "int20",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "place_location": {
+                        "type": "string",
+                        "format": "int200",
+                        "nullable": true
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "format": "int20",
+                        "nullable": true
+                    },
+                    "parish_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "created_by": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "archived": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "archived_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "archived_by": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"

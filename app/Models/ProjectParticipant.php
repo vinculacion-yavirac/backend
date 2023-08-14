@@ -20,6 +20,7 @@ class ProjectParticipant extends Model
             'state_id',
             'project_id',
             'participant_id',
+            'role',
         ];
 
         protected $casts = [
