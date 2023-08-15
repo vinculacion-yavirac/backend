@@ -160,7 +160,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/term/{term?}', [DocumentController::class, 'searchDocumentsByTerm']);
             Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchDocumentsArchivedByTerm']);
         });
-        
+
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
             Route::put('/archive/{id}', [DocumentController::class, 'archiveDocument']);
         });
@@ -279,7 +279,7 @@ Route::middleware('authentication')->group(function () {
     //Integrantes detalle de la tabla project y solicitude
     Route::prefix('project-participant')->group(function () {
 
- 
+
         Route::middleware('permission:LEER_PROYECTO')->group(function () {
             Route::get('/', [ProjectParticipantController::class, 'getAllProjectParticipants']);
             Route::get('/lista', [ProjectParticipantController::class, 'getAllProjectParticipantsTutor']);
@@ -310,6 +310,7 @@ Route::middleware('authentication')->group(function () {
         Route::put('/update/{id}', [AvanzeController::class, 'updateAvanzes']);
         Route::delete('/delete/{id}', [AvanzeController::class, 'deleteAvanzeById']);
     });
+    //Actividades
     Route::prefix('actividades')->group(function () {
         Route::get('/', [ActividadesController::class, 'getAllActividades']);
         Route::get('/{id}', [ActividadesController::class, 'getAllActividadesById']);
@@ -317,6 +318,7 @@ Route::middleware('authentication')->group(function () {
         Route::put('/update/{id}', [ActividadesController::class, 'updateActividades']);
         Route::delete('/delete/{id}', [ActividadesController::class, 'deleteActividadesById']);
     });
+    //Activities
     Route::prefix('activities')->group(function () {
         Route::get('/', [ActivitiesController::class, 'getAllActividades']);
         Route::get('/{id}', [ActivitiesController::class, 'getAllActividadesById']);
