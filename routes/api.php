@@ -213,6 +213,10 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:CREAR_SOLICITUD')->group(function () {
             Route::post('/create', [SolicitudeController::class, 'createSolicitude']); // Nueva ruta para crear una solicitud
         });
+
+        Route::middleware('permission:ELIMINAR_SOLICITUD')->group(function () {
+            Route::delete('/delete/{id}', [SolicitudeController::class, 'deleteSolicitud']); // Nueva ruta para crear una solicitud
+        });
     });
 
 

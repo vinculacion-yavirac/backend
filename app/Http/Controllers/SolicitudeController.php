@@ -1594,4 +1594,86 @@ class SolicitudeController extends Controller
             ], 500);
         }
     }
+
+
+    /**
+     * @OA\Delete(
+     *     path="/api/solicitud/delete/{id}",
+     *     summary="Eliminar una solicitud",
+     *     operationId="deleteSolicitud",
+     *     tags={"Solicitudes"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la solicitud a eliminar",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al eliminar la solicitud",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Solicitud eliminada correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuario no encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Solicitud no encontrada")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error al eliminar la solicitud")
+     *         )
+     *     )
+     * )
+     */
+    public function deleteSolicitud($id)
+    {
+        try {
+            DB::transaction(
+                function () use ($id) {
+
+                    $solicitudes = Solicitude::find($id);
+                    if (!$solicitudes) {
+                        return response()->json([
+                            'message' => 'Solicitudes no encontrado'
+                        ]);
+                    }
+                    $solicitudes->delete();
+                }
+            );
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Solicitud eliminada correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al eliminar la solicitud: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
