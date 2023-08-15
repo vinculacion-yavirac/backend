@@ -104,6 +104,9 @@ class ProjectController extends Controller
             $proyect->save();
             return response()->json([
                 'status' => 'success',
+                'data' => [
+                    'proyect' => $proyect
+                ],
                 'message' => 'Portafolio actualizado con éxito'
             ]);
         } catch (\Exception $e) {
@@ -112,7 +115,44 @@ class ProjectController extends Controller
             ]);
         }
     }
+ /**
+     * Summary of updateProyect
+     * @return \Illuminate\Http\JsonResponse
+     * Actualizar  id de la entidad beneficiaria "empresa"
+     */
+    public function updateProyectPlanTrabajo(Request $request, $id)
+    {
 
+
+        $proyect = Project::find($id);
+        if (!$proyect) {
+            return response()->json([
+                'message' => 'No se encontró el oficio especificado'
+            ], 404);
+        }
+
+        $proyect->objetive = $request->objetive;
+        $proyect->description = $request->description;
+        $proyect->situational_analysis = $request->situational_analysis;
+        $proyect->justification = $request->justification;
+        $proyect->conclusions = $request->conclusions;
+        $proyect->recommendation = $request->recommendation;
+
+        try {
+            $proyect->save();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'proyect' => $proyect
+                ],
+                'message' => 'Portafolio actualizado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el Portafolio: ' . $e->getMessage()
+            ]);
+        }
+    }
 
     /**
      * Summary of getArchivedProject
