@@ -322,7 +322,7 @@ class AvanzeController extends Controller
  * @OA\Put(
  *     path="/api/avanze/briefcase/archive/{id}",
  *     summary="Archivar portafolio",
- *     tags={"Portafolios"},
+ *     tags={"Avances"},
  *     description="Archiva un portafolio existente.",
  *     security={ {"bearerAuth": {} } },
  *     @OA\Parameter(
@@ -392,7 +392,7 @@ class AvanzeController extends Controller
  * @OA\Put(
  *     path="/api/avanze/briefcase/restore/{id}",
  *     summary="Restaurar portafolio",
- *     tags={"Portafolios"},
+ *     tags={"Avances"},
  *     description="Restaura un portafolio previamente archivado.",
  *     security={ {"bearerAuth": {} } },
  *     @OA\Parameter(
@@ -463,7 +463,7 @@ class AvanzeController extends Controller
  * @OA\Delete(
  *     path="/api/avanze/delete/{id}",
  *     summary="Eliminar portafolio por ID",
- *     tags={"Avanzes"},
+ *     tags={"Avances"},
  *     description="Elimina un portafolio por su ID.",
  *     security={ {"bearerAuth": {} } },
  *     @OA\Parameter(
