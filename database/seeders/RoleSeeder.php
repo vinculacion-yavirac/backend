@@ -137,5 +137,6 @@ class RoleSeeder extends Seeder
         $roleFive->givePermissionTo(Permission::findById(38));
         $roleFive->givePermissionTo(Permission::findById(46));
         $roleFive->givePermissionTo(Permission::findById(54));
+        $roleFive->givePermissionTo(Permission::findById(70));
     }
 }
