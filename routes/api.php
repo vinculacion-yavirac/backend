@@ -227,12 +227,7 @@ Route::middleware('authentication')->group(function () {
         });
         Route::middleware('permission:CREAR_PROYECTO')->group(function () {
             Route::post('/create', [ProjectController::class, 'createProyect']);
-<<<<<<< Updated upstream
-
-=======
             Route::put('updateProyectBeneficiaryInstitution/{id}', [ProjectController::class, 'updateProyectBeneficiaryInstitution']);
-       
->>>>>>> Stashed changes
         });
         Route::middleware('permission:ARCHIVAR_PROYECTO')->group(function () {
             Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
