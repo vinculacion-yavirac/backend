@@ -13,7 +13,7 @@ class ActivitiesController extends Controller
    public function getAllActividades()
      {
         $activity = Activity::with('goals_id')->get();
-    
+
         return new JsonResponse([
             'status' => 'success',
             'data' => ['activity' => $activity],
@@ -44,7 +44,7 @@ class ActivitiesController extends Controller
                 ['created_by' => auth()->user()->id]
             ));
 
-       
+
 
 
             return response()->json([
