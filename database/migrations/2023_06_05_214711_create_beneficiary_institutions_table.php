@@ -17,6 +17,16 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('ruc', 15);
             $table->string('name', 100);
+            $table->string('name_gestion', 200);
+            $table->string('name_autorize_by', 200);
+            $table->string('activity_ruc', 200);
+            $table->string('email', 200);
+            $table->string('phone', 100);
+            $table->string('address', 200);
+            $table->string('number_students_start', 3);
+            $table->string('number_students_ability', 3);
+            $table->string('Direct beneficiaries', 100);
+            $table->string('Indirect beneficiaries', 100);
             $table->string('logo', 20);
             $table->boolean('state');
             $table->string('place_location', 200);

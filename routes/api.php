@@ -230,10 +230,13 @@ Route::middleware('authentication')->group(function () {
         });
         Route::middleware('permission:CREAR_PROYECTO')->group(function () {
             Route::post('/create', [ProjectController::class, 'createProyect']);
+            Route::put('updateProyectBeneficiaryInstitution/{id}', [ProjectController::class, 'updateProyectBeneficiaryInstitution']);
+            Route::put('updateProyectPlanTrabajo/{id}', [ProjectController::class, 'updateProyectPlanTrabajo']);
 
         });
         Route::middleware('permission:ARCHIVAR_PROYECTO')->group(function () {
             Route::put('/archive/{id}', [ProjectController::class, 'archiveProject']);
+
         });
 
         Route::middleware('permission:RESTAURAR_PROYECTO')->group(function () {
@@ -295,6 +298,7 @@ Route::middleware('authentication')->group(function () {
 
         Route::middleware('permission:ACTUALIZAR_PROYECTO')->group(function () {
             Route::put('/{id}', [ProjectParticipantController::class, 'update']);
+
         });
 
         Route::middleware('permission:ELIMINAR_PROYECTO')->group(function () {

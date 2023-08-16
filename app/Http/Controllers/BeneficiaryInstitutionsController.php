@@ -129,6 +129,37 @@ class BeneficiaryInstitutionsController extends Controller
         ]);
     }
 
+
+ /**
+     * Summary of createFoundation
+     * @param mixed $id
+     * @return JsonResponse
+     * Creacion de nueva entidad benificiaria
+     */
+
+    public function createFoundation(Request $request)
+    {
+        try {
+            // Crear registro del documento oficial
+            $beneficiaryInstitutions = BeneficiaryInstitution::create(array_merge(
+                $request->except('files', 'comments'),
+                ['created_by' => auth()->user()->id]
+            ));
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'beneficiaryInstitution' => $beneficiaryInstitutions
+                ],
+                'message' => 'Proyecto creado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al crear el proyecto: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+
     /**
      * Obtener una Institución Beneficiaria por ID.
      *
