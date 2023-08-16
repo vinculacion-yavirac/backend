@@ -188,7 +188,7 @@ class DocumentController extends Controller
      */
     public function getArchivedDocument()
     {
-        $documents = Documents::with('responsible_id')
+        $documents = Documents::with('responsible_id','archived_by.person')
         ->where('archived', true)
         ->get();
 

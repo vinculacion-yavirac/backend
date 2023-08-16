@@ -56,4 +56,9 @@ class Documents extends Model
     {
         return $this->hasMany(File::class, 'document_id');
     }
+
+    public function archived_by()
+    {
+        return $this->belongsTo(User::class, 'archived_by');
+    }
 }

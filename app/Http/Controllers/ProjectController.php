@@ -216,9 +216,40 @@ class ProjectController extends Controller
 
 
     /**
-     * Summary of getArchivedProject
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener todas las archivadas por true
+     * @OA\Get(
+     *     path="/api/project/archived/list",
+     *     summary="Obtener lista de los proyectos Archivados",
+     *     operationId="getArchivedProject",
+     *     tags={"Proyecto"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="project", type="array", @OA\Items(ref="#/components/schemas/Project"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
     public function getArchivedProject()
     {
