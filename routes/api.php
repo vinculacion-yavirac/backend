@@ -183,6 +183,10 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:CREAR_DOCUMENTO')->group(function () {
             Route::post('/create', [DocumentController::class, 'createDocuments']);
         });
+
+        Route::middleware('permission:ELIMINAR_DOCUMENTO')->group(function () {
+            Route::delete('/delete/{id}', [DocumentController::class, 'deleteDocument']);
+        });
     });
 
     //SOLICITUD

@@ -7,6 +7,7 @@ use App\Models\Documents;
 use App\Models\Briefcase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\Schema(
@@ -709,5 +710,86 @@ class DocumentController extends Controller
                 'documents' => $role3Documents,
             ],
         ]);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/document/delete/{id}",
+     *     summary="Eliminar un documento",
+     *     operationId="deleteDocument",
+     *     tags={"Documentos"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del documento a eliminar",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al eliminar el documento",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Documento eliminado correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Portafolio no encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Documento no encontrada")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error al eliminar la solicitud")
+     *         )
+     *     )
+     * )
+     */
+    public function deleteDocument($id)
+    {
+        try {
+            DB::transaction(
+                function () use ($id) {
+
+                    $documents = Documents::find($id);
+                    if (!$documents) {
+                        return response()->json([
+                            'message' => 'Documento no encontrado'
+                        ]);
+                    }
+                    $documents->delete();
+                }
+            );
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Documento eliminado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al eliminar el docuemnto: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
