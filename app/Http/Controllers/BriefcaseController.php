@@ -934,4 +934,84 @@ public function uploadFilesBriefcases(Request $request, $idBriefcase)
     return response()->json($response, 200);
 }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/briefcase/delete/{id}",
+     *     summary="Eliminar una portafolio",
+     *     operationId="deleteBriefcase",
+     *     tags={"Portafolio"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del portafolio a eliminar",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al eliminar el portafolio",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Portafolio eliminado correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Portafolio no encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Portafolio no encontrada")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error al eliminar la solicitud")
+     *         )
+     *     )
+     * )
+     */
+    public function deleteBriefcase($id)
+    {
+        try {
+            DB::transaction(
+                function () use ($id) {
+
+                    $briefcases = Briefcase::find($id);
+                    if (!$briefcases) {
+                        return response()->json([
+                            'message' => 'Portafolio no encontrado'
+                        ]);
+                    }
+                    $briefcases->delete();
+                }
+            );
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Portafolio eliminado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al eliminar la portafolio: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

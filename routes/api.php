@@ -149,6 +149,10 @@ Route::middleware('authentication')->group(function () {
             Route::post('/create', [$controller, 'create']);
             Route::post('/upload/{idBriefcase}', [$controller, 'uploadFilesBriefcases']);
         });
+
+        Route::middleware('permission:ELIMINAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::delete('/delete/{id}', [$controller, 'deleteBriefcase']);
+        });
     });
 
      //DOCUMENTO
