@@ -8,8 +8,62 @@ use Illuminate\Http\Request;
 use App\Models\Comment;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * @OA\Schema(
+ *     schema="Avanze",
+ *     title="Avanze",
+ *     description="Avanze model",
+ *     @OA\Property(property="id", type="integer", format="int64"),
+ *     @OA\Property(property="resumen", type="string"),
+ *     @OA\Property(property="indicadores", type="string"),
+ *     @OA\Property(property="medios", type="string"),
+ *     @OA\Property(property="observacion", type="string"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", nullable=true),
+ * )
+ * \OpenApi\Annotations\SecurityScheme
+ */
+
 class AvanzeController extends Controller
 {
+
+/**
+ * @OA\Get(
+ *     path="/api/avanze",
+ *     summary="Obtener todos los avances",
+ *     tags={"Avances"},
+ *     description="Obtiene todos los avances registrados.",
+ *     security={ {"bearerAuth": {} } },
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="data", type="object",
+ *                 @OA\Property(property="avanzes", type="array", @OA\Items(ref="#/components/schemas/Avanze"))
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
+
    public function getAllAvanzes()
      {
         $avanze = Avanze::all();
@@ -20,6 +74,60 @@ class AvanzeController extends Controller
                 $briefcase) */
         ], 200);
     }
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/avanze/{id}",
+ *     summary="Obtener avance por ID",
+ *     tags={"Avances"},
+ *     description="Obtiene un avance por su ID.",
+ *     security={ {"bearerAuth": {} } },
+ *     @OA\Parameter(
+ *         name="id",
+ *         description="ID del avance",
+ *         required=true,
+ *         in="path",
+ *         @OA\Schema(type="integer", format="int64")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="data", type="object",
+ *                 @OA\Property(property="avanze", type="array", @OA\Items(ref="#/components/schemas/Avanze"))
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Avance no encontrado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Avance no encontrado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
+
 
     public function getAllAvanzesById($id)
     {
@@ -34,6 +142,57 @@ class AvanzeController extends Controller
 
 
 
+    /**
+ * @OA\Post(
+ *     path="/api/avanze/create",
+ *     summary="Crear avance",
+ *     tags={"Avances"},
+ *     description="Crea un nuevo avance.",
+ *     security={ {"bearerAuth": {} } },
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(ref="#/components/schemas/Avanze")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="data", type="object",
+ *                 @OA\Property(property="avanze", ref="#/components/schemas/Avanze")
+ *             ),
+ *             @OA\Property(property="message", type="string", example="Oficio creado con éxito")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Solicitud inválida",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Solicitud inválida.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
+
+
     public function createAvanzes(Request $request)
     {
         try {
@@ -42,8 +201,6 @@ class AvanzeController extends Controller
                 $request->except('files', 'comments'),
                 ['created_by' => auth()->user()->id]
             ));
-
-       
 
 
             return response()->json([
@@ -60,6 +217,75 @@ class AvanzeController extends Controller
         }
     }
 
+
+    /**
+ * @OA\Put(
+ *     path="/api/avanze/update/{id}",
+ *     summary="Actualizar avance",
+ *     tags={"Avances"},
+ *     description="Actualiza un avance existente.",
+ *     security={ {"bearerAuth": {} } },
+ *     @OA\Parameter(
+ *         name="id",
+ *         description="ID del avance",
+ *         required=true,
+ *         in="path",
+ *         @OA\Schema(type="integer", format="int64")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="resumen", type="string"),
+ *             @OA\Property(property="indicadores", type="string"),
+ *             @OA\Property(property="medios", type="string"),
+ *             @OA\Property(property="observacion", type="string"),
+ *             @OA\Property(property="created_at", type="string", format="date-time"),
+ *             @OA\Property(property="updated_at", type="string", format="date-time")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Portafolio actualizado con éxito")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Solicitud inválida",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Solicitud inválida.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Avance no encontrado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Avance no encontrado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
 
     public function updateAvanzes(Request $request, $id)
     {
@@ -91,6 +317,57 @@ class AvanzeController extends Controller
         }
     }
 
+
+    /**
+ * @OA\Put(
+ *     path="/api/avanze/briefcase/archive/{id}",
+ *     summary="Archivar portafolio",
+ *     tags={"Portafolios"},
+ *     description="Archiva un portafolio existente.",
+ *     security={ {"bearerAuth": {} } },
+ *     @OA\Parameter(
+ *         name="id",
+ *         description="ID del portafolio",
+ *         required=true,
+ *         in="path",
+ *         @OA\Schema(type="integer", format="int64")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Portafolio archivado correctamente")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Portafolio no encontrado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Portafolio no encontrado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
+
     public function archiveBriefcase($id)
     {
         $briefcase = Briefcase::find($id);
@@ -111,6 +388,57 @@ class AvanzeController extends Controller
         ]);
     }
 
+    /**
+ * @OA\Put(
+ *     path="/api/avanze/briefcase/restore/{id}",
+ *     summary="Restaurar portafolio",
+ *     tags={"Portafolios"},
+ *     description="Restaura un portafolio previamente archivado.",
+ *     security={ {"bearerAuth": {} } },
+ *     @OA\Parameter(
+ *         name="id",
+ *         description="ID del portafolio",
+ *         required=true,
+ *         in="path",
+ *         @OA\Schema(type="integer", format="int64")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Portafolio restaurado correctamente")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Portafolio no encontrado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Portafolio no encontrado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
+
+
     public function restoreBriefcase($id)
     {
         $briefcase = Briefcase::find($id);
@@ -130,6 +458,56 @@ class AvanzeController extends Controller
             'message' => 'Portafolio restaurado correctamente'
         ]);
     }
+
+    /**
+ * @OA\Delete(
+ *     path="/api/avanze/delete/{id}",
+ *     summary="Eliminar portafolio por ID",
+ *     tags={"Avanzes"},
+ *     description="Elimina un portafolio por su ID.",
+ *     security={ {"bearerAuth": {} } },
+ *     @OA\Parameter(
+ *         name="id",
+ *         description="ID del portafolio",
+ *         required=true,
+ *         in="path",
+ *         @OA\Schema(type="integer", format="int64")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Portafolio eliminado correctamente")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Portafolio no encontrado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Portafolio no encontrado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
 
     public function deleteAvanzeById($id)
     {

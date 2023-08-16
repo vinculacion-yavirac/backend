@@ -315,6 +315,7 @@ Route::middleware('authentication')->group(function () {
         Route::put('/update/{id}', [AvanzeController::class, 'updateAvanzes']);
         Route::delete('/delete/{id}', [AvanzeController::class, 'deleteAvanzeById']);
     });
+    //Actividades
     Route::prefix('actividades')->group(function () {
         Route::get('/', [ActividadesController::class, 'getAllActividades']);
         Route::get('/{id}', [ActividadesController::class, 'getAllActividadesById']);
@@ -322,6 +323,7 @@ Route::middleware('authentication')->group(function () {
         Route::put('/update/{id}', [ActividadesController::class, 'updateActividades']);
         Route::delete('/delete/{id}', [ActividadesController::class, 'deleteActividadesById']);
     });
+    //Activities
     Route::prefix('activities')->group(function () {
         Route::get('/', [ActivitiesController::class, 'getAllActividades']);
         Route::get('/{id}', [ActivitiesController::class, 'getAllActividadesById']);
