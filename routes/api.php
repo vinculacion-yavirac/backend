@@ -161,7 +161,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchDocumentsArchivedByTerm']);
 
             Route::get('/responsible/student', [DocumentController::class, 'getDocumentsByResponsibleStudent']);
-            Route::get('/responsible/tutor', [DocumentController::class, 'getDocumentsByResponsibleTutor']);
+            Route::get('/responsible/tutorstuden', [DocumentController::class, 'getDocumentsByResponsibleTutorandStuden']);
         });
 
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
