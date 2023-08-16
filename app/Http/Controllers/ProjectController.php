@@ -2,17 +2,104 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Project;
 
+/**
+ * @OA\Schema(
+ *     schema="Project",
+ *     title="Project",
+ *     description="Project model",
+ *     @OA\Property(property="id", type="integer", format="int64"),
+ *     @OA\Property(property="code", type="string", maxLength=20),
+ *     @OA\Property(property="name", type="string", maxLength=200),
+ *     @OA\Property(property="field", type="string", maxLength=100),
+ *     @OA\Property(property="term_execution", type="integer"),
+ *     @OA\Property(property="start_date", type="string", format="date-time"),
+ *     @OA\Property(property="end_date", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="linking_activity", type="object"),
+ *     @OA\Property(property="sectors_intervention", type="object"),
+ *     @OA\Property(property="strategic_axes", type="object"),
+ *     @OA\Property(property="description", type="string", maxLength=500),
+ *     @OA\Property(property="situational_analysis", type="string", maxLength=500),
+ *     @OA\Property(property="foundation", type="string", maxLength=500),
+ *     @OA\Property(property="justification", type="string", maxLength=500),
+ *     @OA\Property(property="direct_beneficiaries", type="object"),
+ *     @OA\Property(property="indirect_beneficiaries", type="object"),
+ *     @OA\Property(property="schedule", type="string", maxLength=200),
+ *     @OA\Property(property="evaluation_monitoring_strategy", type="object"),
+ *     @OA\Property(property="bibliographies", type="object"),
+ *     @OA\Property(property="attached_project", type="object"),
+ *     @OA\Property(property="convention_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="school_period_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="beneficiary_institution_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="career_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="sub_line_investigation_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="authorized_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="made_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="approved_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="catalogue_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="state_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="stateTwo_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="frequency_id", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="created_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="archived", type="boolean", default=false),
+ *     @OA\Property(property="archived_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="archived_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ *  \OpenApi\Annotations\SecurityScheme
+ */
 class ProjectController extends Controller
 {
 
+
     /**
-     * Summary of getProject
-     * @return JsonResponse
-     * Obtener todas las fundaciones
+     * @OA\Get(
+     *     path="/api/project",
+     *     summary="Obtener lista de proyectos",
+     *     operationId="getProject",
+     *     tags={"Proyecto"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="project", type="array", @OA\Items(ref="#/components/schemas/Project"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
     public function getProject()
     {
@@ -26,11 +113,64 @@ class ProjectController extends Controller
         ], 200);
     }
 
-        /**
-     * Summary of getProjectById
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener por el id
+    /**
+     * Get a specific Solicitud by ID.
+     *
+     * @OA\Get(
+     *     path="/api/project/{id}",
+     *     summary="Obtener Proyecto por ID",
+     *     operationId="getProjectById",
+     *     tags={"Proyecto"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del proyecto",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="project", type="object", ref="#/components/schemas/Project")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Solicitud not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Proyecto no encontrada"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
      */
     public function getProjectById($id)
     {
@@ -60,7 +200,6 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * Creacion de nuevo proyecto
      */
-
     public function createProyect(Request $request)
     {
         try {
@@ -155,15 +294,46 @@ class ProjectController extends Controller
     }
 
     /**
-     * Summary of getArchivedProject
-     * @return \Illuminate\Http\JsonResponse
-     * Obtener todas las archivadas por true
+     * @OA\Get(
+     *     path="/api/project/archived/list",
+     *     summary="Obtener lista de los proyectos Archivados",
+     *     operationId="getArchivedProject",
+     *     tags={"Proyecto"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="project", type="array", @OA\Items(ref="#/components/schemas/Project"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
      */
     public function getArchivedProject()
     {
       $projects = Project::where('id', '!=', 0)
           ->where('archived', true)
-          ->with('created_by.person','beneficiary_institution_id','stateTwo_id','authorized_by.user_id.person')
+          ->with('created_by.person','archived_by.person','beneficiary_institution_id','stateTwo_id','authorized_by.user_id.person')
           ->get();
 
       return response()->json([
@@ -321,4 +491,85 @@ class ProjectController extends Controller
                 ]);
             }
         }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/project/delete/{id}",
+     *     summary="Eliminar un  proyecto",
+     *     operationId="deleteProject",
+     *     tags={"Proyecto"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del proyecto a eliminar",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al eliminar el proyecto",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Proyecto eliminado correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuario no encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Proyecto no encontrada")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error al eliminar el proyecto")
+     *         )
+     *     )
+     * )
+     */
+    public function deleteProject($id)
+    {
+        try {
+            DB::transaction(
+                function () use ($id) {
+
+                    $project = Project::find($id);
+                    if (!$project) {
+                        return response()->json([
+                            'message' => 'Proyecto no encontrado'
+                        ]);
+                    }
+                    $project->delete();
+                }
+            );
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Proyecto eliminado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al eliminar la proyecto: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

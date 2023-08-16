@@ -15,19 +15,28 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',100);
-            $table->string('type',200);
+            $table->string('name', 100);
+            $table->string('type', 200);
             $table->longText('content');
-            $table->string('observation',200);
+            $table->string('observation', 200);
             $table->boolean('state');
             $table->integer('size');
             $table->integer('briefcase_id')->unsigned()->nullable();
-            $table->foreign('briefcase_id')->references('id')->on('briefcases');
             $table->integer('document_id')->unsigned()->nullable();
-            $table->foreign('document_id')->references('id')->on('documents');
             $table->timestamps();
+    
+            $table->foreign('briefcase_id')
+                ->references('id')
+                ->on('briefcases')
+                ->onDelete('cascade'); // Eliminación en cascada
+    
+            $table->foreign('document_id')
+                ->references('id')
+                ->on('documents')
+                ->onDelete('cascade'); // Eliminación en cascada
         });
     }
+    
 
     /**
      * Reverse the migrations.

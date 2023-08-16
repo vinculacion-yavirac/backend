@@ -149,6 +149,10 @@ Route::middleware('authentication')->group(function () {
             Route::post('/create', [$controller, 'create']);
             Route::post('/upload/{idBriefcase}', [$controller, 'uploadFilesBriefcases']);
         });
+
+        Route::middleware('permission:ELIMINAR_PORTAFOLIO')->group(function () use ($controller) {
+            Route::delete('/delete/{id}', [$controller, 'deleteBriefcase']);
+        });
     });
 
      //DOCUMENTO
@@ -216,6 +220,10 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:CREAR_SOLICITUD')->group(function () {
             Route::post('/create', [SolicitudeController::class, 'createSolicitude']); // Nueva ruta para crear una solicitud
         });
+
+        Route::middleware('permission:ELIMINAR_SOLICITUD')->group(function () {
+            Route::delete('/delete/{id}', [SolicitudeController::class, 'deleteSolicitud']); // Nueva ruta para crear una solicitud
+        });
     });
 
 
@@ -241,6 +249,10 @@ Route::middleware('authentication')->group(function () {
 
         Route::middleware('permission:RESTAURAR_PROYECTO')->group(function () {
             Route::put('/restore/{id}', [ProjectController::class, 'restoreProject']);
+        });
+
+        Route::middleware('permission:ELIMINAR_PROYECTO')->group(function () {
+            Route::delete('/delete/{id}', [ProjectController::class, 'deleteProject']);
         });
         Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
     });
