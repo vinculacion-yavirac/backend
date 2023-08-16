@@ -17,6 +17,7 @@ class Briefcase extends Model
         'archived',
         'archived_at',
         'created_by',
+        'update_by',
         'archived_by',
         'project_participant_id',
     ];
@@ -32,11 +33,16 @@ class Briefcase extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function update_by()
+    {
+        return $this->belongsTo(User::class, 'update_by');
+    }
+
     public function archived_by()
     {
         return $this->belongsTo(User::class, 'archived_by');
     }
-    
+
 
     public function documents()
     {

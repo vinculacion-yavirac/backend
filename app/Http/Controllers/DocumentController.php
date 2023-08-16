@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Auth;
  *     @OA\Property(property="name", type="string", maxLength=100, description="Nombre del documento: Carta de compromiso, informe de inicio, control de asistencia, registro de asistencia, informe final, control de cumplimiento, certificado, encuesta de percepción, informe de control."),
  *     @OA\Property(property="template", type="string", maxLength=200, description="El documento está guardado en el servidor."),
  *     @OA\Property(property="state", type="boolean", description="Estado actual del documento."),
- *     @OA\Property(property="order", type="integer", description="Orden en el que se imprimirá en pantalla."),
  *     @OA\Property(property="responsible_id", type="integer", nullable=true, description="ID del rol responsable de completar el documento."),
  *     @OA\Property(property="created_by", type="integer", nullable=true, description="ID del usuario que creó el documento."),
  *     @OA\Property(property="archived", type="boolean", default=false, description="Indica si el documento está archivado."),
@@ -247,7 +246,7 @@ class DocumentController extends Controller
             })
             ->with('responsible_id')
             ->get();
-    
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -304,7 +303,7 @@ class DocumentController extends Controller
             })
             ->with('responsible_id')
             ->get();
-    
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -458,7 +457,6 @@ class DocumentController extends Controller
      *             @OA\Property(property="name", type="string", example="Nuevo nombre del documento"),
      *             @OA\Property(property="template", type="string", example="Nuevo template del documento"),
      *             @OA\Property(property="state", type="boolean", example=true),
-     *             @OA\Property(property="order", type="integer", example=1),
      *             @OA\Property(property="responsible_id", type="integer", example=1),
      *             @OA\Property(property="briefcase_id", type="integer", example=1),
      *         )
@@ -485,7 +483,6 @@ class DocumentController extends Controller
             'name' => 'string',
             'template' => 'string',
             'state' => 'boolean',
-            'order' => 'integer',
             '*.responsible_id' => 'integer',
             'briefcase_id' => 'integer'
         ]);
@@ -540,7 +537,6 @@ class DocumentController extends Controller
      *                 @OA\Property(property="name", type="string", example="Nombre del documento"),
      *                 @OA\Property(property="template", type="string", example="Template del documento"),
      *                 @OA\Property(property="state", type="boolean", example=true),
-     *                 @OA\Property(property="order", type="integer", example=1),
      *                 @OA\Property(property="responsible_id", type="integer", example=1),
      *             )
      *         )
@@ -567,7 +563,6 @@ class DocumentController extends Controller
             '*.name' => 'required|string',
             '*.template' => 'required|string',
             '*.state' => 'required|boolean',
-            '*.order' => 'required|integer',
             '*.responsible_id' => 'integer'
         ]);
 
@@ -601,5 +596,118 @@ class DocumentController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/document/responsible/student",
+     *     summary="Obtener Documentos por Rol Responsable ESTUDIANTE",
+     *     operationId="getDocumentsByResponsibleStudent",
+     *     tags={"Documentos"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="documents", type="array", @OA\Items(ref="#/components/schemas/Documento"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
+    public function getDocumentsByResponsibleStudent()
+    {
+        $studentRoleId = 5;
+
+        $documents = Documents::where('archived', false)
+            ->where('responsible_id', $studentRoleId)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => ['documents' => $documents],
+        ], 200);
+    }
+
+    /**
+     * Obtener lista de Documentos filtrados por el rol con ID 3 (por ejemplo, ESTUDIANTE).
+     *
+     * @OA\Get(
+     *     path="/api/document/responsible/responsible/tutor",
+     *     summary="Obtener Documentos por rol responsable TUTOR",
+     *     operationId="getDocumentsByResponsibleRole3",
+     *     tags={"Documentos"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="documents", type="array", @OA\Items(ref="#/components/schemas/Documento"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
+    public function getDocumentsByResponsibleTutor()
+    {
+
+        $studentRoleId = 3;
+
+        $role3Documents = Documents::where('archived', false)
+            ->where('responsible_id', $studentRoleId)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'documents' => $role3Documents,
+            ],
+        ]);
     }
 }

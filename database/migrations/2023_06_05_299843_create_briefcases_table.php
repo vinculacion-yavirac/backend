@@ -24,9 +24,12 @@ return new class extends Migration
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
 
+            $table->integer('update_by')->unsigned()->nullable();
+            $table->foreign('update_by')->references('id')->on('users');
+
             $table->integer('archived_by')->unsigned()->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
-            
+
             $table->integer('project_participant_id')->unsigned()->nullable();
             $table->foreign('project_participant_id')->references('id')->on('project_participants');
             $table->timestamps();

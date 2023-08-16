@@ -18,24 +18,22 @@ return new class extends Migration
             $table->string('name', 100)->comment('Nombre del Documento: Carta de compromiso, informe de inicio, control de asistencia, registro de asistencia, informe final, control de cumplimiento, certificado, encuesta de percepción, informe de control.');
             $table->string('template', 200)->comment('El documento está guardado en el servidor.');
             $table->boolean('state')->comment('Estado del documento.');
-    
-            $table->integer('order')->comment('Orden en cómo se imprimirá en pantalla.');
-    
+            
             $table->unsignedBigInteger('responsible_id')->nullable()->comment('Rol responsable de completar el documento.');
             $table->foreign('responsible_id')->references('id')->on('roles');
-    
+
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
-    
+
             $table->boolean('archived')->default(false)->comment('Indica si el documento está archivado.');
             $table->timestamp('archived_at')->nullable()->comment('Marca de tiempo cuando se archivó el documento.');
             $table->integer('archived_by')->unsigned()->nullable();
             $table->foreign('archived_by')->references('id')->on('users');
-    
+
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *

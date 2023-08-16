@@ -116,6 +116,8 @@ public function uploadFiles(Request $request, $idBriefcase)
     $files = $request->file('files');
     $names = $request->input('names');
     $types = $request->input('types');
+    $observations = $request->input('observations');
+    $states = $request->input('states');
     $documentIds = $request->input('document_ids');
 
     $newFiles = [];
@@ -125,8 +127,8 @@ public function uploadFiles(Request $request, $idBriefcase)
             $fileName = $names[$index];
             $fileContent = base64_encode(file_get_contents($file));
             $fileSize = $file->getSize();
-            $observation = ''; // Agrega aquí el valor para el campo 'observation'
-            $state = 0; // Agrega aquí el valor para el campo 'state'
+            $observation = $observations[$index];
+            $state = $states[$index];
             $document_id = $documentIds[$index];
             $name = $fileName;
             $fileType = $types[$index];

@@ -16,7 +16,6 @@ class Documents extends Model
         'name',
         'template',
         'state',
-        'order',
         'responsible_id',
         'created_by',
         'archived',
@@ -50,7 +49,7 @@ class Documents extends Model
             ->withPivot(['name', 'type', 'content', 'observation', 'state', 'size']);
     }
 
-    
+
 
     public function files()
     {

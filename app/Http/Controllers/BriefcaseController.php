@@ -23,6 +23,7 @@ use Carbon\Carbon;
  *     @OA\Property(property="archived", type="boolean", default=false),
  *     @OA\Property(property="archived_at", type="string", format="date-time", nullable=true),
  *     @OA\Property(property="created_by", type="integer", format="int64", nullable=true),
+ *     @OA\Property(property="update_by", type="integer", format="int64", nullable=true),
  *     @OA\Property(property="archived_by", type="integer", format="int64", nullable=true),
  *     @OA\Property(property="project_participant_id", type="integer", format="int64", nullable=true),
  *     @OA\Property(property="created_at", type="string", format="date-time"),
@@ -33,7 +34,7 @@ use Carbon\Carbon;
 
 class BriefcaseController extends Controller
 {
-   
+
 
     /**
      * @OA\Get(

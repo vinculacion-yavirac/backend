@@ -145,7 +145,7 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::put('/update/{id}', [$controller, 'updateBriefcase']);
         });
-        Route::middleware('permission:CREAR_PORTAFOLIO')->group(function () use ($controller) {
+        Route::middleware('permission:CREAR_PORTAFOLIO|ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::post('/create', [$controller, 'create']);
             Route::post('/upload/{idBriefcase}', [$controller, 'uploadFilesBriefcases']);
         });
@@ -159,8 +159,11 @@ Route::middleware('authentication')->group(function () {
             Route::get('/archived/list', [DocumentController::class, 'getArchivedDocument']);
             Route::get('/search/term/{term?}', [DocumentController::class, 'searchDocumentsByTerm']);
             Route::get('/search/archived/term/{term?}', [DocumentController::class, 'searchDocumentsArchivedByTerm']);
+
+            Route::get('/responsible/student', [DocumentController::class, 'getDocumentsByResponsibleStudent']);
+            Route::get('/responsible/tutor', [DocumentController::class, 'getDocumentsByResponsibleTutor']);
         });
-        
+
         Route::middleware('permission:ARCHIVAR_DOCUMENTO')->group(function () {
             Route::put('/archive/{id}', [DocumentController::class, 'archiveDocument']);
         });
@@ -278,7 +281,7 @@ Route::middleware('authentication')->group(function () {
     //Integrantes detalle de la tabla project y solicitude
     Route::prefix('project-participant')->group(function () {
 
- 
+
         Route::middleware('permission:LEER_PROYECTO')->group(function () {
             Route::get('/', [ProjectParticipantController::class, 'getAllProjectParticipants']);
             Route::get('/lista', [ProjectParticipantController::class, 'getAllProjectParticipantsTutor']);

@@ -23,6 +23,7 @@ class BriefcaseSeeder extends Seeder
             'archived' => false,
             'archived_at' => null,
             'created_by' => 8,
+            'update_by' => null,
             'archived_by' => null,
 
         ],
@@ -32,6 +33,7 @@ class BriefcaseSeeder extends Seeder
             'archived' => false,
             'archived_at' => null,
             'created_by' => 6,
+            'update_by' => null,
             'archived_by' => null,
 
         ],

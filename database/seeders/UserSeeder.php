@@ -52,7 +52,7 @@ class UserSeeder extends Seeder
 
         $personTwo = Person::create([
             'identification_type' => 'Cédula',
-            'identification' => '175516802',
+            'identification' => '1207154145',
             'names' => 'Rodolfo',
             'last_names' => 'Vera',
         ]);
@@ -66,26 +66,9 @@ class UserSeeder extends Seeder
         $userTwo->assignRole('Docente Tutor');
 
 
-
-        $personTre = Person::create([
-            'identification_type' => 'Cédula',
-            'identification' => '175516806',
-            'names' => 'Steven',
-            'last_names' => 'Guerra',
-        ]);
-
-
-        $userTre = User::create([
-            'email' => 'steven@gmail.com',
-            'password' => Hash::make('yavirac1810'),
-            'person' => $personTre->id,
-        ]);
-        $userTre->assignRole('Estudiante');
-
-
         $personFour = Person::create([
             'identification_type' => 'Cédula',
-            'identification' => '175516806',
+            'identification' => '175516896',
             'names' => 'Oscar',
             'last_names' => 'Nogales',
         ]);
@@ -141,6 +124,22 @@ class UserSeeder extends Seeder
             'person' => $personSeven->id,
         ]);
         $userSeven->assignRole('Estudiante');
+
+
+        $personTre = Person::create([
+            'identification_type' => 'Cédula',
+            'identification' => '175516806',
+            'names' => 'Steven',
+            'last_names' => 'Guerra',
+        ]);
+
+
+        $userTre = User::create([
+            'email' => 'steven@gmail.com',
+            'password' => Hash::make('yavirac1810'),
+            'person' => $personTre->id,
+        ]);
+        $userTre->assignRole('Estudiante');
 
 
         $personEigth = Person::create([

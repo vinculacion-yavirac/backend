@@ -77,14 +77,14 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'No autorizado.',
                 ], 401);
             }
-            
+
             $solicitudes = Solicitude::with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'project_id')
                 ->where('archived', false)
                 ->get();
@@ -172,14 +172,14 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'No autorizado.',
                 ], 401);
             }
-            
+
             $solicitudes = Solicitude::with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'project_id')
                 ->where('id', $id)
                 ->where('archived', false)
@@ -257,7 +257,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -349,7 +349,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -465,7 +465,7 @@ class SolicitudeController extends Controller
 
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -564,7 +564,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-                
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -658,7 +658,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-                
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -753,7 +753,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-                
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -857,7 +857,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-                
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -960,7 +960,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-                
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -1063,7 +1063,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-                
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -1167,7 +1167,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -1261,7 +1261,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -1358,7 +1358,7 @@ class SolicitudeController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -1442,14 +1442,14 @@ class SolicitudeController extends Controller
         try {
             // Obtén la solicitud por su ID
             $solicitud = Solicitude::findOrFail($id);
-    
+
             // Verifica si el type_request_id es diferente de 'Vinculacion' y archived es false
             if ($solicitud->type_request_id !== 1 && !$solicitud->archived) {
                 $solicitud->update([
                     'approval_date' => now(),
                     'solicitudes_status_id' => 4,
                 ]);
-    
+
                 return response()->json(['message' => 'Certificado Aprobado']);
             } else {
                 return response()->json(['error' => 'No se puede actualizar la solicitud'], 400);
@@ -1458,7 +1458,7 @@ class SolicitudeController extends Controller
             return response()->json(['error' => 'Ocurrió un error al actualizar el registro'], 500);
         }
     }
-    
+
 
     /**
      * @OA\Put(
@@ -1495,14 +1495,14 @@ class SolicitudeController extends Controller
         try {
             // Obtén la solicitud por su ID
             $solicitud = Solicitude::findOrFail($id);
-    
+
             // Verifica si el type_request_id es diferente de 'Vinculacion' y archived es false
             if ($solicitud->type_request_id !== 1 && !$solicitud->archived) {
                 $solicitud->update([
                     'approval_date' => now(),
                     'solicitudes_status_id' => 3,
                 ]);
-    
+
                 return response()->json(['message' => 'Certificado Desaprobado']);
             } else {
                 return response()->json(['error' => 'No se puede actualizar la solicitud'], 400);
