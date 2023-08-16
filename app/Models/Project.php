@@ -119,4 +119,9 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+    
+    public function archived_by()
+    {
+        return $this->belongsTo(User::class, 'archived_by');
+    }
 }

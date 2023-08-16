@@ -244,6 +244,10 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:RESTAURAR_PROYECTO')->group(function () {
             Route::put('/restore/{id}', [ProjectController::class, 'restoreProject']);
         });
+
+        Route::middleware('permission:ELIMINAR_PROYECTO')->group(function () {
+            Route::delete('/delete/{id}', [ProjectController::class, 'deleteProject']);
+        });
         Route::get('/foundation/{value}', [ProjectController::class, 'getProjectByFoundation']);
     });
 

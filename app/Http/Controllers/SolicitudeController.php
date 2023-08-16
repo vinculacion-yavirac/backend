@@ -116,6 +116,7 @@ class SolicitudeController extends Controller
      * @OA\Get(
      *     path="/api/solicitud/{id}",
      *     summary="Obtener Solicitud por ID",
+     *     operationId="getSolicitudeById",
      *     tags={"Solicitudes"},
      *     security={{"bearer":{}}},
      *     @OA\Parameter(
@@ -266,7 +267,7 @@ class SolicitudeController extends Controller
             }
 
             $solicitudes = Solicitude::where('archived', true)
-                ->with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id')
+                ->with('created_by.person', 'solicitudes_status_id', 'type_request_id','archived_by.person')
                 ->get();
 
             if ($solicitudes->isEmpty()) {

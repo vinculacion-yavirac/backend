@@ -211,7 +211,7 @@ class BriefcaseController extends Controller
     public function getArchivedBriefcase()
     {
         $briefcases = Briefcase::where('archived', true)
-            ->with('project_participant_id.participant_id.person','created_by.person')
+            ->with('project_participant_id.participant_id.person','created_by.person','archived_by.person')
             ->get();
 
         return response()->json([
