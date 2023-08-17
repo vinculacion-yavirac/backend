@@ -253,6 +253,7 @@ Route::middleware('authentication')->group(function () {
         Route::delete('/delete/{id}', [FilesController::class, 'deleteFileById']);
         Route::post('/upload/{idBriefcase}', [FilesController::class, 'uploadFiles']);
         Route::get('download/{portafolioId}/{documentoId}/{fileId}', [FilesController::class, 'downloadFile']);
+        Route::put('/update/{id}', [FilesController::class, 'updateFile']);
     });
 
 
