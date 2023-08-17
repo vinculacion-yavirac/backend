@@ -14,27 +14,31 @@ return new class extends Migration
     public function up()
     {
         Schema::create('briefcases', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('observations');
-            $table->boolean('state')->default(true);
+            $table->increments('id')->comment('ID único de la carpeta.');
 
-            $table->boolean('archived')->default(false);
-            $table->timestamp('archived_at')->nullable();
+            $table->string('observations')->comment('Observaciones de la carpeta.');
 
-            $table->integer('created_by')->unsigned()->nullable();
+            $table->boolean('state')->default(true)->comment('Estado de la carpeta (activo/inactivo).');
+
+            $table->boolean('archived')->default(false)->comment('Indica si la carpeta está archivada.');
+            $table->timestamp('archived_at')->nullable()->comment('Marca de tiempo cuando se archivó la carpeta.');
+
+            $table->integer('created_by')->unsigned()->nullable()->comment('ID del usuario que creó la carpeta.');
             $table->foreign('created_by')->references('id')->on('users');
 
-            $table->integer('update_by')->unsigned()->nullable();
+            $table->integer('update_by')->unsigned()->nullable()->comment('ID del usuario que actualizó la carpeta.');
             $table->foreign('update_by')->references('id')->on('users');
 
-            $table->integer('archived_by')->unsigned()->nullable();
+            $table->integer('archived_by')->unsigned()->nullable()->comment('ID del usuario que archivó la carpeta.');
             $table->foreign('archived_by')->references('id')->on('users');
 
-            $table->integer('project_participant_id')->unsigned()->nullable();
+            $table->integer('project_participant_id')->unsigned()->nullable()->comment('ID del participante del proyecto asociado.');
             $table->foreign('project_participant_id')->references('id')->on('project_participants');
+
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
