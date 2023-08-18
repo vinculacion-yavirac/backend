@@ -143,7 +143,8 @@ Route::middleware('authentication')->group(function () {
         });
 
         Route::middleware('permission:ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
-            Route::put('/update/{id}', [$controller, 'updateBriefcase']);
+            Route::put('/update/{id}', [$controller, 'updatePortafolio']);
+            Route::put('/update/file/{id}', [$controller, 'updateFilesBriefcases']);
         });
         Route::middleware('permission:CREAR_PORTAFOLIO|ACTUALIZAR_PORTAFOLIO')->group(function () use ($controller) {
             Route::post('/create', [$controller, 'create']);

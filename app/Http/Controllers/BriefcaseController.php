@@ -1015,4 +1015,171 @@ public function uploadFilesBriefcases(Request $request, $idBriefcase)
             ], 500);
         }
     }
+
+
+    public function updatePortafolio(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction(); // Start transaction
+
+            $user = Auth::user();
+            $now = Carbon::now();
+
+            // Obtener el portafolio existente
+            $briefcase = Briefcase::findOrFail($id);
+
+            // Actualizar los campos del portafolio
+            $briefcase->observations = $request->input('observations');
+            $briefcase->state = $request->input('state', false);
+            $briefcase->save();
+
+            // Actualizar la función de subida de archivos para los archivos existentes
+            $this->updateFilesBriefcases($request, $id);
+
+            // Lógica para subir nuevos archivos si es necesario (similar a la función original)
+            // ...
+
+            DB::commit(); // Commit the transaction
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'briefcase' => $briefcase,
+                ],
+                'message' => 'Portafolio actualizado exitosamente',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback(); // Rollback the transaction
+            return response()->json([
+                'message' => 'Ocurrió un error al actualizar el portafolio y los archivos.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /*
+    public function updateFilesBriefcases(Request $request, $idBriefcase)
+    {
+        $response = [
+            'status' => '',
+            'message' => '',
+            'files' => []
+        ];
+
+        if (!$request->has('files')) {
+            return; // No se encontraron nuevos archivos para actualizar
+        }
+
+        $newFiles = [];
+
+        foreach ($request->input('files') as $fileData) {
+            // Obtener información del archivo desde los datos proporcionados
+            $fileName = $fileData['name'];
+            $fileContent = base64_encode(file_get_contents($fileData['content']));
+            $fileSize = $fileData['size'];
+            $observation = $fileData['observation'];
+            $state = $fileData['state'];
+            $document_id = $fileData['document_id'];
+            $name = $fileName;
+            $fileType = $fileData['type'];
+
+            // Actualizar el archivo existente si tiene ID
+            if (isset($fileData['id'])) {
+                $existingFile = File::findOrFail($fileData['id']);
+                $existingFile->update([
+                    'name' => $name,
+                    'type' => $fileType,
+                    'content' => $fileContent,
+                    'size' => $fileSize,
+                    'observation' => $observation,
+                    'state' => $state,
+                    'document_id' => $document_id,
+                ]);
+                $newFiles[] = $existingFile;
+            } else {
+                // Crear un nuevo archivo si no tiene ID
+                $newFile = File::create([
+                    'name' => $name,
+                    'type' => $fileType,
+                    'content' => $fileContent,
+                    'size' => $fileSize,
+                    'observation' => $observation,
+                    'state' => $state,
+                    'briefcase_id' => $idBriefcase,
+                    'document_id' => $document_id,
+                ]);
+                $newFiles[] = $newFile;
+            }
+        }
+
+        $response['status'] = 'success';
+        $response['message'] = 'Los archivos se actualizaron correctamente';
+        $response['files'] = $newFiles;
+
+        return response()->json($response, 200);
+    }
+    */
+
+    public function updateFilesBriefcases(Request $request, $idBriefcase)
+{
+    $response = [
+        'status' => '',
+        'message' => '',
+        'files' => []
+    ];
+
+    if (!$request->has('files')) {
+        return; // No se encontraron nuevos archivos para actualizar
+    }
+
+    $newFiles = [];
+
+    foreach ($request->input('files') as $fileData) {
+        // Obtener información del archivo desde los datos proporcionados
+        $fileName = $fileData['name'];
+        $fileContent = $fileData['content']; // ¡No necesitas usar file_get_contents aquí!
+        $fileSize = $fileData['size'];
+        $observation = $fileData['observation'];
+        $state = $fileData['state'];
+        $document_id = $fileData['document_id'];
+        $name = $fileName;
+        $fileType = $fileData['type'];
+
+        // Actualizar el archivo existente si tiene ID
+        if (isset($fileData['id'])) {
+            $existingFile = File::findOrFail($fileData['id']);
+            $existingFile->update([
+                'name' => $name,
+                'type' => $fileType,
+                'content' => $fileContent,
+                'size' => $fileSize,
+                'observation' => $observation,
+                'state' => $state,
+                'document_id' => $document_id,
+            ]);
+            $newFiles[] = $existingFile;
+        } else {
+            // Crear un nuevo archivo si no tiene ID
+            $newFile = File::create([
+                'name' => $name,
+                'type' => $fileType,
+                'content' => $fileContent,
+                'size' => $fileSize,
+                'observation' => $observation,
+                'state' => $state,
+                'briefcase_id' => $idBriefcase,
+                'document_id' => $document_id,
+            ]);
+            $newFiles[] = $newFile;
+        }
+    }
+
+    $response['status'] = 'success';
+    $response['message'] = 'Los archivos se actualizaron correctamente';
+    $response['files'] = $newFiles;
+
+    return response()->json($response, 200);
+}
+
+
 }
