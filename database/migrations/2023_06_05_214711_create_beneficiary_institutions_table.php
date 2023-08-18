@@ -39,13 +39,13 @@ return new class extends Migration
             $table->timestamps();
 
             if (config('database.default') === 'pgsql') {
-                $table->foreign('parish_id')->references('id')->on('addresses')->onDelete('set null');
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-                $table->foreign('archived_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreign('parish_id')->references('id')->on('addresses')->onDelete('cascade');
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('archived_by')->references('id')->on('users')->onDelete('cascade');
             } else {
-                $table->foreign('parish_id')->references('id')->on('addresses')->onDelete('set null');
-                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-                $table->foreign('archived_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreign('parish_id')->references('id')->on('addresses')->onDelete('cascade');
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('archived_by')->references('id')->on('users')->onDelete('cascade');
             }
         });
     }
