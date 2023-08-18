@@ -50,7 +50,7 @@ return new class extends Migration
             $table->foreign('school_period_id')->references('id')->on('school_periods');
 
             $table->unsignedBigInteger('beneficiary_institution_id')->nullable();
-            $table->foreign('beneficiary_institution_id')->references('id')->on('beneficiary_institutions');
+            $table->foreign('beneficiary_institution_id')->references('id')->on('beneficiary_institutions')->onDelete('cascade');
 
             $table->unsignedBigInteger('career_id')->nullable();
             $table->foreign('career_id')->references('id')->on('careers');

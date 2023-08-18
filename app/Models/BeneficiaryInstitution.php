@@ -17,13 +17,13 @@ class BeneficiaryInstitution extends Model
             'name_gestion',
             'name_autorize_by',
             'activity_ruc',
-            'email', 
-            'phone', 
-            'address', 
-            'number_students_start', 
+            'email',
+            'phone',
+            'address',
+            'number_students_start',
             'number_students_ability',
             'Direct beneficiaries',
-            'Indirect beneficiaries', 
+            'Indirect beneficiaries',
             'logo',
             'state',
             'place_location',
@@ -35,4 +35,24 @@ class BeneficiaryInstitution extends Model
         {
             return $this->belongsTo(Address::class, 'parish_id');
         }
+
+        public function archived_by()
+        {
+            return $this->belongsTo(User::class, 'archived_by');
+        }
+
+        public function projects()
+        {
+            return $this->hasMany(Project::class, 'beneficiary_institution_id');
+        }
+
+        public static function boot()
+    {
+        parent::boot();
+
+        // Eliminar proyectos relacionados antes de eliminar la institución beneficiaria
+        static::deleting(function ($beneficiaryInstitution) {
+            $beneficiaryInstitution->projects()->delete();
+        });
+    }
 }

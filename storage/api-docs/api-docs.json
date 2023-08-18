@@ -479,20 +479,24 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
-        "/api/beneficiary-institution/archived": {
+        "/api/beneficiary-institution/archived/list": {
             "get": {
                 "tags": [
                     "Instituciones Beneficiarias"
                 ],
-                "summary": "Obtener todas las Instituciones Beneficiarias archivadas",
-                "description": "Obtener todas las Instituciones Beneficiarias archivadas.",
-                "operationId": "74ad723aafa09eb3524c6f1e8998091d",
+                "summary": "Obtener lista de Beneficiary Institutions archivadas",
+                "operationId": "getArchivedBeneficiaryInstitution",
                 "responses": {
                     "200": {
-                        "description": "Operación exitosa",
+                        "description": "Respuesta exitosa",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -503,7 +507,7 @@
                                         },
                                         "data": {
                                             "properties": {
-                                                "beneficiaryInstitutions": {
+                                                "Beneficiary Institutions": {
                                                     "type": "array",
                                                     "items": {
                                                         "$ref": "#/components/schemas/Beneficiary Institutions"
@@ -511,6 +515,46 @@
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "BeneficiaryInstitutions no encontradas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se encontraron Beneficiary Institutions archivadas."
                                         }
                                     },
                                     "type": "object"
@@ -530,19 +574,11 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Error interno del servidor"
+                                            "example": "Ocurrió un error en el servidor."
                                         },
-                                        "file": {
-                                            "type": "string"
-                                        },
-                                        "line": {
-                                            "type": "integer"
-                                        },
-                                        "errors": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensaje de error detallado."
                                         }
                                     },
                                     "type": "object"
@@ -550,7 +586,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/beneficiary-institution/{id}": {
@@ -616,140 +657,6 @@
                 }
             }
         },
-        "/api/beneficiary-institution/archive/{id}": {
-            "put": {
-                "tags": [
-                    "Instituciones Beneficiarias"
-                ],
-                "summary": "Archivar una Institución Beneficiaria por ID",
-                "description": "Archivar una Institución Beneficiaria por ID.",
-                "operationId": "4e38ddba23e3672a7bc2cd15ce063244",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la Institución Beneficiaria",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Operación exitosa",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Institución Beneficiaria archivada correctamente"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "beneficiaryInstitutions": {
-                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Institución Beneficiaria no encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Institución Beneficiaria no encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/beneficiary-institution/restore/{id}": {
-            "put": {
-                "tags": [
-                    "Instituciones Beneficiarias"
-                ],
-                "summary": "Restaurar una Institución Beneficiaria por ID",
-                "description": "Restaurar una Institución Beneficiaria por ID.",
-                "operationId": "504f2ca21c8d6cce6175c84da1bf9b2a",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la Institución Beneficiaria",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Operación exitosa",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "example": "success"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Institución Beneficiaria restaurada correctamente"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "beneficiaryInstitutions": {
-                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Institución Beneficiaria no encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Institución Beneficiaria no encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/beneficiary-institution/search/term/{term?}": {
             "get": {
                 "tags": [
@@ -758,6 +665,88 @@
                 "summary": "Buscar Instituciones Beneficiarias por término",
                 "description": "Buscar Instituciones Beneficiarias por término.",
                 "operationId": "5f374389e0a3696cecf44c6c125d3ede",
+                "parameters": [
+                    {
+                        "name": "term",
+                        "in": "path",
+                        "description": "Término de búsqueda",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error interno del servidor"
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "line": {
+                                            "type": "integer"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficiary-institution/archived/search/term/{term?}": {
+            "get": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Buscar Instituciones Beneficiarias por término",
+                "description": "Buscar Instituciones Beneficiarias por término.",
+                "operationId": "searchBeneficiaryInstitutionArchivedByTerm",
                 "parameters": [
                     {
                         "name": "term",
@@ -1080,6 +1069,254 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/beneficiary-institution/archive/{id}": {
+            "put": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Archivar una Institución Beneficiaria por ID",
+                "description": "Restaurar una Institución Beneficiaria por ID.",
+                "operationId": "4e38ddba23e3672a7bc2cd15ce063244",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria archivar correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/beneficiary-institution/restore/{id}": {
+            "put": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Restaurar una Institución Beneficiaria por ID",
+                "description": "Restaurar una Institución Beneficiaria por ID.",
+                "operationId": "504f2ca21c8d6cce6175c84da1bf9b2a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la Institución Beneficiaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria restaurada correctamente"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "beneficiaryInstitutions": {
+                                                    "$ref": "#/components/schemas/Beneficiary Institutions"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Institución Beneficiaria no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Institución Beneficiaria no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/beneficiary-institution/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Instituciones Beneficiarias"
+                ],
+                "summary": "Eliminar un Instituciones Beneficiarias",
+                "operationId": "deleteBeneficiaryInstitution",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del Instituciones Beneficiarias a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta exitosa al eliminar el Instituciones Beneficiarias",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Instituciones Beneficiarias eliminado correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Portafolio no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Instituciones Beneficiarias no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error de autenticación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al eliminar la solicitud"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/briefcase": {
@@ -8553,7 +8790,7 @@
             },
             "Beneficiary Institutions": {
                 "title": "Beneficiary Institutions",
-                "description": "Beneficiary Institutions model",
+                "description": "beneficiary institutions model",
                 "properties": {
                     "id": {
                         "type": "integer",

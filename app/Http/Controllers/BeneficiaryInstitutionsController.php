@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\BeneficiaryInstitution;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\Schema(
  *     schema="Beneficiary Institutions",
  *     title="Beneficiary Institutions",
- *     description="Beneficiary Institutions model",
+ *     description="beneficiary institutions model",
  *     @OA\Property(property="id", type="integer", format="int64"),
  *     @OA\Property(property="ruc", type="string", format="int15", nullable=true),
  *     @OA\Property(property="name", type="string", format="int100", nullable=true),
@@ -32,6 +33,7 @@ use Illuminate\Http\Request;
 
 class BeneficiaryInstitutionsController extends Controller
 {
+
     /**
      * Obtener todas las Instituciones Beneficiarias.
      *
@@ -39,6 +41,7 @@ class BeneficiaryInstitutionsController extends Controller
      *     path="/api/beneficiary-institution",
      *     summary="Obtener todas las Instituciones Beneficiarias",
      *     tags={"Instituciones Beneficiarias"},
+     *     security={{"bearer":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="Operación exitosa",
@@ -80,54 +83,92 @@ class BeneficiaryInstitutionsController extends Controller
         ],200);
     }
 
-    /**
-     * Obtener todas las Instituciones Beneficiarias archivadas.
-     *
+
+     /**
      * @OA\Get(
-     *     path="/api/beneficiary-institution/archived",
-     *     summary="Obtener todas las Instituciones Beneficiarias archivadas",
+     *     path="/api/beneficiary-institution/archived/list",
+     *     summary="Obtener lista de Beneficiary Institutions archivadas",
+     *     operationId="getArchivedBeneficiaryInstitution",
      *     tags={"Instituciones Beneficiarias"},
+     *     security={{"bearer":{}}},
      *     @OA\Response(
      *         response=200,
-     *         description="Operación exitosa",
+     *         description="Respuesta exitosa",
      *         @OA\JsonContent(
-     *             type="object",
      *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
-     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
-     *                 )
+     *                 @OA\Property(property="Beneficiary Institutions", type="array", @OA\Items(ref="#/components/schemas/Beneficiary Institutions"))
      *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="BeneficiaryInstitutions no encontradas",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No se encontraron Beneficiary Institutions archivadas."),
      *         )
      *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Error interno del servidor",
      *         @OA\JsonContent(
-     *             type="object",
      *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
-     *             @OA\Property(property="file", type="string"),
-     *             @OA\Property(property="line", type="integer"),
-     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
      *         )
      *     )
      * )
      */
     public function getArchivedBeneficiaryInstitution()
     {
-        $beneficiaryInstitutions = BeneficiaryInstitution::where('id', '!=', 0)
-            ->where('archived', true)
-            ->with('parish_id.father_code')
-            ->get();
+        try {
+            $user = auth()->user();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'beneficiaryInstitutions' => $beneficiaryInstitutions,
-            ],
-        ]);
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No autorizado.',
+                ], 401);
+            }
+
+            $beneficiaryInstitutions = BeneficiaryInstitution::where('archived', true)
+                ->with('parish_id.father_code','archived_by.person')
+                ->get();
+
+            if ($beneficiaryInstitutions->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No se encontraron Beneficiary Institutions archivadas.',
+                    'data' => [
+                        'beneficiaryInstitutions' => $beneficiaryInstitutions,
+                    ],
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'beneficiaryInstitutions' => $beneficiaryInstitutions,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ocurrió un error en el servidor.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
 
  /**
@@ -219,115 +260,6 @@ class BeneficiaryInstitutionsController extends Controller
 
 
     /**
-     * Archivar una Institución Beneficiaria por ID.
-     *
-     * @OA\Put(
-     *     path="/api/beneficiary-institution/archive/{id}",
-     *     summary="Archivar una Institución Beneficiaria por ID",
-     *     tags={"Instituciones Beneficiarias"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID de la Institución Beneficiaria",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Operación exitosa",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria archivada correctamente"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Institución Beneficiaria no encontrada",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
-     *         )
-     *     )
-     * )
-     */
-    public function archiveBeneficiaryInstitution($id)
-    {
-      $beneficiaryInstitutions = BeneficiaryInstitution::findOrFail($id);
-
-      $beneficiaryInstitutions->archived = true;
-      $beneficiaryInstitutions->archived_at = now();
-      $beneficiaryInstitutions->archived_by = auth()->user()->id;
-      $beneficiaryInstitutions->save();
-
-      return new JsonResponse([
-          'status' => 'success',
-          'message' => 'Institucion Beneficiaria archivada correctamente',
-          'data' => [
-              'beneficiaryInstitutions' => $beneficiaryInstitutions
-          ],
-      ], 200);
-    }
-
-
-    /**
-     * Restaurar una Institución Beneficiaria por ID.
-     *
-     * @OA\Put(
-     *     path="/api/beneficiary-institution/restore/{id}",
-     *     summary="Restaurar una Institución Beneficiaria por ID",
-     *     tags={"Instituciones Beneficiarias"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID de la Institución Beneficiaria",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Operación exitosa",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria restaurada correctamente"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Institución Beneficiaria no encontrada",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
-     *         )
-     *     )
-     * )
-     */
-    public function restaureBeneficiaryInstitution($id)
-    {
-      $beneficiaryInstitutions = BeneficiaryInstitution::findOrFail($id);
-
-      $beneficiaryInstitutions->archived = false;
-      $beneficiaryInstitutions->save();
-
-      return new JsonResponse([
-          'status' => 'success',
-          'message' => 'Institucion Beneficiaria restaurada correctamente',
-          'data' => [
-              'beneficiaryInstitutions' => $beneficiaryInstitutions
-          ],
-      ], 200);
-    }
-
-
-
-    /**
      * Buscar Instituciones Beneficiarias por término.
      *
      * @OA\Get(
@@ -371,6 +303,65 @@ class BeneficiaryInstitutionsController extends Controller
     public function searchBeneficiaryInstitutionByTerm($term = '')
     {
         $beneficiaryInstitutions = BeneficiaryInstitution::where('archived', false)
+            ->where(function ($query) use ($term) {
+                $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%']);
+            })
+            ->with('parish_id.father_code')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'beneficiaryInstitutions' => $beneficiaryInstitutions
+            ],
+        ]);
+    }
+
+    /**
+     * Buscar Instituciones Beneficiarias por término.
+     *
+     * @OA\Get(
+     *     path="/api/beneficiary-institution/archived/search/term/{term?}",
+     *     summary="Buscar Instituciones Beneficiarias por término",
+     *     operationId="searchBeneficiaryInstitutionArchivedByTerm",
+     *     tags={"Instituciones Beneficiarias"},
+     *     @OA\Parameter(
+     *         name="term",
+     *         in="path",
+     *         required=false,
+     *         description="Término de búsqueda",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Beneficiary Institutions")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error interno del servidor"),
+     *             @OA\Property(property="file", type="string"),
+     *             @OA\Property(property="line", type="integer"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
+    public function searchBeneficiaryInstitutionArchivedByTerm($term = '')
+    {
+        $beneficiaryInstitutions = BeneficiaryInstitution::where('archived', true)
             ->where(function ($query) use ($term) {
                 $query->whereRaw('LOWER(name) like ?', ['%' . strtolower($term) . '%']);
             })
@@ -566,4 +557,194 @@ class BeneficiaryInstitutionsController extends Controller
     }
 
 
+    /**
+     * Restaurar una Institución Beneficiaria por ID.
+     *
+     * @OA\Put(
+     *     path="/api/beneficiary-institution/archive/{id}",
+     *     summary="Archivar una Institución Beneficiaria por ID",
+     *     tags={"Instituciones Beneficiarias"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la Institución Beneficiaria",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria archivar correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Institución Beneficiaria no encontrada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
+     *         )
+     *     )
+     * )
+     */
+    public function archiveBeneficiaryInstitution($id)
+    {
+        $beneficiaryInstitutions =  BeneficiaryInstitution::findOrFail($id);
+
+        $beneficiaryInstitutions->update([
+            $beneficiaryInstitutions->archived = true,
+            'archived_at' => now(),
+            'archived_by' => auth()->user()->id,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Institucion Beneficiaria archivada correctamente',
+            'data' => [
+                'beneficiaryInstitutions' => $beneficiaryInstitutions,
+            ],
+        ], 200);
+    }
+
+
+    /**
+     * Restaurar una Institución Beneficiaria por ID.
+     *
+     * @OA\Put(
+     *     path="/api/beneficiary-institution/restore/{id}",
+     *     summary="Restaurar una Institución Beneficiaria por ID",
+     *     tags={"Instituciones Beneficiarias"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la Institución Beneficiaria",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria restaurada correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="beneficiaryInstitutions", ref="#/components/schemas/Beneficiary Institutions")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Institución Beneficiaria no encontrada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Institución Beneficiaria no encontrada"),
+     *         )
+     *     )
+     * )
+     */
+    public function restaureBeneficiaryInstitution($id)
+    {
+      $beneficiaryInstitutions = BeneficiaryInstitution::findOrFail($id);
+
+      $beneficiaryInstitutions->archived = false;
+      $beneficiaryInstitutions->save();
+
+      return new JsonResponse([
+          'status' => 'success',
+          'message' => 'Institucion Beneficiaria restaurada correctamente',
+          'data' => [
+              'beneficiaryInstitutions' => $beneficiaryInstitutions
+          ],
+      ], 200);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/beneficiary-institution/delete/{id}",
+     *     summary="Eliminar un Instituciones Beneficiarias",
+     *     operationId="deleteBeneficiaryInstitution",
+     *     tags={"Instituciones Beneficiarias"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del Instituciones Beneficiarias a eliminar",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al eliminar el Instituciones Beneficiarias",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Instituciones Beneficiarias eliminado correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Portafolio no encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Instituciones Beneficiarias no encontrada")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Error de autenticación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Error al eliminar la solicitud")
+     *         )
+     *     )
+     * )
+     */
+    public function deleteBeneficiaryInstitution($id)
+    {
+        try {
+            DB::transaction(
+                function () use ($id) {
+
+                    $beneficiaryInstitutions =BeneficiaryInstitution::find($id);
+                    if (!$beneficiaryInstitutions) {
+                        return response()->json([
+                            'message' => 'Institución no encontrado'
+                        ]);
+                    }
+                    $beneficiaryInstitutions->delete();
+                }
+            );
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Institucion Beneficiaria eliminado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al eliminar la Institución: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
