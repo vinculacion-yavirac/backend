@@ -53,6 +53,8 @@ class ProjectParticipantController extends Controller
         ], 200);
     }
 
+
+
     public function update(Request $request, $id)
 {
     // Validar los datos recibidos

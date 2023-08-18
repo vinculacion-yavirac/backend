@@ -2906,10 +2906,6 @@
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "order": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
                                     "responsible_id": {
                                         "type": "integer",
                                         "example": 1
@@ -2993,10 +2989,6 @@
                                             "type": "boolean",
                                             "example": true
                                         },
-                                        "order": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
                                         "responsible_id": {
                                             "type": "integer",
                                             "example": 1
@@ -3031,6 +3023,201 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensaje de error detallado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/document/responsible/student": {
+            "get": {
+                "tags": [
+                    "Documentos"
+                ],
+                "summary": "Obtener Documentos por Rol Responsable ESTUDIANTE",
+                "operationId": "getDocumentsByResponsibleStudent",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "documents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Documento"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error en el servidor."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Mensaje de error detallado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/document/responsible/responsible/tutor": {
+            "get": {
+                "tags": [
+                    "Documentos"
+                ],
+                "summary": "Obtener Documentos por rol responsable TUTOR",
+                "description": "Obtener lista de Documentos filtrados por el rol con ID 3 (por ejemplo, ESTUDIANTE).",
+                "operationId": "getDocumentsByResponsibleRole3",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "documents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Documento"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Recurso no encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error en el servidor."
+                                        },
                                         "error": {
                                             "type": "string",
                                             "example": "Mensaje de error detallado."
@@ -7730,6 +7917,11 @@
                         "format": "int64",
                         "nullable": true
                     },
+                    "update_by": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
                     "archived_by": {
                         "type": "integer",
                         "format": "int64",
@@ -7800,10 +7992,6 @@
                     "state": {
                         "description": "Estado actual del documento.",
                         "type": "boolean"
-                    },
-                    "order": {
-                        "description": "Orden en el que se imprimirá en pantalla.",
-                        "type": "integer"
                     },
                     "responsible_id": {
                         "description": "ID del rol responsable de completar el documento.",
