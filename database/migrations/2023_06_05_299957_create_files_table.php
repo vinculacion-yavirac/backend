@@ -14,15 +14,24 @@ return new class extends Migration
     public function up()
     {
         Schema::create('files', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100);
-            $table->string('type', 200);
-            $table->longText('content');
-            $table->string('observation', 200);
-            $table->boolean('state');
-            $table->integer('size');
-            $table->integer('briefcase_id')->unsigned()->nullable();
-            $table->integer('document_id')->unsigned()->nullable();
+            $table->increments('id')->comment('ID único del archivo.');
+
+            $table->string('name', 100)->comment('Nombre del archivo.');
+
+            $table->string('type', 200)->comment('Tipo del archivo.');
+
+            $table->longText('content')->comment('Contenido del archivo.');
+
+            $table->string('observation', 200)->comment('Observación del archivo.');
+
+            $table->boolean('state')->comment('Estado del archivo.');
+
+            $table->integer('size')->comment('Tamaño del archivo.');
+
+            $table->integer('briefcase_id')->unsigned()->nullable()->comment('ID de la carpeta asociada.');
+
+            $table->integer('document_id')->unsigned()->nullable()->comment('ID del documento asociado.');
+
             $table->timestamps();
     
             $table->foreign('briefcase_id')
@@ -37,6 +46,7 @@ return new class extends Migration
         });
     }
     
+
 
     /**
      * Reverse the migrations.

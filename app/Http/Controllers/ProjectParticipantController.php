@@ -53,6 +53,8 @@ class ProjectParticipantController extends Controller
         ], 200);
     }
 
+
+
     public function update(Request $request, $id)
 {
     // Validar los datos recibidos
@@ -95,7 +97,8 @@ class ProjectParticipantController extends Controller
 
     public function getByParticipantId($participantId)
     {
-        $projectParticipant = ProjectParticipant::where('participant_id', $participantId)->first();
+        $projectParticipant = ProjectParticipant::with('project_id.beneficiary_institution_id', 'participant_id.person')
+            ->where('participant_id', $participantId)->first();
 
         if (!$projectParticipant) {
             return response()->json([
