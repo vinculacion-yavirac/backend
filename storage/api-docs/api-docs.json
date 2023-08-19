@@ -7027,17 +7027,7 @@
                     "Solicitudes"
                 ],
                 "summary": "Crear una nueva solicitud",
-                "operationId": "createSolicitude",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Solicitude"
-                            }
-                        }
-                    }
-                },
+                "operationId": "createVinculacionSolicitude",
                 "responses": {
                     "201": {
                         "description": "Respuesta exitosa",

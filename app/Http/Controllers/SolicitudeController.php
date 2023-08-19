@@ -1517,13 +1517,9 @@ class SolicitudeController extends Controller
      * @OA\Post(
      *     path="/api/solicitud/create",
      *     summary="Crear una nueva solicitud",
-     *     operationId="createSolicitude",
+     *     operationId="createVinculacionSolicitude",
      *     tags={"Solicitudes"},
      *     security={{"bearer":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/Solicitude")
-     *     ),
      *     @OA\Response(
      *         response=201,
      *         description="Respuesta exitosa",
@@ -1563,21 +1559,39 @@ class SolicitudeController extends Controller
      *     )
      * )
      */
-    public function createSolicitude(Request $request)
+    public function createVinculacionSolicitude()
     {
         try {
-            $request->validate([
-                'approval_date' => 'nullable|date',
-                'solicitudes_status_id' => 'required',
-                'type_request_id' => 'required',
-                'created_by' => 'required',
-            ]);
+            $user = auth()->user();
 
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No autorizado.',
+                ], 401);
+            }
+
+            // Validar si el usuario ya tiene una solicitud no archivada
+            $existingSolicitud = Solicitude::where('created_by', $user->id)
+                ->where('archived', false)
+                ->first();
+
+            if ($existingSolicitud) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Ya enviaste tu solicitud de vinculacion.',
+                    'data' => [
+                        'solicitud' => $existingSolicitud,
+                    ],
+                ], 400);
+            }
+
+            // Si no se encontró una solicitud no archivada, crear una nueva
             $solicitud = Solicitude::create([
-                'approval_date' => $request->approval_date,
-                'solicitudes_status_id' => $request->solicitudes_status_id,
-                'type_request_id' => $request->type_request_id,
-                'created_by' => $request->created_by,
+                'approval_date' => now(),
+                'solicitudes_status_id' => 3,
+                'type_request_id' => 1,
+                'created_by' => $user->id,
                 'archived' => false,
             ]);
 
@@ -1595,9 +1609,6 @@ class SolicitudeController extends Controller
             ], 500);
         }
     }
-
-
-
 
 
     /**
