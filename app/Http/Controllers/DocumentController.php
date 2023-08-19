@@ -639,7 +639,7 @@ class DocumentController extends Controller
     {
         $studentRoleId = 5;
 
-        $documents = Documents::where('archived', false)
+        $documents = Documents::with('responsible_id')
             ->where('responsible_id', $studentRoleId)
             ->get();
 
@@ -695,22 +695,21 @@ class DocumentController extends Controller
      *     )
      * )
      */
-    public function getDocumentsByResponsibleTutor()
-    {
+    public function getDocumentsByResponsibleTutorandStuden()
+{
+    $studentRoleIds = [3, 5];
 
-        $studentRoleId = 3;
+    $rolesDocuments = Documents::with('responsible_id')
+        ->whereIn('responsible_id', $studentRoleIds)
+        ->get();
 
-        $role3Documents = Documents::where('archived', false)
-            ->where('responsible_id', $studentRoleId)
-            ->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'documents' => $role3Documents,
-            ],
-        ]);
-    }
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'documents' => $rolesDocuments,
+        ],
+    ]);
+}
 
     /**
      * @OA\Delete(
