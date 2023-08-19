@@ -194,7 +194,7 @@ Route::middleware('authentication')->group(function () {
     Route::prefix('solicitud')->group(function () {
 
         Route::middleware('permission:LEER_SOLICITUD')->group(function () {
-            Route::get('/', [SolicitudeController::class, 'getSolicitudes']);
+            Route::get('/', [SolicitudeController::class, 'getAllSolicitudes']);
             Route::get('/{id}', [SolicitudeController::class, 'getSolicitudeById']);
             Route::get('/archived/list', [SolicitudeController::class, 'getArchivedSolicitude']);
             Route::get('/search/term/{term?}', [SolicitudeController::class, 'searchSolicitudeByTerm']);
@@ -223,12 +223,16 @@ Route::middleware('authentication')->group(function () {
         });
 
         Route::middleware('permission:CREAR_SOLICITUD')->group(function () {
-            Route::post('/create', [SolicitudeController::class, 'createVinculacionSolicitude']); // Nueva ruta para crear una solicitud
+            // Route::post('/create', [SolicitudeController::class, 'createVinculacionSolicitude']); // Nueva ruta para crear una solicitud
         });
 
         Route::middleware('permission:ELIMINAR_SOLICITUD')->group(function () {
             Route::delete('/delete/{id}', [SolicitudeController::class, 'deleteSolicitud']); // Nueva ruta para crear una solicitud
         });
+
+        Route::post('/create', [SolicitudeController::class, 'createVinculacionSolicitude']);
+        Route::get('/list', [SolicitudeController::class, 'getSolicitudes']);
+
     });
 
 
@@ -372,3 +376,4 @@ Route::middleware('authentication')->group(function () {
 });
 
 
+Route::get('/list', [SolicitudeController::class, 'getSolicitudes']);

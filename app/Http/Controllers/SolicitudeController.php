@@ -33,7 +33,7 @@ class SolicitudeController extends Controller
      * @OA\Get(
      *     path="/api/solicitud",
      *     summary="Obtener lista de solicitudes",
-     *     operationId="getSolicitudes",
+     *     operationId="getAllSolicitudes",
      *     tags={"Solicitudes"},
      *     security={{"bearer":{}}},
      *     @OA\Response(
@@ -73,6 +73,88 @@ class SolicitudeController extends Controller
      *     )
      * )
      */
+    public function getAllSolicitudes()
+    {
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No autorizado.',
+                ], 401);
+            }
+
+            $solicitudes = Solicitude::with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'project_id')
+                ->where('archived', false)
+                ->get();
+
+            if ($solicitudes->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Recurso no encontrado.',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => ['solicitudes' => $solicitudes],
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ocurrió un error en el servidor.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/solicitud/list",
+     *     summary="Obtener las solicitudes del usuario actual que no estén archivadas",
+     *     operationId="getSolicitudes",
+     *     tags={"Solicitudes"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Respuesta exitosa al obtener las solicitudes",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="solicitudes", type="array",
+     *                     @OA\Items(ref="#/components/schemas/Solicitude")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Recurso no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Recurso no encontrado."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
     public function getSolicitudes()
     {
         try {
@@ -86,6 +168,7 @@ class SolicitudeController extends Controller
             }
 
             $solicitudes = Solicitude::with('created_by', 'created_by.person', 'solicitudes_status_id', 'type_request_id', 'project_id')
+            ->where('created_by', $user->id)
                 ->where('archived', false)
                 ->get();
 
