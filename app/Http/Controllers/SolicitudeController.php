@@ -175,7 +175,8 @@ class SolicitudeController extends Controller
             if ($solicitudes->isEmpty()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Recurso no encontrado.',
+                    'message' => 'No  tiene solicitudes.',
+                    'data' => ['solicitudes' => $solicitudes],
                 ], 404);
             }
 
@@ -1657,12 +1658,13 @@ class SolicitudeController extends Controller
             // Validar si el usuario ya tiene una solicitud no archivada
             $existingSolicitud = Solicitude::where('created_by', $user->id)
                 ->where('archived', false)
+                ->where('type_request_id',1)
                 ->first();
 
             if ($existingSolicitud) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Ya enviaste tu solicitud de vinculacion.',
+                    'message' => 'Ya enviaste tu solicitud de Vinculación.',
                     'data' => [
                         'solicitud' => $existingSolicitud,
                     ],
@@ -1680,7 +1682,7 @@ class SolicitudeController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Solicitud creada correctamente',
+                'message' => 'Solicitud enviada correctamente',
                 'data' => [
                     'solicitud' => $solicitud,
                 ],
@@ -1688,11 +1690,108 @@ class SolicitudeController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error al crear la solicitud: ' . $e->getMessage(),
+                'message' => 'Error al enviada la solicitud: ' . $e->getMessage(),
             ], 500);
         }
     }
 
+        /**
+     * @OA\Post(
+     *     path="/api/solicitud/create/solictud/certificado",
+     *     summary="Crear una nueva solicitud",
+     *     operationId="createCertificadoSolicitude",
+     *     tags={"Solicitudes"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=201,
+     *         description="Respuesta exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Solicitud enviada correctamente"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="solicitud", ref="#/components/schemas/Solicitude")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Solicitud inválida",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Solicitud inválida."),
+     *             @OA\Property(property="errors", type="object", example={"approval_date": {"El campo fecha de aprobación es obligatorio."}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No autorizado."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+     *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+     *         )
+     *     )
+     * )
+     */
+    public function createCertificadoSolicitude()
+    {
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No autorizado.',
+                ], 401);
+            }
+
+            // Validar si el usuario ya tiene una solicitud no archivada
+            $existingSolicitud = Solicitude::where('created_by', $user->id)
+                ->where('archived', false)
+                ->where('type_request_id',2)
+                ->first();
+
+            if ($existingSolicitud) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Ya enviaste tu solicitud de Certificado.',
+                    'data' => [
+                        'solicitud' => $existingSolicitud,
+                    ],
+                ], 400);
+            }
+
+            // Si no se encontró una solicitud no archivada, crear una nueva
+            $solicitud = Solicitude::create([
+                'approval_date' => now(),
+                'solicitudes_status_id' => 3,
+                'type_request_id' => 2,
+                'created_by' => $user->id,
+                'archived' => false,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Solicitud enviada correctamente',
+                'data' => [
+                    'solicitud' => $solicitud,
+                ],
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al enviar la solicitud: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 
     /**
      * @OA\Delete(
