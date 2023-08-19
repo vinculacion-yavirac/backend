@@ -111,9 +111,9 @@ class SolicitudeController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/solicitud/list",
+     *     path="/api/solicitud/student/list",
      *     summary="Obtener las solicitudes del usuario actual que no estén archivadas",
-     *     operationId="getSolicitudes",
+     *     operationId="getSolicitudesStudent",
      *     tags={"Solicitudes"},
      *     security={{"bearer":{}}},
      *     @OA\Response(
@@ -155,7 +155,7 @@ class SolicitudeController extends Controller
      *     )
      * )
      */
-    public function getSolicitudes()
+    public function getSolicitudesStudent()
     {
         try {
             $user = auth()->user();
@@ -1598,7 +1598,7 @@ class SolicitudeController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/solicitud/create",
+     *     path="/api/solicitud/create/solictud/vinculacion",
      *     summary="Crear una nueva solicitud",
      *     operationId="createVinculacionSolicitude",
      *     tags={"Solicitudes"},

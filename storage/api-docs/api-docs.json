@@ -5344,13 +5344,13 @@
                 ]
             }
         },
-        "/api/solicitud/list": {
+        "/api/solicitud/student/list": {
             "get": {
                 "tags": [
                     "Solicitudes"
                 ],
                 "summary": "Obtener las solicitudes del usuario actual que no estén archivadas",
-                "operationId": "getSolicitudes",
+                "operationId": "getSolicitudesStudent",
                 "responses": {
                     "200": {
                         "description": "Respuesta exitosa al obtener las solicitudes",
@@ -7128,7 +7128,7 @@
                 ]
             }
         },
-        "/api/solicitud/create": {
+        "/api/solicitud/create/solictud/vinculacion": {
             "post": {
                 "tags": [
                     "Solicitudes"

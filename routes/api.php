@@ -230,8 +230,17 @@ Route::middleware('authentication')->group(function () {
             Route::delete('/delete/{id}', [SolicitudeController::class, 'deleteSolicitud']); // Nueva ruta para crear una solicitud
         });
 
-        Route::post('/create', [SolicitudeController::class, 'createVinculacionSolicitude']);
-        Route::get('/list', [SolicitudeController::class, 'getSolicitudes']);
+        Route::middleware('permission:CREAR_SOLICITUD_ESTUDIANTE')->group(function () {
+            Route::post('/create/solictud/vinculacion', [SolicitudeController::class, 'createVinculacionSolicitude']); // Nueva ruta para crear una solicitud
+        });
+
+        Route::middleware('permission:LEER_SOLICITUD_ESTUDIANTE')->group(function () {
+            Route::get('student/list', [SolicitudeController::class, 'getSolicitudesStudent']); // Nueva ruta para crear una solicitud
+        });
+
+        // Route::get('/list', [SolicitudeController::class, 'getSolicitudes']);
+
+        // Route::get('/list', [SolicitudeController::class, 'getSolicitudes']);
 
     });
 
@@ -375,6 +384,3 @@ Route::middleware('authentication')->group(function () {
         });
     });
 });
-
-
-Route::get('/list', [SolicitudeController::class, 'getSolicitudes']);
