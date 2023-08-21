@@ -26,7 +26,6 @@ return new class extends Migration
             $table->timestamp('start_date');
             $table->timestamp('end_date')->nullable();
             $table->timestamp('date_presentation');
-            $table->json('linking_activity');
             $table->json('sectors_intervention');
             $table->json('strategic_axes');
             $table->string('objetive', 500);
@@ -36,6 +35,10 @@ return new class extends Migration
             $table->string('justification', 500);
             $table->string('conclusions', 500);
             $table->string('recommendation', 500);
+            $table->string('frequency_activity', 500);
+            $table->string('activity_vinculation', 500);
+            $table->string('intervention_sectors', 500);
+            $table->json('linking_activity',500);
             $table->json('direct_beneficiaries');
             $table->json('indirect_beneficiaries');
             $table->string('schedule', 200);

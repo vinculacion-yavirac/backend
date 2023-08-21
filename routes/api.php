@@ -229,6 +229,7 @@ Route::middleware('authentication')->group(function () {
             Route::post('/create', [ProjectController::class, 'createProyect']);
             Route::put('updateProyectBeneficiaryInstitution/{id}', [ProjectController::class, 'updateProyectBeneficiaryInstitution']);
             Route::put('updateProyectPlanTrabajo/{id}', [ProjectController::class, 'updateProyectPlanTrabajo']);
+            Route::put('updateProyectActividades/{id}', [ProjectController::class, 'updateProyectActividades']);
 
         });
         Route::middleware('permission:ARCHIVAR_PROYECTO')->group(function () {

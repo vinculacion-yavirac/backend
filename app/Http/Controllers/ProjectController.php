@@ -154,6 +154,45 @@ class ProjectController extends Controller
         }
     }
 
+
+     /**
+     * Summary of updateProyect
+     * @return \Illuminate\Http\JsonResponse
+     * Actualizar  id de la entidad beneficiaria "empresa"
+     */
+    public function updateProyectActividades(Request $request, $id)
+    {
+
+
+        $proyect = Project::find($id);
+        if (!$proyect) {
+            return response()->json([
+                'message' => 'No se encontró el oficio especificado'
+            ], 404);
+        }
+
+        $proyect->frequency_activity = $request->frequency_activity;
+        $proyect->activity_vinculation = $request->activity_vinculation;
+        $proyect->intervention_sectors = $request->intervention_sectors;
+        $proyect->linking_activity = $request->linking_activity;
+    
+
+        try {
+            $proyect->save();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'proyect' => $proyect
+                ],
+                'message' => 'Portafolio actualizado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el Portafolio: ' . $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Summary of getArchivedProject
      * @return \Illuminate\Http\JsonResponse
