@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Solicitude;
 use Illuminate\Http\Request;
 use App\Models\ProjectParticipant;
 
@@ -12,11 +13,20 @@ class ProjectParticipantController extends Controller
     public function create(Request $request)
     {
         // Validar los datos recibidos
+
+        // $user = auth()->user();
+
+        // $solicitudParticipantID = Solicitud::where('project_id', $user->id)
+        //                     ->first();
+
+
         $validatedData = $request->validate([
             'project_id' => 'required|integer',
             'participant_id' => 'required|integer',
             'role' => 'required|string',
         ]);
+
+
 
         $projectId = $validatedData['project_id'];
         $participantId = $validatedData['participant_id'];
@@ -37,6 +47,44 @@ class ProjectParticipantController extends Controller
             ],
         ], 200);
     }
+
+
+//     public function create(Request $request)
+// {
+//     // Validar los datos recibidos
+
+//     $user = auth()->user();
+    
+//     $solicitudParticipant = Solicitude::where('participant_id', $user->id)
+//                         ->orderBy('created_at', 'desc')
+//                         ->first();
+
+//     $validatedData = $request->validate([
+//         'project_id' => 'nullable|integer', // Permitir que sea nulo
+//         'participant_id' => 'required|integer',
+//         'role' => 'required|string',
+//     ]);
+
+//     $projectId = $validatedData['project_id'] ?? ($solicitudParticipant ? $solicitudParticipant->project_id : null);
+//     $participantId = $validatedData['participant_id'];
+//     $role = $validatedData['role'];
+
+//     // Crear una nueva instancia de ProjectParticipant
+//     $projectParticipant = new ProjectParticipant();
+//     $projectParticipant->project_id = $projectId;
+//     $projectParticipant->participant_id = $participantId;
+//     $projectParticipant->role = $role;
+//     $projectParticipant->save();
+
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'Usuario asignado exitosamente',
+//         'data' => [
+//             'projectParticipant' => $projectParticipant,
+//         ],
+//     ], 200);
+// }
+
 
 
 
@@ -208,4 +256,27 @@ class ProjectParticipantController extends Controller
         ], 200);
     }
 
+
+    public function updateProjectId(Request $request, $id)
+    {
+        // Validar el dato recibido
+        $validatedData = $request->validate([
+            'project_id' => 'required|integer',
+        ]);
+
+        $projectId = $validatedData['project_id'];
+
+        // Obtener la asignación existente y actualizar solo el project_id
+        $projectParticipant = ProjectParticipant::findOrFail($id);
+        $projectParticipant->project_id = $projectId;
+        $projectParticipant->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'ID del proyecto actualizado exitosamente',
+            'data' => [
+                'projectParticipant' => $projectParticipant,
+            ],
+        ], 200);
+    }
 }

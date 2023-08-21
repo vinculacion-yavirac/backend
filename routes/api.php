@@ -345,6 +345,7 @@ Route::middleware('authentication')->group(function () {
 
         Route::middleware('permission:ACTUALIZAR_PROYECTO')->group(function () {
             Route::put('/{id}', [ProjectParticipantController::class, 'update']);
+            Route::put('/solicitud/participant/{id}', [ProjectParticipantController::class, 'update']);
 
         });
 

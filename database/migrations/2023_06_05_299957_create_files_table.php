@@ -22,9 +22,9 @@ return new class extends Migration
 
             $table->longText('content')->comment('Contenido del archivo.');
 
-            $table->string('observation', 200)->comment('Observación del archivo.');
+            $table->string('observation', 200)->nullable()->comment('Observación del archivo.');
 
-            $table->boolean('state')->comment('Estado del archivo.');
+            $table->boolean('state')->nullable()->comment('Estado del archivo.');
 
             $table->integer('size')->comment('Tamaño del archivo.');
 

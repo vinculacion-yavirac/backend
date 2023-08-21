@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProjectParticipant;
 use Illuminate\Http\Request;
 use App\Models\Solicitude;
 use Illuminate\Support\Facades\DB;
@@ -1451,6 +1452,16 @@ class SolicitudeController extends Controller
                 ], 401);
             }
 
+            $solicitudParticipantID = ProjectParticipant::where('participant_id', $user->id)
+                            ->first();
+
+        // if (!$projectParticipant) {
+        //     return response()->json([
+        //         'message' => 'Aun no eres asignado a un proyecto.',
+        //         'data' => $projectParticipant,
+        //     ], 400);
+        // }
+
             $request->validate([
                 'approval_date' => 'nullable|date',
                 'project_id' => 'required',
@@ -1463,7 +1474,7 @@ class SolicitudeController extends Controller
             $solicitudes->update([
                 'approval_date' => now(),
                 'solicitudes_status_id' => 4,
-                'project_id' => $request->project_id,
+                'project_id' => $request->project_id ?? $solicitudParticipantID->project_id,
             ]);
 
             DB::commit();
@@ -1872,6 +1883,30 @@ class SolicitudeController extends Controller
                 'message' => 'Error al eliminar la solicitud: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+
+    public function updateSolicitudId(Request $request, $id)
+    {
+        // Validar el dato recibido
+        $validatedData = $request->validate([
+            'project_id' => 'required|integer',
+        ]);
+
+        $projectId = $validatedData['project_id'];
+
+        // Obtener la asignación existente y actualizar solo el project_id
+        $projectParticipant = Solicitude::findOrFail($id);
+        $projectParticipant->project_id = $projectId;
+        $projectParticipant->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'proyecto agregado actualizado exitosamente',
+            'data' => [
+                'projectParticipant' => $projectParticipant,
+            ],
+        ], 200);
     }
 }
 

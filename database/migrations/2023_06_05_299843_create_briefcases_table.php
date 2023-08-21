@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('briefcases', function (Blueprint $table) {
             $table->increments('id')->comment('ID único de la carpeta.');
 
-            $table->string('observations')->comment('Observaciones de la carpeta.');
+            $table->string('observations')->nullable()->comment('Observaciones de la carpeta.');
 
-            $table->boolean('state')->default(true)->comment('Estado de la carpeta (activo/inactivo).');
+            $table->boolean('state')->default(false)->nullable()->comment('Estado de la carpeta (activo/inactivo).');
 
-            $table->boolean('archived')->default(false)->comment('Indica si la carpeta está archivada.');
+            $table->boolean('archived')->default(false)->nullable()->comment('Indica si la carpeta está archivada.');
             $table->timestamp('archived_at')->nullable()->comment('Marca de tiempo cuando se archivó la carpeta.');
 
             $table->integer('created_by')->unsigned()->nullable()->comment('ID del usuario que creó la carpeta.');
