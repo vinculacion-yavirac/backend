@@ -1908,5 +1908,94 @@ class SolicitudeController extends Controller
             ],
         ], 200);
     }
+
+    /**
+ * @OA\Get(
+ *     path="/api/solicitud/list/certificate",
+ *     summary="Filtrar solicitudes por tipo de solicitud",
+ *     operationId="getSolicitudeAprobade",
+ *     tags={"Solicitudes"},
+ *     security={{"bearer":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Respuesta exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="data", type="object",
+ *                 @OA\Property(property="solicitudes", type="array", @OA\Items(ref="#/components/schemas/Solicitude"))
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No autorizado."),
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Recurso no encontrado",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="No se encontraron solicitudes."),
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Ocurrió un error en el servidor."),
+ *             @OA\Property(property="error", type="string", example="Mensaje de error detallado.")
+ *         )
+ *     )
+ * )
+ */
+public function obtener($value = '')
+{
+    try {
+        $value = 'Certificado';
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No autorizado.',
+            ], 401);
+        }
+
+        $solicitudes = Solicitude::where('archived', false)
+            ->where('solicitudes_status_id', 4 )
+            ->whereHas('type_request_id', function ($query) use ($value) {
+                $query->where('catalog_value', $value);
+                    /*->where('catalog_value', $value);*/
+            })->with('created_by.person', 'solicitudes_status_id', 'type_request_id')->get();
+
+        if ($solicitudes->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se encontraron solicitudes.',
+                'data' => [
+                    'solicitudes' => $solicitudes,
+                ],
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'solicitudes' => $solicitudes,
+            ],
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Ocurrió un error en el servidor.',
+            'error' => $e->getMessage(),
+        ],500);
+}
+}
 }
 

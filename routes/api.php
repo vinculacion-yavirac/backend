@@ -206,6 +206,7 @@ Route::middleware('authentication')->group(function () {
             Route::get('/search/status/pendiente/{term?}', [SolicitudeController::class, 'searchPendienteByTerm']);
             Route::get('/search/status/aprobado/{term?}', [SolicitudeController::class, 'searchAprobadoByTerm']);
             Route::get('/catalogues', [SolicitudeController::class, 'getAllCatalogues']);
+            Route::get('/list/certificate', [SolicitudeController::class,'obtener']);
         });
 
         Route::middleware('permission:ARCHIVAR_SOLICITUD')->group(function () {
