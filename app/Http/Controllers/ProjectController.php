@@ -118,8 +118,8 @@ class ProjectController extends Controller
  /**
      * Summary of updateProyect
      * @return \Illuminate\Http\JsonResponse
-     * Actualizar  id de la entidad beneficiaria "empresa"
-     */
+     * Actualizar  plande trabjo*/
+     
     public function updateProyectPlanTrabajo(Request $request, $id)
     {
 
@@ -158,7 +158,7 @@ class ProjectController extends Controller
      /**
      * Summary of updateProyect
      * @return \Illuminate\Http\JsonResponse
-     * Actualizar  id de la entidad beneficiaria "empresa"
+     * Actualizar  Actividades
      */
     public function updateProyectActividades(Request $request, $id)
     {
