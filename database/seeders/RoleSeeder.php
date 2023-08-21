@@ -101,6 +101,8 @@ class RoleSeeder extends Seeder
         $roleThree->givePermissionTo(Permission::findById(54));
         $roleThree->givePermissionTo(Permission::findById(65));
         $roleThree->givePermissionTo(Permission::findById(66));
+        $roleThree->givePermissionTo(Permission::findById(67));
+        $roleThree->givePermissionTo(Permission::findById(71));
 
         $roleFour = Role::create(['name' => 'Estudiante']);
         $roleFour->givePermissionTo(Permission::findById(54));

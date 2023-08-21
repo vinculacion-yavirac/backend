@@ -96,8 +96,9 @@ class PermissionSeeder extends Seeder
             'IMPORTAR_USUARIOS',
             'LEER_FUNDACION_TUTOR',
             'LEER_PORTAFOLIO_TUTOR',
-            
+
             'VER_DASHBOARD_CG',
+            'LEER_DASHBOARD',
 
         ];
 
