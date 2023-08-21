@@ -12,6 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Person;
 use App\Models\Solicitude;
+use App\Models\Attendance;
 
 
 class User extends Authenticatable implements JWTSubject
@@ -100,5 +101,9 @@ class User extends Authenticatable implements JWTSubject
     public function solicitude()
     {
         return $this->belongsToMany(Solicitude::class);
+    }
+    public function attendance()
+    {
+        return $this->belongsToMany(Attendance::class);
     }
 }
