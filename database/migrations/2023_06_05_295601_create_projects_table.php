@@ -38,7 +38,17 @@ return new class extends Migration
 
             $table->timestamp('date_presentation')->comment('Fecha de presentación del proyecto.');
 
-            $table->json('linking_activity')->comment('Actividad de vinculación del proyecto.');
+            $table->string('frequency_activity', 500);
+
+            $table->string('activity_vinculation', 500);
+
+            $table->string('intervention_sectors', 500);
+
+            $table->json('linking_activity',500)->comment('Actividad de vinculación del proyecto.');
+
+            $table->json('schedule_crono',500);
+
+            $table->json('financing',500);
 
             $table->json('sectors_intervention')->comment('Sectores de intervención del proyecto.');
 

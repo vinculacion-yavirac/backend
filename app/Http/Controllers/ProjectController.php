@@ -257,8 +257,8 @@ class ProjectController extends Controller
  /**
      * Summary of updateProyect
      * @return \Illuminate\Http\JsonResponse
-     * Actualizar  id de la entidad beneficiaria "empresa"
-     */
+     * Actualizar  plande trabjo*/
+     
     public function updateProyectPlanTrabajo(Request $request, $id)
     {
 
@@ -276,6 +276,81 @@ class ProjectController extends Controller
         $proyect->justification = $request->justification;
         $proyect->conclusions = $request->conclusions;
         $proyect->recommendation = $request->recommendation;
+
+        try {
+            $proyect->save();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'proyect' => $proyect
+                ],
+                'message' => 'Portafolio actualizado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el Portafolio: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+
+     /**
+     * Summary of updateProyect
+     * @return \Illuminate\Http\JsonResponse
+     * Actualizar  Actividades
+     */
+    public function updateProyectActividades(Request $request, $id)
+    {
+
+
+        $proyect = Project::find($id);
+        if (!$proyect) {
+            return response()->json([
+                'message' => 'No se encontró el oficio especificado'
+            ], 404);
+        }
+
+        $proyect->frequency_activity = $request->frequency_activity;
+        $proyect->activity_vinculation = $request->activity_vinculation;
+        $proyect->intervention_sectors = $request->intervention_sectors;
+        $proyect->linking_activity = $request->linking_activity;
+    
+
+        try {
+            $proyect->save();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'proyect' => $proyect
+                ],
+                'message' => 'Portafolio actualizado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el Portafolio: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+
+       /**
+     * Summary of updateProyect
+     * @return \Illuminate\Http\JsonResponse
+     * Actualizar  id de la entidad beneficiaria "empresa"
+     */
+    public function updateProyectCronoFinan(Request $request, $id)
+    {
+
+
+        $proyect = Project::find($id);
+        if (!$proyect) {
+            return response()->json([
+                'message' => 'No se encontró el oficio especificado'
+            ], 404);
+        }
+
+        $proyect->schedule_crono = $request->schedule_crono;
+        $proyect->financing = $request->financing;    
 
         try {
             $proyect->save();
