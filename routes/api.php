@@ -17,6 +17,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticipantController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\CatalogueController;
+use App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -383,5 +384,10 @@ Route::middleware('authentication')->group(function () {
         Route::middleware('permission:LEER_SOLICITUD')->group(function () {
             Route::get('/', [CatalogueController::class, 'getAllCatalogues']);
         });
+    });
+
+    Route::prefix('attendances')->group(function () {
+        Route::post('/', [AttendanceController::class, 'createAttendance']);
+        Route::get('/', [AttendanceController::class, 'getAllAttendances']);
     });
 });
