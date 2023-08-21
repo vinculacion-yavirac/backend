@@ -39,6 +39,8 @@ return new class extends Migration
             $table->string('activity_vinculation', 500);
             $table->string('intervention_sectors', 500);
             $table->json('linking_activity',500);
+            $table->json('schedule_crono',500);
+            $table->json('financing',500);
             $table->json('direct_beneficiaries');
             $table->json('indirect_beneficiaries');
             $table->string('schedule', 200);

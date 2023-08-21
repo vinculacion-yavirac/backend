@@ -193,6 +193,42 @@ class ProjectController extends Controller
         }
     }
 
+
+       /**
+     * Summary of updateProyect
+     * @return \Illuminate\Http\JsonResponse
+     * Actualizar  id de la entidad beneficiaria "empresa"
+     */
+    public function updateProyectCronoFinan(Request $request, $id)
+    {
+
+
+        $proyect = Project::find($id);
+        if (!$proyect) {
+            return response()->json([
+                'message' => 'No se encontró el oficio especificado'
+            ], 404);
+        }
+
+        $proyect->schedule_crono = $request->schedule_crono;
+        $proyect->financing = $request->financing;    
+
+        try {
+            $proyect->save();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'proyect' => $proyect
+                ],
+                'message' => 'Portafolio actualizado con éxito'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el Portafolio: ' . $e->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Summary of getArchivedProject
      * @return \Illuminate\Http\JsonResponse

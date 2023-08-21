@@ -230,6 +230,7 @@ Route::middleware('authentication')->group(function () {
             Route::put('updateProyectBeneficiaryInstitution/{id}', [ProjectController::class, 'updateProyectBeneficiaryInstitution']);
             Route::put('updateProyectPlanTrabajo/{id}', [ProjectController::class, 'updateProyectPlanTrabajo']);
             Route::put('updateProyectActividades/{id}', [ProjectController::class, 'updateProyectActividades']);
+            Route::put('updateProyectCronoFinan/{id}', [ProjectController::class, 'updateProyectCronoFinan']);
 
         });
         Route::middleware('permission:ARCHIVAR_PROYECTO')->group(function () {
