@@ -51,6 +51,11 @@ class CatalogSeeder extends Seeder
             'catalog_type' => 'Estado Proyecto',
             'catalog_value' => 'Culminado',
         ],
+        [
+            'code' => 'SEO3',
+            'catalog_type' => 'Estado Solicitud',
+            'catalog_value' => 'Generar Aprobado',
+        ],
     ];
 
     foreach ($catalogs as $catalog) {

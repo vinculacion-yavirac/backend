@@ -221,6 +221,7 @@ Route::middleware('authentication')->group(function () {
             Route::put('/assign/{id}', [SolicitudeController::class, 'assignSolicitude']);
             Route::put('/aprovate-certificado/{id}', [SolicitudeController::class, 'aprovateCertificado']);
             Route::put('/disapprove-certificate/{id}', [SolicitudeController::class, 'disapproveCertificate']);
+            Route::put('/generate/certificate/{id}', [SolicitudeController::class, 'generateCertificado']);
         });
 
         Route::middleware('permission:CREAR_SOLICITUD')->group(function () {
