@@ -29,7 +29,7 @@ class AttendanceController extends Controller
     }
 
     public function getAllAttendances(Request $request){
-        $user_id = $request->input('user_id');
+        $user_id = $request->query('user_id');
 
         $attendances = Attendance::where('user_id', $user_id)->get();
 
